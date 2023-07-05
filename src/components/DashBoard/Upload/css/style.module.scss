@@ -1,0 +1,103 @@
+// Unites height
+$height : 2.5em;
+
+// font
+$fontSize : 1.2rem;
+$fontSize1: 1.5rem;
+//color
+$black : #000000;
+
+%a {
+  text-decoration: none;
+  color: $black;
+  font-size: $fontSize;
+
+}
+
+.userSelect {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.upload {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+
+  @media (max-width:768px) {
+    display: inline-flex;
+    height: 100%;
+
+    .loaderBox {
+      height: $height;
+
+    }
+
+    div {
+      button {
+        border: 1px solid red;
+        white-space: normal !important;
+      }
+    }
+  }
+}
+
+.uploader {
+
+  div {
+    position: absolute;
+    left: -100%  !important;
+    top: -100% !important;
+  }
+}
+
+.border {
+  border: 1px #b4b2b2 solid;
+  border-radius: 10px;
+}
+
+.hover {
+  cursor: pointer;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.linkStyle {
+  li {
+    a {
+      @extend %a;
+      cursor: default;
+    }
+  }
+}
+
+.rootStyle {
+
+  a {
+    @extend %a;
+    cursor: pointer !important;
+  }
+
+}
+
+.backLinkStyle {
+  a {
+    @extend %a;
+    cursor: pointer !important;
+
+    &:hover {
+      border: 1px solid $black;
+    }
+  }
+
+}
+
+.lastLinkStyle {
+  a {
+    @extend %a;
+    font-size: $fontSize1 !important;
+  }
+}
