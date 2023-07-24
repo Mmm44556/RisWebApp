@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+## 開發工具
+   - 前端: HTML、Javascript、CSS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+   - 切版: CSS、SCSS、Bootstrap
 
-## Available Scripts
+   - 環境: React.js、Node.js
 
-In the project directory, you can run:
+   - 後端技術: AJAX(Non-RESTful API)、react-Query、PHP(No Framework)、Mysql
 
-### `npm start`
+   - 版本管理: Git
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 功能說明(持續擴展中)
+### 1.系統概述(System Discription):  <br>
+用戶首先登入此系統，將會判別該用戶權限再進行轉導頁面查看病患資料，如為管理員身分便能對該病患資料進行相關編輯動作，管理員可透過面板新增一筆病患資料且手動輸入相關資訊。
+<BR>
 
-### `npm test`
+### 2.系統角色說明(Role):<BR>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   - **使用者(User)**
+       - 瀏覽、查看資料內容，eg.上傳時間、上傳者、報告內容等等。
+<br>
 
-### `npm run build`
+   - **管理員(Admin)**
+      - 對<ins>病患相關資料</ins>進行增加、刪除、編輯、查看動作，eg.病患是否住院觀察、出入院時間、修改報告內容等等。  
+<br>
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   - **病患(Patient)**
+      - 作為資料被記載到此系統，並存入資料庫紀錄。
+<br>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   - **醫師(Radiologist)**
+      - 為病患撰寫CT報告且作為該報告撰寫者，再將其存入資料庫紀錄。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<BR>
 
-### `npm run eject`
+### 3.功能與限制(Functions and Limitation):
+| 上傳方式 | 接收類型 | 格式化類型 | 上傳數量(per) |   說明 |
+|   :--:    |  :--: |    :--:    |    :--:      |  :--: |
+| File(s)   | .text |   .json    |     1n       | 每次可接收單/多筆資料|
+| Directory | .text |   .json    |     1        | 可接收上傳資料夾，內部n筆資料|
+| .Zip      | .text |   .json    |     1        | 每次只接收一筆壓縮檔，可多層壓縮，內部n筆資料|
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<BR>
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
