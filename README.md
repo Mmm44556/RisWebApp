@@ -37,10 +37,11 @@
 ### 3.功能與限制(Functions and Limitation):
 | 上傳方式 | 接收類型 | 格式化類型 | 上傳數量(per) |   說明 |
 |   :--:    |  :--: |    :--:    |    :--:      |  :--: |
-| File(s)   | .text |   .json    |     1n       | 每次可接收單/多筆資料|
-| Directory | .text |   .json    |     1        | 可接收上傳資料夾，內部n筆資料|
-| .Zip      | .text |   .json    |     1        | 每次只接收一筆壓縮檔，可多層壓縮，內部n筆資料|
+| File(s)   | Plain/text |   Json    |     1n       | 每次可接收單/多筆資料|
+| Directory | Plain/text |   Json    |     1        | 可接收上傳資料夾，內部n筆資料|
+| .Zip      | Plain/text |   Json    |     1        | 每次只接收一筆壓縮檔，可多層壓縮，內部n筆資料|
 
 <BR>
 
-
+|![](/aseets/before.png "plain text")|![](/aseets/after.png "Formatted text")|
+|--|--|
