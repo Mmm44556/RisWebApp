@@ -44,7 +44,14 @@
 <BR>
 
 > #### 報告規範
-我們將報告區分為3種區塊Additional、Findings、Impression(Imp)、Ajcc
+文字報告分為3種區塊Additional、Findings、Impression(Imp)、AJCC edition讓我們轉換成json格式。
+- 分類
+  - Additional: 補充額外資訊。
+  - Findings: 作為後續摘要格式。
+  - Impression(Imp): 重點發現。
+  - AJCC edition: 如有發現該病患有癌症，透過TNM記錄腫瘤擴散位置。[AJCC EDITION](https://iconcancercentre.hk/zh-hant/brochure/cancer-staging-explained/#%e7%94%9a%e9%ba%bc%e6%98%af%e7%99%8c%e7%97%87%e5%88%86%e6%9c%9f)
+
+ 
  |純文字報告|轉換後json|
 |--|--|
 |![](/aseets/before.png "plain text")|![](/aseets/after.png "Formatted text")|
