@@ -43,5 +43,9 @@
 
 <BR>
 
-|![](/aseets/before.png "plain text")|![](/aseets/after.png "Formatted text")|
+> #### 報告規範
+我們將報告區分為3種區塊Additional、Findings、Impression(Imp)、Ajcc
+ |純文字報告|轉換後json|
 |--|--|
+|![](/aseets/before.png "plain text")|![](/aseets/after.png "Formatted text")|
+
