@@ -1,21 +1,9 @@
-.folderToast {
-  position: absolute;
-  max-width: none;
-  transform: translateX(-65%);
+@import "_variables.scss";
 
-  @media (max-width:768px) {
-    transform: none;
-    max-width: max-content;
-
-  }
-
-}
-
-.submitBtn {
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgb(181, 181, 181);
-  }
-
-}
+// Layouts, Components
+@import "_pathCrumb.scss";
+@import "_List.scss";
+@import "_upload.scss";
+@import "_dropDown.scss";
+@import "_uploadCard.scss";
+@import "_createFolder.scss";
