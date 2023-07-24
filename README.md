@@ -1,67 +1,46 @@
 ## 開發工具
-<ul>
-  <li>
-    前端: HTML、Javascript、CSS
-  </li>
-  <li>
-    切版: CSS、SCSS、Bootstrap
-  </li>
-  <li>
-    環境: React.js、Node.js
-  </li>
-  <li>
-    後端技術: AJAX(Non-RESTful API)、react-Query、PHP(No Framework)、Mysql
-  </li>
-  <li>
-    版本管理: Git
-  </li>
-</ol>
-</ul>
+   - 前端: HTML、Javascript、CSS
+
+   - 切版: CSS、SCSS、Bootstrap
+
+   - 環境: React.js、Node.js
+
+   - 後端技術: AJAX(Non-RESTful API)、react-Query、PHP(No Framework)、Mysql
+
+   - 版本管理: Git
+
 
 ## 功能說明(持續擴展中)
-### 系統概述(System Discription):  <br>
+### 1.系統概述(System Discription):  <br>
 用戶首先登入此系統，將會判別該用戶權限再進行轉導頁面查看病患資料，如為管理員身分便能對該病患資料進行相關編輯動作，管理員可透過面板新增一筆病患資料且手動輸入相關資訊。
 <BR>
-### 功能與限制(Functions and Limitation):
-CT報告接收類型
 
+### 2.系統角色說明(Role):<BR>
+
+   - **使用者(User)**
+       - 瀏覽、查看資料內容，eg.上傳時間、上傳者、報告內容等等。
+<br>
+
+   - **管理員(Admin)**
+      - 對<ins>病患相關資料</ins>進行增加、刪除、編輯、查看動作，eg.病患是否住院觀察、出入院時間、修改報告內容等等。  
+<br>
+
+   - **病患(Patient)**
+      - 作為資料被記載到此系統，並存入資料庫紀錄。
+<br>
+
+   - **醫師(Radiologist)**
+      - 為病患撰寫CT報告且作為該報告撰寫者，再將其存入資料庫紀錄。
 
 <BR>
 
-### 系統角色說明(Role):<BR>
-<ol>
-  <li>
-    使用者(User)
-      <ul>
-        <li>
-          瀏覽、查看資料內容，eg.上傳時間、上傳者、報告內容等等。
-        </li>
-      </ul>
-  </li>
-  <li>
-    管理員(Admin)
-     <ul>
-        <li>
-         對<ins>病患相關資料</ins>進行增加、刪除、編輯、查看動作，eg.病患是否住院觀察、出入院時間、修改報告內容等等。
-        </li>
-     </ul>
-  </li>
-  <li>
-    病患(Patient)
-    <ul>
-      <li>
-        作為資料被記載到此系統，並存入資料庫紀錄。
-      </li>
-    </ul>
-  </li>
-    <li>
-    醫師(Radiologist)
-    <ul>
-      <li>
-        為病患撰寫CT報告且作為該報告撰寫者，再將其存入資料庫紀錄。
-      </li>
-    </ul>
-  </li>
-</ol>
+### 3.功能與限制(Functions and Limitation):
+| 上傳方式 | 接收類型 | 格式化類型 | 上傳數量(per) |   說明 |
+|   :--:    |  :--: |    :--:    |    :--:      |  :--: |
+| File(s)   | .text |   .json    |     1n       | 每次可接收單/多筆資料|
+| Directory | .text |   .json    |     1        | 可接收上傳資料夾，內部n筆資料|
+| .Zip      | .text |   .json    |     1        | 每次只接收一筆壓縮檔，可多層壓縮，內部n筆資料|
+
+<BR>
 
 
