@@ -11,6 +11,8 @@
 
    - 系統架構: 前後端分離、MVC
 
+   - API測試: PostMan
+
 
 ## 功能說明(持續擴展中)
 ### 1.系統概述(System Discription):  <br>
