@@ -1,16 +1,17 @@
 
 
 //獲取資料接口
-const baseUrl = new URL('http://localhost/api');
+const baseUrl = new URL('http://localhost:8080/api');
 const options = {
   headers: {
     'Accept': 'application/json;charset=utf-8',
   },
-  
+
 }
 
-const iniFolders = async ({queryKey}) => {
-  const data = await fetch(`${baseUrl.pathname}/initial.php`, options)
+const iniFolders = async ({ queryKey }) => {
+
+  const data = await fetch(`${baseUrl.href}/initial.php`, options)
   const jsonData = await data.json();
   return jsonData;
 }
@@ -18,15 +19,14 @@ const iniFolders = async ({queryKey}) => {
 
 
 
-const fetchData = (query) => async ({queryKey,signal}) => {
+const fetchData = (query) => async ({ queryKey, signal }) => {
   const options2 = { ...options, signal }
-
-  if (typeof (query) !== 'string' ){
+  if (typeof (query) !== 'string') {
     return Promise.reject(new Error('query is undefined!'))
   }
-  const data = await fetch(`${baseUrl.pathname}/${query}`, options2)
+  const data = await fetch(`${baseUrl.href}/${query}`, options2)
   const jsonData = await data.json()
-  
+
   return jsonData
 
 }
@@ -36,25 +36,25 @@ const createFolder = (url, dirName) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-      
+
       const formData = new FormData()
       formData.append('folderName', dirName);
       const options2 = { ...options, method: "POST", body: formData }
-      const data = await fetch(`${baseUrl.pathname}/${url}`, options2)
+      const data = await fetch(`${baseUrl.href}/${url}`, options2)
 
       resolve(data.json())
-      
+
     } catch (error) {
       reject(new Error(error))
     }
   })
 }
 
-const editedFetch =async (query,methodStr)=>{
+const editedFetch = async (query, methodStr) => {
   const options2 = { ...options, method: methodStr }
-  const data = await fetch(`${baseUrl.pathname}/${query}`, options2)
+  const data = await fetch(`${baseUrl.href}/${query}`, options2)
   const jsonData = await data.json();
-  
+
   return jsonData
 }
 
@@ -62,7 +62,7 @@ const editedFetch =async (query,methodStr)=>{
 async function postData(Json) {
 
   try {
-    const response = await fetch(`${baseUrl.pathname}/json.php`, { ...options, method: 'POST', body: JSON.stringify(Json) })
+    const response = await fetch(`${baseUrl.href}/json.php`, { ...options, method: 'POST', body: JSON.stringify(Json) })
     // console.log(response.json())
     return response;
   } catch (error) {
