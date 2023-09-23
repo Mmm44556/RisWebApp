@@ -6,7 +6,7 @@ const conn = require('../mysql');
 router.get('/', (req, res) => {
   res.header('Cache-Control', 'no-store')
   // res.header('Content-type', 'application/json')
-
+  
   conn.query(`select * from user`, (err, row) => {
     if (err) {
       res.status(403);

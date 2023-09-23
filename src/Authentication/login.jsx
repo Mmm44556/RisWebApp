@@ -1,12 +1,11 @@
-import React, { useMemo, } from 'react';
-import { Form, useActionData, useOutletContext,useLoaderData } from 'react-router-dom';
+import React, { useMemo,useEffect } from 'react';
+import { Form, useActionData,useLoaderData ,useNavigate} from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiFillMail } from "react-icons/ai";
 import style from './style.module.scss';
 
 export default function Login() {
-  const s = useLoaderData();
-  console.log(s)
+
   return (
     <>
 

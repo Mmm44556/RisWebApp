@@ -1,19 +1,35 @@
 const userModel = require('../models/userModel');
-
-exports.sessionCheck = (req, res, next) => {
+//用戶驗證系統
+exports.sessionCheck =async (req, res, next) => {
+  console.log(req.session)
   if (req.session.sessionID) {
-    res.status(200).send(req.session.name);
-    return
+    try {
+      const sessionData = await userModel.getSession(req.session.sessionID)
+      res.status(200).json(sessionData)
+      return
+    } catch (error) {
+      res.status(403).json(error)
+      return
+    }
+  
   }
-  next()
+  res.status(403).json('')
+  
+  
 }
 
 exports.login = async (req, res) => {
-  // const { email, password, keeping } = req.body;
-  const userInfo =await userModel.getUser(req.body)
-  console.log(userInfo)
-  res.json(userInfo);
-  // req.session.sessionID = req.sessionID;
-  // req.session.name = row[0].user_name;
-  // res.status(200).send('success');
+  try {
+    const userInfo = await userModel.getUser(req.body)
+    delete userInfo['user_password'];
+    req.session.sessionID = req.sessionID;
+    //登入後設置sessionID到資料庫
+    userModel.setSession(userInfo, req.sessionID);
+    req.session.user = userInfo;
+    res.status(200).json(userInfo);
+  } catch (error) {
+    res.status(403).json(error);
+  }
+
+
 }

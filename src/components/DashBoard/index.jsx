@@ -25,9 +25,10 @@ const DashBoard = React.memo(({ showUploader }) => {
 
 
   return (
+    
     <QueryClientProvider client={queryClient}>
       <div className={`position-relative `}>
-
+      
         <GetData showUploader={showUploader} />
         <ReactQueryDevtools className="position-fixed" />
       </div>

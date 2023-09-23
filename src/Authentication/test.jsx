@@ -13,8 +13,7 @@ export default function Test() {
   //註冊通過轉導
   const [registerConfirm, setRegisterConfirm] = useState('Login');
   const [registerStatus,setRegisterStatus] = useState({is:false,info:''});
-
-
+  
   useEffect(() => {
     Navigate('Login', { replace: true })
   }, [])

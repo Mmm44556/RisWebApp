@@ -19,7 +19,7 @@ function App() {
 
 
   const x = useLoaderData();
-  console.log(x,'@')
+  console.log(x, '@')
   return (
     <>
       <IsAdminLogin.Provider value={userLogin}>
@@ -35,8 +35,8 @@ function App() {
                   <Navigator />
                 </Col>
                 <Col >
-                   <DashBoard showUploader={state} /> 
-                   
+                  <DashBoard showUploader={state} />
+
                 </Col>
               </Col>
             </Row>
@@ -45,7 +45,7 @@ function App() {
         </ThemeProvider>
 
       </IsAdminLogin.Provider>
-      
+
     </>
   );
 }

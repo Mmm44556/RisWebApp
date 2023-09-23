@@ -1,7 +1,10 @@
 const express = require('express');
 let router = express.Router();
 const userController = require('../controllers/userController');
-router.post('/', userController.sessionCheck, userController.login)
+//登入路由
+router.get('/', userController.sessionCheck);
+router.post('/', userController.login);
+
 
 
 

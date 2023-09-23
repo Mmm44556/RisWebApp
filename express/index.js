@@ -9,7 +9,7 @@ const FileStore = require('session-file-store')(session);
 const userRoutes = require('./routes/login')
 
 app.use(cors({
-  origin: '*/*',
+  origin: 'http://localhost:3000',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 
@@ -26,7 +26,7 @@ app.use(cookie());
 app.use(session({
   store: new FileStore,
   secret: 'mySecret',
-  name: 'user',
+  name: 'sid',
   cookie: { maxAge: 60 * 60 * 1000, httpOnly: true },
   saveUninitialized: false,
   resave: true,
@@ -69,7 +69,7 @@ app.get('/login1', (req, res) => {
 
 //404 處理
 app.use((req, res) => {
-  res.send('404 Not Found!');
+  res.status(404).send('404 Not Found!');
 })
 app.listen(port, () => {
   console.log(`APP LISTENING AT ${port}!`);
