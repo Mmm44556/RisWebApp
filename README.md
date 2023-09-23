@@ -5,9 +5,13 @@
 
    - 環境: React.js、Node.js
 
-   - 後端技術: AJAX(Non-RESTful API)、react-Query、PHP(No Framework)、Mysql
+   - 後端技術: express.js、PHP、Mysql、Apache、RESTful API
 
    - 版本管理: Git
+
+   - 系統架構: 前後端分離、MVC
+
+   - API測試: PostMan
 
 
 ## 功能說明(持續擴展中)
