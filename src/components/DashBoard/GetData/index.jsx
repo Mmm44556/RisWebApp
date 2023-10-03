@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, lazy, Suspense, forwardRef, useRef, useImperativeHandle } from 'react'
+import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -55,7 +55,8 @@ export const GetData = React.memo(({ showUploader }) => {
   const mutation = useCreateFolder(setShowCreateDone, setCreateDetail);
 
   const fetchPerformance = showCreateDone && <FetchTime showCreateDone={showCreateDone} toggleShow={toggleShow} createDetail={createDetail} />
-  const editedRowText = showUploader.isLogging ? 'edit' : 'Owner';
+  const editedRowText = showUploader.isLogin.role_uid ==1 ? 'edit' : '';
+
 
 
   const Bundles = {
@@ -84,7 +85,7 @@ export const GetData = React.memo(({ showUploader }) => {
       {fetchPerformance}
       <div className={style.upload}>
         <PathCrumb PathCrumbBundle={Bundles.PathCrumb} />
-        {showUploader.isLogging && path.length === 1 ? <CreateBtn mutation={mutation} /> : null}
+        {showUploader.isLogin.role_uid == 1 && path.length === 1 ? <CreateBtn mutation={mutation} /> : null}
       </div>
       <IsUploadedFiles.Provider value={dispatch}>
         <Table responsive="sm" hover className='text-start'>

@@ -6,7 +6,8 @@ const port = 3301;
 const session = require('express-session');
 const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
-const userRoutes = require('./routes/login')
+const LoginRoutes = require('./routes/login');
+const RegisterRoutes = require('./routes/register');
 
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -22,6 +23,7 @@ app.use(express.json());
 //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 //   next();
 // })
+// console.log(require('dotenv').config('./env'))
 app.use(cookie());
 app.use(session({
   store: new FileStore,
@@ -32,8 +34,9 @@ app.use(session({
   resave: true,
 }))
 
-app.use('/users', require('./routes/users'));
-app.use('/login', userRoutes);
+// app.use('/users', require('./routes/users'));
+app.use('/login', LoginRoutes);
+app.use('/register', RegisterRoutes);
 
 // app.post('/users', (req, res, next) => {
 

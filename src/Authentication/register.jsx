@@ -13,7 +13,6 @@ export default function Register() {
   //關閉錯誤提示
   useEffect(() => {
     setAuthenCheck1(authenCheck)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
     if (authenCheck?.msg == 'ok') {
       setRegisterConfirm('Login')
       setRegisterStatus(e => ({ ...e, is: true, info: authenCheck?.info }))

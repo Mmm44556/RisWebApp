@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment, useMemo, memo } from "react";
+import React, { useEffect, useState, Fragment, useMemo } from "react";
 import { useDirectory } from "../../../hooks/useDirectory";
 import Stack from 'react-bootstrap/Stack';
 import { FcFolder, FcFile } from "react-icons/fc";
@@ -45,7 +45,7 @@ const DirectoryList = ({ DirectoryBundle }) => {
                   <td>{e.type}</td>
                   <td>{e.timeStamp}</td>
                   <td>{e.size ? `${e.size}MB` : "---"}</td>
-                  {showUploader.isLogging && e.selected ? 
+                  {showUploader.isLogin.role_uid == 1 && e.selected ? 
                   <td >
                     <Stack direction="horizontal" gap={2} className={style.buttonStack}>
                       {e.type == 'file' || 'dir' ? <>

@@ -1,19 +1,9 @@
-import { useContext, useCallback, memo } from 'react';
+import { useContext, memo } from 'react';
 import { IsUploadedFiles } from '../../../context';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Form from 'react-bootstrap/Form';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { AiFillFileAdd, AiFillFolderAdd, AiFillFileZip } from "react-icons/ai";
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import style from '../css/style.module.scss';
-
-
-
-
-
-
 
 
 function onChange(file, path, dispatch, str) {

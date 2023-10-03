@@ -16,7 +16,7 @@ export function useInitialData(folderKeys, dirName) {
     placeholderData,
     refetchOnWindowFocus: true,
     keepPreviousData: true,
-    retry: 3,
+    retry: 2,
     staleTime: 0,
   })
 

@@ -1,7 +1,6 @@
 const userModel = require('../models/userModel');
 //用戶驗證系統
-exports.sessionCheck =async (req, res, next) => {
-  console.log(req.session)
+exports.sessionCheck = async (req, res, next) => {
   if (req.session.sessionID) {
     try {
       const sessionData = await userModel.getSession(req.session.sessionID)
@@ -11,11 +10,11 @@ exports.sessionCheck =async (req, res, next) => {
       res.status(403).json(error)
       return
     }
-  
+
   }
-  res.status(403).json('')
-  
-  
+  res.redirect(401, 'http://localhost:3000/login')
+
+
 }
 
 exports.login = async (req, res) => {
@@ -30,6 +29,15 @@ exports.login = async (req, res) => {
   } catch (error) {
     res.status(403).json(error);
   }
+}
 
-
+exports.register = async (req, res) => {
+  try {
+    const registerState = await userModel.setUser(req.body);
+    res.status(registerState.state).send(registerState.msg)
+    return
+  } catch (error) {
+    res.status(error.state).send(error.msg)
+    return
+  }
 }
