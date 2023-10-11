@@ -41,6 +41,7 @@
 <BR>
 
 ### 3.功能與限制(Functions and Limitation):
+
 | 上傳方式 | 接收類型 | 格式化類型 | 上傳數量(per) |   說明 |
 |   :--:    |  :--: |    :--:    |    :--:      |  :--: |
 | File(s)   | Plain/text |   Json    |     1n       | 每次可接收單/多筆資料|
