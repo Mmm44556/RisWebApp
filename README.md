@@ -39,6 +39,7 @@
 ![](/aseets/RIS_hierarchy.png "plain text")
 
 <BR>
+
 ### 3.功能與限制(Functions and Limitation):
 | 上傳方式 | 接收類型 | 格式化類型 | 上傳數量(per) |   說明 |
 |   :--:    |  :--: |    :--:    |    :--:      |  :--: |
