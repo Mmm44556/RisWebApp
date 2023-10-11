@@ -39,7 +39,7 @@
 ![Image](/aseets/RIS_hierarchy.png "plain text" =100x50)
 
   <img src="/aseets/RIS_hierarchy.png"
-         alt="Albuquerque, New Mexico" width:200px height:100px>
+         alt="Albuquerque, New Mexico" width:50px height:50px>
 
 <BR>
 
