@@ -38,6 +38,9 @@
 
 ![Image](/aseets/RIS_hierarchy.png "plain text" =100x50)
 
+  <img src="/aseets/RIS_hierarchy.png"
+         alt="Albuquerque, New Mexico" width:200px height:100px>
+
 <BR>
 
 ### 3.功能與限制(Functions and Limitation):
