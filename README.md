@@ -36,10 +36,7 @@
 
 ### 2-1 角色架構圖(Hierarchy)
 
-![Image](/aseets/RIS_hierarchy.png "plain text" =100x50)
-
-  <img src="/aseets/RIS_hierarchy.png"
-         alt="Albuquerque, New Mexico" width:"50px" height:"50px">
+![Image](/aseets/RIS_hierarchy.png "plain text")
 
 <BR>
 
