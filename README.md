@@ -36,7 +36,7 @@
 
 ### 2-1 角色架構圖(Hierarchy)
 
-![IMAGE](/aseets/RIS_hierarchy.png "plain text" =100x50)
+![Image](/aseets/RIS_hierarchy.png "plain text" =100x50)
 
 <BR>
 
