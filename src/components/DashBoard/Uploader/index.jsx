@@ -3,14 +3,14 @@ import { IsUploadedFiles } from '../../../context';
 import { AiFillFileAdd, AiFillFolderAdd, AiFillFileZip } from "react-icons/ai";
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
-import style from '../css/style.module.scss';
+import style from '../../../scss/style.module.scss';
 
 
 function onChange(file, path, dispatch, str) {
 
   return (fileList) => {
     fileList.stopPropagation()
-    const work = new Worker(new URL('../../../utils/js/multiFiles.js', import.meta.url))
+    const work = new Worker(new URL('../../../utils/FileProcess/multiFiles.js', import.meta.url))
     if (window.Worker) {
       const postFiles = {
         fileList: fileList.target.files,

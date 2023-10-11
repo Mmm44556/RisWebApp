@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchData } from '../utils/js/fetchData';
+import { fetchData } from '../utils/FileProcess/fetchData';
 
 
 export function useInitialData(folderKeys, dirName) {

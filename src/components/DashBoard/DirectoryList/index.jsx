@@ -6,7 +6,7 @@ import { FcFolder, FcFile } from "react-icons/fc";
 
 import Uploader from '../Uploader';
 import ModifiedBtn from '../modifyBtn';
-import style from '../css/style.module.scss'
+import style from '../../../scss/style.module.scss'
 
 
 function useNewData(data) {
@@ -20,7 +20,7 @@ function useNewData(data) {
 
 
 const DirectoryList = ({ DirectoryBundle }) => {
-  const { data, setDirName, forwardDir, showUploader, path } = DirectoryBundle;
+  const { data, setDirName, forwardDir, userState, path } = DirectoryBundle;
   //匹配resource output
   const reg = useMemo(() => new RegExp(/output|resource/, 'i'), []);
   const [hoverEdited, setHoverEdited] = useNewData(data);
@@ -45,7 +45,7 @@ const DirectoryList = ({ DirectoryBundle }) => {
                   <td>{e.type}</td>
                   <td>{e.timeStamp}</td>
                   <td>{e.size ? `${e.size}MB` : "---"}</td>
-                  {showUploader.isLogin.role_uid == 1 && e.selected ? 
+                  {userState.normalInfo.role_uid == 1 && e.selected ? 
                   <td >
                     <Stack direction="horizontal" gap={2} className={style.buttonStack}>
                       {e.type == 'file' || 'dir' ? <>

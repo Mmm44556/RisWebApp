@@ -1,6 +1,6 @@
 import React from "react";
 
-const IsAdminLogin = React.createContext(null);
+const LoginUserInfo = React.createContext(null);
 const IsUploadedFiles = React.createContext(null);
 
-export { IsAdminLogin, IsUploadedFiles }
+export { LoginUserInfo, IsUploadedFiles }

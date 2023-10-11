@@ -2,7 +2,7 @@ import React from 'react'
 import { QueryClient, QueryClientProvider, QueryCache } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useOutletContext } from 'react-router-dom';
-import { iniFolders } from '../../utils/js/fetchData';
+import { iniFolders } from '../../utils/FileProcess/fetchData';
 import { GetData } from './GetData';
 
 const queryClient = new QueryClient({
@@ -19,15 +19,15 @@ const queryClient = new QueryClient({
   }
 });
 
-const DashBoard = React.memo(({  }) => {
-  const [userLogin] = useOutletContext();
-  
+const DashBoard = React.memo(({ }) => {
+  const [userState, dispatch] = useOutletContext();
+
   return (
-    
+
     <QueryClientProvider client={queryClient}>
       <div className={`position-relative ms-2`}>
 
-        <GetData showUploader={userLogin} />
+        <GetData userState={userState} />
         <ReactQueryDevtools className="position-fixed" />
       </div>
     </QueryClientProvider>

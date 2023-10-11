@@ -19,7 +19,7 @@ import { useUploaded } from '../../../store/uploadReducer';
 import { IsUploadedFiles } from '../../../context';
 import { BiLeftArrowAlt } from "react-icons/bi";
 import { FaFileUpload } from "react-icons/fa";
-import style from '../css/style.module.scss';
+import style from '../../../scss/style.module.scss';
 const UploadedList = lazy(() => delay(import('./uploadList')))
 
 const folderKeys = {
@@ -28,10 +28,9 @@ const folderKeys = {
   fileDetails: (fileName) => [...folderKeys.folder, fileName]
 }
 
-export const GetData = React.memo(({ showUploader }) => {
+export const GetData = React.memo(({ userState }) => {
   const queryClient = useQueryClient();
   const [state, dispatch] = useUploaded();
-
   const [dirName, setDirName] = useState({ api: 'initial.php', folderName: 'data' });
   const [path, setPath] = useState([dirName.folderName]);
   //上傳成功顯示
@@ -55,7 +54,7 @@ export const GetData = React.memo(({ showUploader }) => {
   const mutation = useCreateFolder(setShowCreateDone, setCreateDetail);
 
   const fetchPerformance = showCreateDone && <FetchTime showCreateDone={showCreateDone} toggleShow={toggleShow} createDetail={createDetail} />
-  const editedRowText = showUploader.isLogin.role_uid ==1 ? 'edit' : '';
+  const editedRowText = userState.normalInfo.role_uid ==1 ? 'edit' : '';
 
 
 
@@ -64,7 +63,7 @@ export const GetData = React.memo(({ showUploader }) => {
       data,
       path,
       dirName,
-      showUploader,
+      userState,
       forwardDir,
       setDirName,
     },
@@ -85,7 +84,7 @@ export const GetData = React.memo(({ showUploader }) => {
       {fetchPerformance}
       <div className={style.upload}>
         <PathCrumb PathCrumbBundle={Bundles.PathCrumb} />
-        {showUploader.isLogin.role_uid == 1 && path.length === 1 ? <CreateBtn mutation={mutation} /> : null}
+        {userState.normalInfo.role_uid == 1 && path.length === 1 ? <CreateBtn mutation={mutation} /> : null}
       </div>
       <IsUploadedFiles.Provider value={dispatch}>
         <Table responsive="sm" hover className='text-start'>

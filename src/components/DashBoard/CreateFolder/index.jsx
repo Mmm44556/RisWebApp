@@ -5,7 +5,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import { AiOutlinePlus, AiOutlineFolderAdd } from "react-icons/ai";
 
-import style from '../css/style.module.scss'
+import style from "../../../scss/style.module.scss"
 
 const CreateBtn = ({ mutation }) => {
   const [showA, setShowA] = useState(false);

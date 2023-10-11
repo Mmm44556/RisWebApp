@@ -2,7 +2,7 @@
 import React, { useRef } from 'react';
 import Breadcrumb from 'react-bootstrap/Breadcrumb';
 import { useList } from '../../../hooks/usePathList'
-import style from '../css/style.module.scss';
+import style from '../../../scss/style.module.scss';
 const PathCrumb = React.memo(({ PathCrumbBundle }) => {
 
   const ref = useRef('');

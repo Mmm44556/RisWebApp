@@ -1,125 +1,56 @@
-import React, { useRef, useContext,useEffect,useCallback,useMemo } from 'react';
-import { Button, Modal, Table } from 'react-bootstrap';
-import { Form, useSearchParams } from 'react-router-dom';
-import { IsAdminLogin } from '../context';
-export const Authentication = React.memo(({ show, setOnHide }) => {
-  const user = useContext(IsAdminLogin);
-  let [searchParams, setSearchParams] = useSearchParams({ q: '', o: false });
-  let q = searchParams.get('q')
-  let o = searchParams.get('o')
-  const account = useRef('');
-  const password = useRef('');
-  const user2 = new Map(Object.entries(user.isLogin));
-  const userArr = [];
-  const userToKeys = useMemo(() => ({
-    user_name: '名稱',
-    user_mail: '信箱',
-    user_sex: '性別',
-    user_age: '年齡',
-    user_phone: '電話'
-  })) 
-    user2.delete('role_uid')
-    user2.forEach((v, k) => {
-      userArr.push(<tr className='border border-start-0'>
-        <td className='fs-5 p-3'>{userToKeys[k]}</td>
-        <td className='p-3' >{v}</td>
-      </tr>)
-    })
+import React, { useEffect, useState, useMemo } from 'react'
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import { useNavigate, Outlet } from 'react-router-dom';
 
-  return (
-
-    <Modal show={show} onHide={setOnHide} tabIndex={0}>
-      <Modal.Header closeButton >
-        <Modal.Title className="fw-semibold">設置</Modal.Title>
-      </Modal.Header >
-      <Modal.Body>
-        <Form>
-            <Table className='border-2 rounded-end mt-3' >
-              <tbody>
-                <thead >
-                  <tr className='border-0'>
-                    <th className="p-2 fw-bold fs-4">基本資料</th>
-                  </tr>
-                </thead>
-                {userArr}
-               
-              </tbody>
-            </Table>
-        </Form>
-
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={setOnHide}>
-          保存
-        </Button>
-        <Button variant="primary" >
-          登出
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-
-})
-
-function Profile(params) {
+import style from "../scss/style.module.scss";
+export default function Authentication() {
+  const Navigate = useNavigate()
+  //註冊通過轉導
+  const [registerConfirm, setRegisterConfirm] = useState('Login');
+  const [registerStatus,setRegisterStatus] = useState({is:false,info:''});
+  
+  useEffect(() => {
+    Navigate('Login', { replace: true })
+  }, [])
   return (
     <>
-    
+      <Container fluid className={style.authContainer} >
+
+        <Row className='x'>
+          <Col xl={9} md={9} sm={9} xs={6}>
+            1 of 1
+          </Col>
+
+          <Col xl={3} md={3} sm={3} xs={6} className='border-start m-0 p-0'>
+
+            <Tabs
+              defaultActiveKey="Login"
+              id="controlled-tab-example"
+              activeKey={registerConfirm}
+              fill
+              onSelect={e => {
+                Navigate(e, { replace: true })
+                setRegisterConfirm(e)
+                setRegisterStatus(e => ({...e,is: false, info: ''}))
+                return e
+              }}
+
+            >
+              <Tab eventKey="Login" title="登入" />
+              <Tab eventKey="Register" title="註冊" />
+            </Tabs>
+            
+            <Outlet context={[Navigate, setRegisterConfirm, setRegisterStatus]} />
+            {registerStatus.is ? <h2 className={style.regiCheck}>{registerStatus.info}</h2>:null}
+          </Col>
+        </Row>
+      </Container>
     </>
   )
-  
 }
 
-  // < Form >
 
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-  //           <Form.Label column sm={2}>
-  //             姓名
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="email" placeholder="Name" />
-  //           </Col>
-  //         </Form.Group>
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-  //           <Form.Label column sm={2}>
-  //             信箱
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="email" placeholder="Email" />
-  //           </Col>
-  //         </Form.Group>
-       
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-  //           <Form.Label column sm={2}>
-  //             密碼
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="password" placeholder="Password" />
-  //           </Col>
-  //         </Form.Group>
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalEmail">
-  //           <Form.Label column sm={2}>
-  //             電話
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="email" placeholder="Phone" />
-  //           </Col>
-  //         </Form.Group>
-
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-  //           <Form.Label column sm={2}>
-  //             年齡
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="password" placeholder="Age" />
-  //           </Col>
-  //         </Form.Group>
-  //         <Form.Group as={Row} className="mb-3" controlId="formHorizontalPassword">
-  //           <Form.Label column sm={2}>
-  //             性別
-  //           </Form.Label>
-  //           <Col sm={10}>
-  //             <Form.Control type="password" placeholder="Sex" />
-  //           </Col>
-  //         </Form.Group>
-  //       </ >

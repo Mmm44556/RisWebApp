@@ -2,7 +2,7 @@ import React, { useMemo,useEffect } from 'react';
 import { Form, useActionData,useLoaderData ,useNavigate} from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiFillMail } from "react-icons/ai";
-import style from './style.module.scss';
+import style from "../../scss/style.module.scss";
 
 export default function Login() {
   const LoginState = useActionData();

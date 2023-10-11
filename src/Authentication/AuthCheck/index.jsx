@@ -2,8 +2,8 @@ import { memo } from 'react';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiFillMail } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
-import style from '../../style.module.scss'
-function AuthenToast({ authenCheck }) {
+import style from "../../scss/style.module.scss";
+function AuthCheck({ authCheckMsg }) {
   const icons = {
     'account': <MdAccountBox />,
     'password': <MdPassword />,
@@ -14,13 +14,13 @@ function AuthenToast({ authenCheck }) {
   return (
     <>
       {
-        authenCheck ? <div
+        authCheckMsg ? <div
           aria-live="polite"
           aria-atomic="true"
           className={style.authCheck}
         > <p>
-            {icons[authenCheck.icon]}
-            {authenCheck.msg}
+            {icons[authCheckMsg.icon]}
+            {authCheckMsg.msg}
           </p>
         </div> : null
       }
@@ -29,4 +29,4 @@ function AuthenToast({ authenCheck }) {
 }
 
 
-export default memo(AuthenToast);
+export default memo(AuthCheck);

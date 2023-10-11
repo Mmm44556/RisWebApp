@@ -1,71 +1,60 @@
 
-import { createBrowserRouter ,redirect } from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
 import App from "../App";
 import Dash from "../components/DashBoard/Dash";
-import Test from "../Authentication/test";
-import Login from "../Authentication/login";
-import Register from "../Authentication/register";
+import Authentication from "../Authentication";
+import Login from "../Authentication/Login";
+import Register from "../Authentication/Register";
 import DashBoard from "../components/DashBoard";
+import Profile from "../pages/Profile";
+import { sessionCheck,sessionCheck2 } from "./js/sessionPrefetch";
 const reg = new RegExp(/[^\u4e00-\u9fa5a-zA-Z0-9]+/i);
 const space = new RegExp(/\d/i);
 const mail = new RegExp(/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/i);
-
-
-async function sessionCheck() {
-console.log('@')
-  let res = await fetch(`${process.env.REACT_APP_DEV_BASE_URL}/login`
-    , {
-      credentials: 'include',
-      mode: 'cors',
-    },
-  )
-  if (res.status == '401') {
-    alert('登入已逾時，請重新登入!');
-    return redirect('/login')
-  }
-  let json = await res.json();
-  return json;
-}
-async function sessionCheck2() {
-  let res = await fetch(`${process.env.REACT_APP_DEV_BASE_URL}/login`, {
-    credentials: 'include',
-    mode: 'cors',
-  },
-  )
-  if (res.status == '200') return redirect('/Dashboard')
-  return '';
-}
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    
     children: [
 
       {
         path: '/',
         element: <Dash />,
         loader: sessionCheck,
-        children:[
+        errorElement:<h1>Please check the Internet</h1>,
+        children: [
           {
             path: '/',
             element: <h1>loading...</h1>,
-            loader:async ()=> redirect('/DashBoard')
+            loader: async () => redirect('/DashBoard'),
+            
           },
           {
             path: 'DashBoard',
-            element: <DashBoard  />
+            element: <DashBoard />
           },
           {
-            path: 'profile',
-            element: <h1>profile</h1>
+            path: 'Analysis',
+            element: <h1>Analysis</h1>
+          },
+          {
+            path: 'Profile',
+            element: <Profile />
+          },
+          {
+            path: 'Employees',
+            element: <h1>Employees</h1>
+          },
+          {
+            path: 'Logout',
+            element: <h1>Logout</h1>
           },
         ]
       },
       {
         path: '/',
-        element: <Test />,
+        element: <Authentication />,
         loader: sessionCheck2,
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [

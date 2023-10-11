@@ -3,23 +3,23 @@ import { Form, useActionData, useOutletContext } from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { BsFillTelephoneFill } from "react-icons/bs";
-import style from './style.module.scss';
+import style from "../../scss/style.module.scss";
 import Table from 'react-bootstrap/Table';
-import AuthenToast from './components/authToast';
+import AuthCheck from '../AuthCheck';
 export default function Register() {
-  const authenCheck = useActionData();
-  const [authenCheck1, setAuthenCheck1] = useState(authenCheck);
+  const authCheck = useActionData();
+  const [authCheckMsg, setAuthenCheck1] = useState(authCheck);
   const [Navigate, setRegisterConfirm, setRegisterStatus] = useOutletContext();
   //關閉錯誤提示
   useEffect(() => {
-    setAuthenCheck1(authenCheck)
-    if (authenCheck?.msg == 'ok') {
+    setAuthenCheck1(authCheckMsg)
+    if (authCheckMsg?.msg == 'ok') {
       setRegisterConfirm('Login')
-      setRegisterStatus(e => ({ ...e, is: true, info: authenCheck?.info }))
+      setRegisterStatus(e => ({ ...e, is: true, info: authCheckMsg?.info }))
       Navigate('Login', { replace: true })
       return
     }
-  }, [authenCheck])
+  }, [authCheckMsg])
 
   const genderProps = useMemo(() => (
     [
@@ -43,7 +43,7 @@ export default function Register() {
   };
   return (
     <>
-      <AuthenToast authenCheck={authenCheck1} />
+      <AuthCheck authCheckMsg={authCheckMsg} />
       <Form method="post" action="/Register" className={style.login}
         onKeyDown={(e) => {
           if (e.key !== undefined) {

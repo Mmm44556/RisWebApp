@@ -1,6 +1,6 @@
 
 import { useQueryClient } from '@tanstack/react-query';
-import { editedFetch } from '../utils/js/fetchData';
+import { editedFetch } from '../utils/FileProcess/fetchData';
 export function useEditedFiles(setConfirmModal, setCountFiles, setHoverEdited, path, file) {
   const client = new useQueryClient();
   const copyArr = [...path];
@@ -27,18 +27,18 @@ export function useEditedFiles(setConfirmModal, setCountFiles, setHoverEdited, p
   }
 
   const confirm = async () => {
-    
+
     const response = await editedFetch(`delete.php?deletedPath=${pathStr}`, 'DELETE');
 
     if (response.state == 'done') {
 
       setConfirmModal(false)
-      if(path.length===1){
+      if (path.length === 1) {
         client.invalidateQueries(["dataFolderRoot", { "directory": "initial.php" }])
       }
       const querySearch = [...path];
-      const queryStr = querySearch.join('\\') 
-  
+      const queryStr = querySearch.join('\\')
+
       client.invalidateQueries(["dataFolderRoot", { "directory": `layer.php/?folderName=${queryStr}` }])
     }
 
