@@ -4,16 +4,17 @@ import ThemeProvider from 'react-bootstrap/ThemeProvider'
 import { Navigator } from "../../layouts/Navigator";
 import { useLogin } from "../../store/userInI";
 import { LoginUserInfo } from "../../context";
-import { useLoaderData, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useLoaderData, Outlet, useNavigate, useLocation, useRouteLoaderData } from 'react-router-dom';
 import { GrSystem } from "react-icons/gr";
 import { MdDashboardCustomize, MdAccountBox, MdLogout, MdPeople, MdAnalytics } from "react-icons/md";
 import style from "../../scss/style.module.scss";
 
 function Dash() {
   const userJson = useLoaderData();
+  const z = useRouteLoaderData ("auth");
+  console.log(z)
   const [initial, reducers] = useLogin(JSON.parse(userJson?.data));
   const [userState, dispatch] = useReducer(reducers, initial);
-
   return (
     <>
       <LoginUserInfo.Provider value={{ userState, dispatch }}>
@@ -72,7 +73,7 @@ const DashList = memo(() => {
       </Nav.Item>
       <Nav.Item as="li">
         <Nav.Link
-          onClick={() => navigator('Analysis', {})}
+          onClick={() => navigator('Analysis', { replace: true })}
           eventKey="Analysis"
           title="analysis">
           <MdAnalytics />報告分析
@@ -88,7 +89,7 @@ const DashList = memo(() => {
       </Nav.Item>
       {userState.normalInfo.role_uid == 1 ? <Nav.Item as="li">
         <Nav.Link
-          onClick={() => navigator('Employees', {})}
+          onClick={() => navigator('Employees', { replace: true })}
           eventKey="Employees"
           title="employees">
           <MdPeople />員工資料
@@ -97,7 +98,7 @@ const DashList = memo(() => {
         : null}
       <Nav.Item as="li">
         <Nav.Link
-          onClick={() => navigator('Logout', {})}
+          onClick={() => navigator('Logout', { replace: true })}
           eventKey="Logout"
           title="logout">
           <MdLogout /> 登出系統

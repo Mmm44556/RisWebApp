@@ -11,7 +11,7 @@ export default function Profile() {
     <Container fluid className='mt-5'>
       <Row>
         <Col sm={3}>
-          <UserCard userState={userState.normalInfo} />
+          <UserCard userState={userState} />
         </Col>
         <Col sm={9} className='pe-4'>
           <UserInfo userState={userState} />

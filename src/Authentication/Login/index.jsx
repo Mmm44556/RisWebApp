@@ -1,7 +1,6 @@
 import React, { useMemo,useEffect } from 'react';
-import { Form, useActionData,useLoaderData ,useNavigate} from 'react-router-dom';
+import { Form, useActionData} from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
-import { AiFillMail } from "react-icons/ai";
 import style from "../../scss/style.module.scss";
 
 export default function Login() {
@@ -17,9 +16,9 @@ export default function Login() {
       <Form method="post" action="/Login" className={style.login}>
         <p className='text-center fs-4 fw-bold' >Radiology File System</p>
 
-        <label htmlFor="email" className="text-center">
-          <AiFillMail/>
-          <input id='email' type="email" name="email" placeholder='Email'
+        <label htmlFor="name" className="text-center">
+          <MdAccountBox />
+          <input id='name' type="text" name="name" placeholder='Name'
             className="w-100"
             spellCheck
 

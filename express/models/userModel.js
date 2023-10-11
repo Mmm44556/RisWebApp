@@ -9,7 +9,8 @@ class usersModel {
   getUser(LoginUser) {
     return new Promise((resolve, reject) => {
       //查詢用戶登入是否存在
-      conn.query(`SELECT user.\`user_id\`,\`user_name\`,\`user_mail\`,\`user_phone\`,\`user_password\`,\`user_sex\`,\`user_age\`,\`role_uid\` FROM user JOIN role ON user.user_id=role.user_id WHERE user_mail=?`, [LoginUser.email], (err, row) => {
+      conn.query(`SELECT user.\`user_id\`,\`user_name\`,\`user_mail\`,\`user_phone\`,\`user_password\`,\`user_sex\`,\`user_age\`,\`user_register_time\`,\`position_name\`,\`department_name\`,\`role_uid\` FROM user JOIN role ON user.user_id=role.user_id JOIN departments_position ON user.position_id = departments_position.position_id
+      JOIN departments ON departments_position.department_id = departments.department_id WHERE user.user_name=?`, [LoginUser.name], (err, row) => {
         if (err) {
           this.user = { state: 403, msg: 'SQL syntax error' }
           reject(this.user)
@@ -36,9 +37,8 @@ class usersModel {
   setUser(RegUser) {
     // 註冊新用戶
     return new Promise((resolve, reject) => {
-      const { FirstName, LastName, age, confirmPassword, email, gender, phone } = RegUser;
-      const name = FirstName.concat(LastName)
-      conn.query(`INSERT INTO user(\`user_name\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`) VALUES(?,?,?,?,?,?)`, [name, email, confirmPassword, phone, gender, age], (err, row) => {
+      const { name, department, age, confirmPassword, email, gender, phone } = RegUser;
+      conn.query(`INSERT INTO user(\`user_name\`,\`position_id\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`) VALUES(?,?,?,?,?,?,?)`, [name, department, email, confirmPassword, phone, gender, age], (err, row) => {
         if (err) {
           if (/name/i.test(err.sqlMessage)) {
             this.user = { state: 409, msg: '名稱已被註冊過' }
@@ -62,9 +62,9 @@ class usersModel {
 
   }
 
-  setSession(userInfo, sessionID) {
+  setSession(userInfo, sessionID, formattedDateTime) {
     //更新用戶sessionID
-    conn.query(`UPDATE sessions SET sid='${sessionID}',data='${JSON.stringify(userInfo)}' WHERE user_id=?`, [`${userInfo.user_id}`])
+    conn.query(`UPDATE sessions SET sid='${sessionID}',data='${JSON.stringify(userInfo)}',created_at='${formattedDateTime}' WHERE user_id=?`, [`${userInfo.user_id}`])
   }
 
   getSession(sid) {

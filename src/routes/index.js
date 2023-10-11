@@ -7,7 +7,7 @@ import Login from "../Authentication/Login";
 import Register from "../Authentication/Register";
 import DashBoard from "../components/DashBoard";
 import Profile from "../pages/Profile";
-import { sessionCheck,sessionCheck2 } from "./js/sessionPrefetch";
+import { SessionCheck, sessionCheck2 } from "./js/sessionPrefetch";
 const reg = new RegExp(/[^\u4e00-\u9fa5a-zA-Z0-9]+/i);
 const space = new RegExp(/\d/i);
 const mail = new RegExp(/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/i);
@@ -21,14 +21,15 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Dash />,
-        loader: sessionCheck,
-        errorElement:<h1>Please check the Internet</h1>,
+        loader: SessionCheck,
+        id: "auth",
+        errorElement: <h1>Please check the Internet</h1>,
         children: [
           {
             path: '/',
             element: <h1>loading...</h1>,
-            loader: async () => redirect('/DashBoard'),
-            
+            // loader: async () => redirect('/DashBoard'),
+
           },
           {
             path: 'DashBoard',
@@ -55,7 +56,7 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Authentication />,
-        loader: sessionCheck2,
+
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [
           {
@@ -69,10 +70,9 @@ const router = createBrowserRouter([
                 submission[key] = value;
               })
 
-              const name = submission.LastName.concat(submission.FirstName);
               //send post here(api)
-              if (reg.test(name)) {
-                return { name, msg: '姓名禁止@,!~<%等特殊字元!', icon: 'account' }
+              if (reg.test(submission.name)) {
+                return {  msg: '姓名禁止@,!~<%等特殊字元!', icon: 'account' }
               }
               if (!mail.test(submission.email)) {
                 return { msg: '信箱格式錯誤!', icon: 'mail' }
@@ -133,8 +133,8 @@ const router = createBrowserRouter([
               if (res.status == '200') {
                 return redirect('/DashBoard');
               }
-
-              return await res.json()
+              const result = await res.json()
+              return result
             },
 
             errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,

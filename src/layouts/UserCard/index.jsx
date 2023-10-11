@@ -1,6 +1,6 @@
 import React,{Suspense} from 'react'
 import {  Card, ListGroup, Image } from 'react-bootstrap';
-export default function UserCard({ userState }) {
+export default function UserCard({ userState: { normalInfo ,medicalInfo} }) {
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
       <Card.Body>
@@ -8,14 +8,14 @@ export default function UserCard({ userState }) {
             <Image src="https://picsum.photos/171/180?random=2" roundedCircle fluid  />
         </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
-          <p>{userState["user_name"].toUpperCase()}</p>
-          <p>放射科醫師</p>
+          <p>{normalInfo["user_name"].toUpperCase()}</p>
+          <p>{medicalInfo["position_name"]}</p>
         </Card.Subtitle>
         <ListGroup variant="flush">
           <ListGroup.Item>
             <address>
-              <a href={`mailto:${userState["user_mail"]}`}>
-                {userState["user_mail"]}
+              <a href={`mailto:${normalInfo["user_mail"]}`}>
+                {normalInfo["user_mail"]}
               </a>
             </address>
           </ListGroup.Item>

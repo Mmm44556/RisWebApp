@@ -3,7 +3,7 @@ import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiFillMail } from "react-icons/ai";
 import { RxCross2 } from "react-icons/rx";
 import style from "../../scss/style.module.scss";
-function AuthCheck({ authCheckMsg }) {
+function AuthCheck({ authCheck }) {
   const icons = {
     'account': <MdAccountBox />,
     'password': <MdPassword />,
@@ -11,16 +11,17 @@ function AuthCheck({ authCheckMsg }) {
     'rest': <RxCross2 />
 
   }
+  console.log(authCheck)
   return (
     <>
       {
-        authCheckMsg ? <div
+        authCheck ? <div
           aria-live="polite"
           aria-atomic="true"
           className={style.authCheck}
         > <p>
-            {icons[authCheckMsg.icon]}
-            {authCheckMsg.msg}
+            {icons[authCheck.icon]}
+            {authCheck.msg}
           </p>
         </div> : null
       }

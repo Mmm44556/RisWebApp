@@ -25,8 +25,8 @@ const userToKeys = {
     let userArr = [];
     param = new Map(Object.entries(param));
     const key = {
-      user_department: '部門',
-      user_position: '職稱',
+      department_name: '部門',
+      position_name: '職稱',
       user_reports: '報告量'
     }
     param.forEach((v, k) => {
@@ -43,9 +43,11 @@ const userToKeys = {
       let userArr = [];
       param = new Map(Object.entries(param));
       const key = {
-        user_register: '註冊時間'
+        user_register_time: '註冊時間',
+        lastTimeLogin:'上次登入時間'
       }
       param.forEach((v, k) => {
+        if (k == 'user_register_time') v = new Date(v).toUTCString();
         userArr.push(<Fragment key={k}>
           <tr >
             <td className='p-3 fs-5'>{key[k]}</td>

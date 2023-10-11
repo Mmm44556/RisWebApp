@@ -3,7 +3,6 @@ import { Table } from 'react-bootstrap';
 import { userToKeys } from './userToKey';
 const fontStyle = 'fw-bold'
 function UserInfo({ userState }) {
-  console.log(userToKeys.normalInfo(userState.medicalInfo))
   return (
     <Table responsive
      className='mt-4 border shadow p-3 mb-5 bg-body-tertiary rounded'>
@@ -19,8 +18,8 @@ function UserInfo({ userState }) {
           <td>
             <h4 className={fontStyle}>醫療部門</h4>
             <tr>
-              {userToKeys.normalInfo(userState.medicalInfo).length ?
-                userToKeys.normalInfo(userState.medicalInfo) : '尚無資料'}
+              {userToKeys.medicalInfo(userState.medicalInfo).length ?
+                userToKeys.medicalInfo(userState.medicalInfo) : '尚無資料'}
             </tr>
           </td>
         </tr>
@@ -28,8 +27,10 @@ function UserInfo({ userState }) {
           <td>
             <h4 className={fontStyle}>其他</h4>
             <tr>
-              {userToKeys.normalInfo(userState.restInfo).length ?
-                userToKeys.normalInfo(userState.restInfo) : '尚無資料'}
+              
+              {userToKeys.restInfo(userState.restInfo).length ?
+                userToKeys.restInfo(userState.restInfo) : '尚無資料'}
+                
             </tr>
           </td>
 
