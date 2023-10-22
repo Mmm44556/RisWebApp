@@ -1,0 +1,59 @@
+.normalInfo {
+
+
+  input,
+  select {
+    width: 300px;
+    border: 1px #dee2e6 solid;
+    border-radius: .375rem;
+    padding: .375rem .75rem;
+
+    @media (width<=576px) {
+      width: max(200px, 25vw);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgb(54, 82, 168);
+      border-radius: 3px;
+    }
+
+    &:invalid {
+      outline: 0.8px red solid;
+
+      &[name="name"] {
+        &+::before {
+          content: "✖禁止輸入@、.*空格非字元";
+          color: red;
+        }
+      }
+
+      &[name="age"] {
+        &+::before {
+          content: "✖最低年齡:20";
+          color: red;
+        }
+      }
+
+      &[name="phone"] {
+        &+::before {
+          content: "✖請輸入0-9數字";
+          color: red;
+        }
+      }
+
+      &[name="mail"] {
+        &+::before {
+          content: "✖信箱格式錯誤";
+          color: red;
+        }
+      }
+
+
+
+    }
+  }
+}

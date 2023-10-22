@@ -1,14 +1,13 @@
-import React, { useMemo,useEffect } from 'react';
-import { Form, useActionData} from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Form, useActionData, useLOCAT } from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import style from "../../scss/style.module.scss";
 
 export default function Login() {
   const LoginState = useActionData();
- 
-  useEffect(()=>{
+  useEffect(() => {
     if (LoginState?.msg) alert(LoginState.msg)
-    
+
   }, [LoginState])
   return (
     <>
@@ -27,7 +26,7 @@ export default function Login() {
         </label>
 
         <label htmlFor="password" className="text-center">
-          <MdPassword  />
+          <MdPassword />
           <input id='password' type="password" name="password"
             className="w-100"
             required

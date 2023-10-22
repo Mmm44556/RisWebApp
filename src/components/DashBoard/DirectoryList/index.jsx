@@ -45,22 +45,22 @@ const DirectoryList = ({ DirectoryBundle }) => {
                   <td>{e.type}</td>
                   <td>{e.timeStamp}</td>
                   <td>{e.size ? `${e.size}MB` : "---"}</td>
-                  {userState.normalInfo.role_uid == 1 && e.selected ? 
-                  <td >
-                    <Stack direction="horizontal" gap={2} className={style.buttonStack}>
-                      {e.type == 'file' || 'dir' ? <>
-                        {!reg.test(e.text) ? <>
-                          {!(e.type == 'file' && !reg.test(e.text)) && <Uploader file={e} path={path} />}
-                          <ModifiedBtn fn={'Rename'} theme={'light'} file={e} setHoverEdited={setHoverEdited} path={path} />
-                          <ModifiedBtn fn={'Delete'} theme={'danger'} file={e} setHoverEdited={setHoverEdited} path={path} />
+                  {userState.normalInfo.role_uid == 1 && e.selected ?
+                    <td >
+                      <Stack direction="horizontal" gap={2} className={style.buttonStack}>
+                        {e.type == 'file' || 'dir' ? <>
+                          {!reg.test(e.text) ? <>
+                            {!(e.type == 'file' && !reg.test(e.text)) && <Uploader file={e} path={path} />}
+                            <ModifiedBtn fn={'Rename'} theme={'light'} file={e} setHoverEdited={setHoverEdited} path={path} />
+                            <ModifiedBtn fn={'Delete'} theme={'danger'} file={e} setHoverEdited={setHoverEdited} path={path} />
+                          </> :
+                            <p className='text-nowrap fst-italic fw-bold'>Read-Only</p>
+                          }
                         </> :
-                          <p className='text-nowrap fst-italic fw-bold'>Read-Only</p>
-                        }
-                      </> :
-                        null}
-                    </Stack>
-                  </td> :
-                   <td style={{ width: '350px' }} />}
+                          null}
+                      </Stack>
+                    </td> :
+                    <td style={{ width: '350px' }} />}
                 </tr>
               </Fragment>
             )

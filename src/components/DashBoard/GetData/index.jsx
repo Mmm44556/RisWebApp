@@ -1,12 +1,6 @@
-import React, { useState, useCallback, useEffect, lazy, Suspense } from 'react'
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Collapse from 'react-bootstrap/Collapse';
-import CloseButton from 'react-bootstrap/CloseButton';
-import Stack from 'react-bootstrap/Stack';
-
-import { useQueryClient } from '@tanstack/react-query';
+import { useState, useCallback, useEffect, lazy, Suspense,memo } from 'react'
+import { Table, Button, Card, Collapse, CloseButton, Stack } from 'react-bootstrap';
+import { useQueryClient, QueryClient, QueryClientProvider, QueryCache } from '@tanstack/react-query';
 import Paginate from '../../../layouts/Pagination';
 import CreateBtn from '../CreateFolder';
 import PathCrumb from '../pathCrumb';
@@ -28,7 +22,7 @@ const folderKeys = {
   fileDetails: (fileName) => [...folderKeys.folder, fileName]
 }
 
-export const GetData = React.memo(({ userState }) => {
+function GetData ({ userState })  {
   const queryClient = useQueryClient();
   const [state, dispatch] = useUploaded();
   const [dirName, setDirName] = useState({ api: 'initial.php', folderName: 'data' });
@@ -55,7 +49,6 @@ export const GetData = React.memo(({ userState }) => {
 
   const fetchPerformance = showCreateDone && <FetchTime showCreateDone={showCreateDone} toggleShow={toggleShow} createDetail={createDetail} />
   const editedRowText = userState.normalInfo.role_uid ==1 ? 'edit' : '';
-
 
 
   const Bundles = {
@@ -109,7 +102,7 @@ export const GetData = React.memo(({ userState }) => {
     </>)
 
 
-})
+}
 
 function delay(promise) {
   return new Promise(resolve => {
@@ -131,7 +124,7 @@ function HorizontalButtons({ close, setOpen, open }) {
 }
 
 
-const FilesStateBar = React.memo(({ UploadedState, dispatch }) => {
+const FilesStateBar = ({ UploadedState, dispatch }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -177,7 +170,7 @@ const FilesStateBar = React.memo(({ UploadedState, dispatch }) => {
       </div>
     </aside>
   );
-})
+}
 
 const Loading = ({ info }) => {
 
@@ -195,3 +188,5 @@ const Loading = ({ info }) => {
     </table>
   )
 }
+
+export default memo(GetData);

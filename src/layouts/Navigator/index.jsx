@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { Container, Nav, Navbar, Form, NavDropdown } from 'react-bootstrap';
 import { AiFillSetting } from "react-icons/ai";
 import { BsFilterLeft, BsSearch } from "react-icons/bs";
 import { useLocation } from 'react-router-dom';
 import Preference from './Preference';
 
-export const Navigator = React.memo(() => {
+function Navigator() {
   const [LoginShow, setIsLoginShow] = useState(false);
   const openModal = useCallback(() => setIsLoginShow(true), [])
   const closeModal = useCallback(() => setIsLoginShow(false), [])
@@ -52,4 +52,6 @@ export const Navigator = React.memo(() => {
     <Preference show={LoginShow} setOnHide={closeModal} />
   </>
 
-})
+}
+
+export default memo(Navigator);

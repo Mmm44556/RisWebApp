@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { Form, useActionData, useOutletContext } from 'react-router-dom';
+import React, {  useState, useEffect } from 'react';
+import { Form, useActionData, useOutletContext,useLoaderData } from 'react-router-dom';
 import { Form as BsForm } from 'react-bootstrap';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye, AiFillMedicineBox } from "react-icons/ai";
@@ -20,6 +20,7 @@ function Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus) 
 }
 
 export default function Register() {
+
   const authCheck = useActionData();
   const [Navigate, setRegisterConfirm, setRegisterStatus] = useOutletContext();
   //關閉錯誤提示

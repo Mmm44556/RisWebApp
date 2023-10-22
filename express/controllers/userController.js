@@ -5,7 +5,7 @@ exports.sessionCheck = async (req, res, next) => {
   if (req.session.sessionID) {
     try {
       const sessionData = await userModel.getSession(req.session.sessionID);
-      //把用戶資料加密編碼
+      //把用戶資料進行轉碼
       let encodeStr = encodeJson(sessionData)
 
       res.status(200).send(encodeStr)
@@ -24,7 +24,6 @@ exports.sessionCheck = async (req, res, next) => {
 exports.login = async (req, res) => {
   try {
     const userInfo = await userModel.getUser(req.body)
-    delete userInfo['user_password'];
     req.session.sessionID = req.sessionID;
     //登入後設置sessionID到資料庫
     let currentDate = new Date();

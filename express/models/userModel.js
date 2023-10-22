@@ -38,7 +38,7 @@ class usersModel {
     // 註冊新用戶
     return new Promise((resolve, reject) => {
       const { name, department, age, confirmPassword, email, gender, phone } = RegUser;
-      conn.query(`INSERT INTO user(\`user_name\`,\`position_id\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`) VALUES(?,?,?,?,?,?,?)`, [name, department, email, confirmPassword, phone, gender, age], (err, row) => {
+      conn.query(`INSERT INTO user(\`user_name\`,\`position_id\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`) VALUES(?,?,?,?,?,?,?)`, [name, department, email, confirmPassword, phone, gender, age], (err) => {
         if (err) {
           if (/name/i.test(err.sqlMessage)) {
             this.user = { state: 409, msg: '名稱已被註冊過' }
@@ -76,6 +76,7 @@ class usersModel {
           reject(this.user)
           return
         }
+
         this.user = { ...row[0] };
         resolve(this.user)
         return

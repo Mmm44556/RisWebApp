@@ -1,20 +1,21 @@
-import React, { useContext } from 'react'
+import { useCallback } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import UserCard from '../../layouts/UserCard';
 import UserInfo from '../../layouts/UserInfo';
-import { LoginUserInfo } from '../../context';
 
 export default function Profile() {
-  let { userState } = useContext(LoginUserInfo);
+  let [userState, dispatch ] = useOutletContext();
+  const getUser = useCallback(() => ({ userState, dispatch }), [userState]);
 
   return (
-    <Container fluid className='mt-5'>
+    <Container fluid className='mt-3'>
       <Row>
         <Col sm={3}>
           <UserCard userState={userState} />
         </Col>
         <Col sm={9} className='pe-4'>
-          <UserInfo userState={userState} />
+          <UserInfo getUser={getUser} userState={userState} dispatch={dispatch}  />
         </Col>
       </Row>
     </Container>

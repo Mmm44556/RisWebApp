@@ -1,5 +1,4 @@
-import React,{Suspense} from 'react'
-import {  Card, ListGroup, Image } from 'react-bootstrap';
+import { Card, ListGroup, Image, ProgressBar } from 'react-bootstrap';
 export default function UserCard({ userState: { normalInfo ,medicalInfo} }) {
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
@@ -26,6 +25,9 @@ export default function UserCard({ userState: { normalInfo ,medicalInfo} }) {
             <span>
               10
             </span>
+          </ListGroup.Item>
+          <ListGroup.Item>
+            <ProgressBar now={10}  />
           </ListGroup.Item>
         </ListGroup>
       </Card.Body>

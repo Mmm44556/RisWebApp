@@ -1,4 +1,54 @@
-import {Fragment } from 'react'
+import { Fragment } from 'react';
+
+
+function InputComponent(key, v) {
+
+  const editToKeys = {
+
+    user_name: <>
+      <input defaultValue={v}
+        name="name"
+        type="text"
+        pattern="[\u4e00-\u9fa5aA-z_a-z_0-9]{1,40}"
+        spellCheck
+        required
+        maxLength="40"
+        minLength="1" /><p /></>,
+    user_mail: <>
+      <input defaultValue={v}
+        required
+        maxLength="40"
+        pattern="/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/"
+        type="email"
+        name="mail" /><p /></>,
+    user_sex:
+      <select name="sex">
+        <option defaultValue={v}>{v}</option>
+        <option defaultValue="Male">Male</option>
+        <option defaultValue="Female">Female</option>
+        <option defaultValue="Bisexual">Bisexual</option>
+        
+      </select>,
+    user_age: <>
+      <input defaultValue={v}
+        name="age"
+        type="number"
+        required
+        min="20"
+        max="70"
+      /><p /></>,
+    user_phone: <>
+      <input defaultValue={v}
+        name="phone"
+        type="tel"
+        required
+        pattern="[0-9]{9,10}"
+        minLength="9"
+        maxLength="10"
+      /><p /></>
+  }
+  return editToKeys[key]
+}
 const userToKeys = {
   normalInfo: (param) => {
     let userArr = [];
@@ -12,10 +62,13 @@ const userToKeys = {
       user_phone: '電話'
     };
     param.forEach((v, k) => {
+      if(k=='user_id'|| k=='user_password') return;
       userArr.push(<Fragment key={k}>
         <tr >
           <td className='p-3 fs-5'>{key[k]}</td>
-          <td className='p-3' >{v}</td>
+          <td className='p-3' >
+            {InputComponent(k, v)}
+          </td>
         </tr>
       </Fragment>)
     })
@@ -39,24 +92,24 @@ const userToKeys = {
     })
     return userArr;
   },
-  restInfo:(param) => {
-      let userArr = [];
-      param = new Map(Object.entries(param));
-      const key = {
-        user_register_time: '註冊時間',
-        lastTimeLogin:'上次登入時間'
-      }
-      param.forEach((v, k) => {
-        if (k == 'user_register_time') v = new Date(v).toUTCString();
-        userArr.push(<Fragment key={k}>
-          <tr >
-            <td className='p-3 fs-5'>{key[k]}</td>
-            <td className='p-3' >{v}</td>
-          </tr>
-        </Fragment>)
-      })
-      return userArr;
+  restInfo: (param) => {
+    let userArr = [];
+    param = new Map(Object.entries(param));
+    const key = {
+      user_register_time: '註冊時間',
+      lastTimeLogin: '上次登入時間'
     }
+    param.forEach((v, k) => {
+      if (k == 'user_register_time') v = new Date(v).toUTCString();
+      userArr.push(<Fragment key={k}>
+        <td className='p-3 fs-5'>{key[k]}</td>
+        <td className='p-3 ' >{v}</td>
+      </Fragment>)
+    })
+    return userArr;
+  }
 }
+
+
 
 export { userToKeys }
