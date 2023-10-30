@@ -1,12 +1,11 @@
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import UserCard from '../../layouts/UserCard';
 import UserInfo from '../../layouts/UserInfo';
 
 export default function Profile() {
-  let [userState, dispatch ] = useOutletContext();
-  const getUser = useCallback(() => ({ userState, dispatch }), [userState]);
+  const [userState, dispatch, setToastDetail, setShowToast] = useOutletContext();
 
   return (
     <Container fluid className='mt-3'>
@@ -15,7 +14,7 @@ export default function Profile() {
           <UserCard userState={userState} />
         </Col>
         <Col sm={9} className='pe-4'>
-          <UserInfo getUser={getUser} userState={userState} dispatch={dispatch}  />
+          <UserInfo userState={userState} dispatch={dispatch} setToastDetail={setToastDetail} setShowToast={setShowToast} />
         </Col>
       </Row>
     </Container>

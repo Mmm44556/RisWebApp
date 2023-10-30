@@ -11,7 +11,11 @@ function Navigator() {
   const closeModal = useCallback(() => setIsLoginShow(false), [])
   let searchParams = useLocation();
   return <>
-    <Navbar expand={"sm"} className="shadow p-3 mb- bg-body-tertiary rounded bg-light" collapseOnSelect sticky="top">
+    <Navbar expand={"sm"}
+      style={{ zIndex: '0' }}
+      className="shadow p-3 bg-body-tertiary rounded bg-light"
+      collapseOnSelect
+      sticky="top">
       <Container >
         {searchParams.pathname.split('/')[1] === "DashBoard" ? <><NavDropdown title={<span type="button" className="btn btn-outline-secondary border-0 ">
           <BsFilterLeft className='fs-4' /></span>} id="collasible-nav-dropdown" className='me-3'>

@@ -164,16 +164,5 @@
 .regiCheck {
   text-align: center;
   background-color: rgb(74 179 74);
-  animation: fadeOut 5s forwards;
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 0;
-      // display: none;
-    }
-  }
+  @include fadeOut;
 }

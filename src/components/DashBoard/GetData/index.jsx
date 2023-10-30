@@ -1,11 +1,11 @@
-import { useState, useCallback, useEffect, lazy, Suspense,memo } from 'react'
+import { useState, useCallback, useEffect, lazy, Suspense, memo } from 'react'
 import { Table, Button, Card, Collapse, CloseButton, Stack } from 'react-bootstrap';
 import { useQueryClient, QueryClient, QueryClientProvider, QueryCache } from '@tanstack/react-query';
 import Paginate from '../../../layouts/Pagination';
 import CreateBtn from '../CreateFolder';
 import PathCrumb from '../pathCrumb';
 
-import FetchTime from '../performance';
+import Performance from '../../../layouts/FetchPerformance';
 import DirectoryList from '../DirectoryList'
 import { useInitialData } from '../../../hooks/useInitialData';
 import { useCreateFolder } from '../../../hooks/useCreateFolder';
@@ -22,7 +22,7 @@ const folderKeys = {
   fileDetails: (fileName) => [...folderKeys.folder, fileName]
 }
 
-function GetData ({ userState })  {
+function GetData({ userState }) {
   const queryClient = useQueryClient();
   const [state, dispatch] = useUploaded();
   const [dirName, setDirName] = useState({ api: 'initial.php', folderName: 'data' });
@@ -47,8 +47,8 @@ function GetData ({ userState })  {
   //創建資料夾觸發refetch
   const mutation = useCreateFolder(setShowCreateDone, setCreateDetail);
 
-  const fetchPerformance = showCreateDone && <FetchTime showCreateDone={showCreateDone} toggleShow={toggleShow} createDetail={createDetail} />
-  const editedRowText = userState.normalInfo.role_uid ==1 ? 'edit' : '';
+  const fetchPerformance = showCreateDone && <Performance showCreateDone={showCreateDone} toggleShow={toggleShow} createDetail={createDetail} />
+  const editedRowText = userState.normalInfo.role_uid == 1 ? 'edit' : '';
 
 
   const Bundles = {

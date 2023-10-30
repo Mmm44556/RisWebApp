@@ -2,21 +2,23 @@ import { useState, memo } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { useFetcher } from 'react-router-dom';
 import style from '../../scss/styles.module.scss'
-function ResetInfo({ setNormalInfo, type }) {
+function EditModal({ setNormalInfo, type, edit }) {
 
-  const fetcher =useFetcher();
+  const fetcher = useFetcher();
   const { func, header, body, footer } = description(type, fetcher);
   const [show, setShow] = useState(false);
   const handleModalShow = () => setShow(v => !v);
-  const resetButton = ()=>{
+  const resetButton = () => {
     handleModalShow();
     return setNormalInfo();
-    
+
   }
   return (
     <>
       <Button variant="light" className='fw-bold' type='reset'
-        onClick={handleModalShow}>
+        onClick={handleModalShow}
+        disabled={!edit}
+      >
         {func}
       </Button>
       <Modal show={show} onHide={handleModalShow} animation={false} centered className='text-center'>
@@ -29,7 +31,7 @@ function ResetInfo({ setNormalInfo, type }) {
           <Button variant="secondary" onClick={handleModalShow}>
             取消
           </Button>
-          <Button variant="danger" type="reset" onClick={resetButton}>
+          <Button variant="danger" onClick={resetButton}>
             {footer}
           </Button>
         </Modal.Footer>
@@ -48,7 +50,7 @@ function description(type, fetcher) {
           <fetcher.Form className={style.normalInfo}>
             <div className="vstack gap-2">
               <p>
-                舊密碼:
+                <h5 className='d-inline fw-bold me-2'>舊密碼:</h5>
                 <input type="password" name="oldPassword"
                   className="w-50"
                   required
@@ -57,8 +59,9 @@ function description(type, fetcher) {
                   placeholder='password' />
               </p>
               <p>
-                新密碼:
-                <input  type="password" name="newPassword"
+                <h5 className='d-inline fw-bold me-2'>新密碼:</h5>
+
+                <input type="password" name="newPassword"
                   className="w-50"
                   required
                   minLength="0"
@@ -66,7 +69,7 @@ function description(type, fetcher) {
                   placeholder='password' />
               </p>
             </div>
-          
+
           </fetcher.Form>
         </>,
         footer: "確定"
@@ -78,7 +81,14 @@ function description(type, fetcher) {
         body: <>你的任何變更都將遺失<sub>。</sub></>,
         footer: "重設變更"
       }
+    case 'submit':
+      return {
+        func: "保存",
+        header: "確定保存當前變更?",
+        body: <>你的保存<sub>。</sub></>,
+        footer: "重設保存"
+      }
   }
 }
 
-export default memo(ResetInfo);
+export default memo(EditModal);

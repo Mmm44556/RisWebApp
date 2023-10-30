@@ -1,12 +1,13 @@
 import { Fragment } from 'react';
 
-
-function InputComponent(key, v) {
+const regex = /^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/;
+function InputComponent(key, v, edit) {
 
   const editToKeys = {
-
     user_name: <>
       <input defaultValue={v}
+        data-edit={edit}
+        readOnly={!edit}
         name="name"
         type="text"
         pattern="[\u4e00-\u9fa5aA-z_a-z_0-9]{1,40}"
@@ -16,21 +17,24 @@ function InputComponent(key, v) {
         minLength="1" /><p /></>,
     user_mail: <>
       <input defaultValue={v}
+        data-edit={edit}
+        readOnly={!edit}
         required
         maxLength="40"
-        pattern="/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/"
+        pattern={regex}
         type="email"
         name="mail" /><p /></>,
     user_sex:
-      <select name="sex">
+      <select name="sex" data-edit={edit} disabled={!edit}>
         <option defaultValue={v}>{v}</option>
         <option defaultValue="Male">Male</option>
         <option defaultValue="Female">Female</option>
         <option defaultValue="Bisexual">Bisexual</option>
-        
       </select>,
     user_age: <>
       <input defaultValue={v}
+        data-edit={edit}
+        readOnly={!edit}
         name="age"
         type="number"
         required
@@ -39,6 +43,8 @@ function InputComponent(key, v) {
       /><p /></>,
     user_phone: <>
       <input defaultValue={v}
+        data-edit={edit}
+        readOnly={!edit}
         name="phone"
         type="tel"
         required
@@ -50,7 +56,7 @@ function InputComponent(key, v) {
   return editToKeys[key]
 }
 const userToKeys = {
-  normalInfo: (param) => {
+  normalInfo: (param, edit) => {
     let userArr = [];
     param = new Map(Object.entries(param));
     param.delete("role_uid");
@@ -62,12 +68,12 @@ const userToKeys = {
       user_phone: '電話'
     };
     param.forEach((v, k) => {
-      if(k=='user_id'|| k=='user_password') return;
+      if (k == 'user_id' || k == 'user_password') return;
       userArr.push(<Fragment key={k}>
         <tr >
           <td className='p-3 fs-5'>{key[k]}</td>
           <td className='p-3' >
-            {InputComponent(k, v)}
+            {InputComponent(k, v, edit)}
           </td>
         </tr>
       </Fragment>)

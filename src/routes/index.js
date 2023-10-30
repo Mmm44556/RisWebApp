@@ -39,12 +39,14 @@ const router = createBrowserRouter([
             action: async ({ request, params }) => {
               const form = await request.formData();
               const UpdatedUserInfo = new Map(form);
-              UpdatedUserInfo.set("id", params.id);
+              // UpdatedUserInfo.set("id", params.id);
               let UserInfoJson;
               UpdatedUserInfo.forEach((v, key, map) => {
                 v.trim();
                 UserInfoJson = Object.fromEntries(map);
               })
+              console.log(UserInfoJson)
+              // console.log('!!!',UserInfoJson);
               // let res = await fetch(`${process.env.REACT_APP_DEV_BASE_URL}/user`, {
               //   method: 'PUT',
               //   body: JSON.stringify(UserInfoJson),
@@ -54,8 +56,11 @@ const router = createBrowserRouter([
               //     'Content-Type': 'application/json',
               //   },
               // })
-
+              
               return "noting"
+            },
+            shouldRevalidate(){
+              return false
             },
 
           },

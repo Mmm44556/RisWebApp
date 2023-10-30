@@ -1,26 +1,35 @@
-import { useReducer, useContext, memo, useState, useEffect } from "react";
+import { useReducer, useMemo, useState, useEffect } from "react";
 import { Col, Row, Container, Nav, Modal, Button, ThemeProvider } from "react-bootstrap";
 import Navigator from "../../layouts/Navigator";
 import { useLogin } from "../../store/userInI";
-import { LoginUserInfo } from "../../context";
 import { useLoaderData, Outlet, useNavigate, useLocation, useRouteLoaderData } from 'react-router-dom';
 import { GrSystem } from "react-icons/gr";
 import { MdDashboardCustomize, MdAccountBox, MdLogout, MdPeople, MdAnalytics } from "react-icons/md";
+import FetchPerformance from "../../layouts/FetchPerformance";
 import style from "../../scss/style.module.scss";
 
+function useInitialUserInfo() {
+  const userJson = useLoaderData();
+  const [initial, reducer] = useLogin(JSON.parse(userJson?.data));
+  const [userState, dispatch] = useReducer(reducer, initial);
+
+  return { userState, dispatch }
+}
 
 
 function DashBoard() {
-  const userJson = useLoaderData();
-  const [initial, reducers] = useLogin(JSON.parse(userJson?.data));
-  const [userState, dispatch] = useReducer(reducers, initial);
+  //用戶資料，存放至reducer、context作為全局狀態
+  const { userState, dispatch } = useInitialUserInfo();
+  //系統提示Toast
+  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "" });
+  const [showToast, setShowToast] = useState(false);
+  const toggleShow = () => setShowToast(!showToast);
   const navigator = useNavigate();
-  const z = useRouteLoaderData("auth");
-  // console.log(z)
+  // const z = useRouteLoaderData("auth");
+
   useEffect(() => {
     navigator('dataList', { replace: true });
   }, [])
-
   return (
     <>
 
@@ -29,17 +38,17 @@ function DashBoard() {
         <Container fluid>
           <Row>
             <Col className={style.leftBreakpoint} xl={2} >
-
               {/* 功能表 */}
               <DashList userState={userState} />
             </Col>
             <Col xl={10} className={style.rightBreakpoint} >
               <Col   >
                 <Navigator />
+                <FetchPerformance showToast={showToast} createDetail={ToastDetail} toggleShow={toggleShow} />
               </Col>
               <Col >
                 {/* DashBoard內部路由組件 */}
-                <Outlet context={[userState, dispatch]} />
+                <Outlet context={[userState, dispatch, setToastDetail, setShowToast]} />
               </Col>
             </Col>
           </Row>
