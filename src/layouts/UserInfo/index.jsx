@@ -1,30 +1,16 @@
-import { memo, useState, useMemo, useCallback, useEffect } from 'react'
-import { Table, Modal } from 'react-bootstrap';
-import { useFetcher, useLocation, Form } from 'react-router-dom';
+import { memo, useState, useCallback, useEffect,lazy } from 'react'
+import { Table } from 'react-bootstrap';
+import { useFetcher, useLocation } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
-import EditModal from './EditModal';
-import { userToKeys } from './userToKey';
+import { userToKeys, fetcherState } from './userToKey';
 import { useInfoValidation } from '../../hooks/userInfoValidation';
 import style from '../scss/styles.module.scss';
 const fontStyle = 'fw-bold';
+const EditModal = lazy(() => import('./EditModal'));
 
-const fetcherState = {
-  idle: false,
-  submitting: true,
-  loading: true,
-
-}
-
-const transformToString = (key, value) => {
-  //將value不是字符串的都轉成string類型
-  if (key === 'role_uid' || key === 'user_age' || key === 'user_id' || key === 'user_phone') {
-    return String(value);
-  }
-  return value;
-};
 
 //表單提交
-const useSubmitValidation = (fetcher, dispatch, normalInfo, setEdit, setToastDetail, setShowToast) => {
+const useSubmitValidation = (fetcher, dispatch, normalInfo, setEdit, setToastDetail, setShowToast, showToast) => {
   const location = useLocation();
 
   useEffect(() => {
@@ -38,12 +24,10 @@ const useSubmitValidation = (fetcher, dispatch, normalInfo, setEdit, setToastDet
     return setEdit(v => {
       if (v) {
         dispatch({ type: "normalInfo", data: normalInfo });
-        fetcher.submit(normalInfo,{
-          method:"PUT",
+        fetcher.submit(normalInfo, {
+          method: "PUT",
           action: location.pathname
         });
-       
-        
         setToastDetail({ detail: '儲存成功', theme: 'Success', spinner: fetcherState[fetcher.state], timeStamp: new Date().toLocaleTimeString() });
       }
       setShowToast(v);
@@ -53,9 +37,9 @@ const useSubmitValidation = (fetcher, dispatch, normalInfo, setEdit, setToastDet
   return { editButton }
 }
 
-function UserInfo({ userState, dispatch, setToastDetail, setShowToast }) {
+function UserInfo({ userState, dispatch, setToastDetail, setShowToast, showToast }) {
   const fetcher = useFetcher();
-
+  //編輯用戶資料的狀態
   const [normalInfo, setNormalInfo] = useState({ ...userState.normalInfo });
   const [edit, setEdit] = useState(false);
 
@@ -71,7 +55,7 @@ function UserInfo({ userState, dispatch, setToastDetail, setShowToast }) {
         <tr>
           <td className='position-relative'>
             <h4 className={fontStyle}>用戶資訊</h4>
-            <UserFormData fetch={{ normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher }} />
+            <UserFormData fetch={{ normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher, dispatch, userState, setToastDetail, setShowToast, showToast }} />
           </td>
         </tr>
         <tr>
@@ -95,7 +79,7 @@ function UserInfo({ userState, dispatch, setToastDetail, setShowToast }) {
   )
 }
 
-function UserFormData({ fetch: { normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher } }) {
+function UserFormData({ fetch: { normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher, dispatch, userState, setToastDetail, setShowToast, showToast } }) {
 
 
   return (
@@ -108,15 +92,23 @@ function UserFormData({ fetch: { normalInfo, setNormalInfo, setNormalInfoCallBac
           userToKeys.normalInfo(normalInfo, edit) : '尚無資料'}
         <div className="hstack gap-3 position-absolute end-0 top-0 mt-2 me-2">
           <EditModal
-            setNormalInfo={()=>console.log('@')}
             edit={edit}
-            type={'resetPassword'} />
+            type={'submit'}
+            dispatch={dispatch}
+            userState={userState}
+            setToastDetail={setToastDetail}
+            setShowToast={setShowToast}
+            showToast={showToast}
+            fetcher={fetcher}
+          />
           <EditModal
             setNormalInfo={setNormalInfoCallBack}
             type={'reset'}
             edit={edit}
-            />
-          <Button variant="light" className='fw-bold' type={edit ? 'button' : 'button'}
+            setToastDetail={setToastDetail}
+            setShowToast={setShowToast}
+          />
+          <Button variant="light" className='fw-bold' type='button'
             onClick={editButton}
           >
             {edit ? '儲存' : '編輯'}

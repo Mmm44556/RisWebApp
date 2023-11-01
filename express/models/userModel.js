@@ -62,7 +62,7 @@ class usersModel {
 
   }
 
-  setSession(userInfo, sessionID, formattedDateTime) {
+  setSession(userInfo, sessionID, formattedDateTime = "") {
     //更新用戶sessionID
     conn.query(`UPDATE sessions SET sid='${sessionID}',data='${JSON.stringify(userInfo)}',created_at='${formattedDateTime}' WHERE user_id=?`, [`${userInfo.user_id}`])
   }
@@ -72,7 +72,7 @@ class usersModel {
     return new Promise((resolve, reject) => {
       conn.query(`SELECT data FROM sessions WHERE sid='${sid}'`, (err, row) => {
         if (!row.length) {
-          this.user = { state: '403', msg: 'user not found' }
+          this.user = { state: 403, msg: 'user not found' }
           reject(this.user)
           return
         }
@@ -83,6 +83,36 @@ class usersModel {
       })
     })
 
+  }
+  queryHandler(body) {
+    //將請求體自動化成sql參數
+    const bodyEntries = new Map(Object.entries(body));
+    const arr = [];
+    const arrParams = [];
+    bodyEntries.forEach((value, key, map) => {
+      if (key == 'user_id' || key == 'role_uid') return;
+      arr.push(`${key}=?`);
+      arrParams.push(value);
+    })
+    const bodyQuery = arr.toString();
+    return [bodyQuery, arrParams];
+
+  }
+  updateUser(body) {
+    const { user_id } = body;
+    //自動化參數
+    const [bodyQuery, arrParams] = this.queryHandler(body);
+    return new Promise((resolve, reject) => {
+      conn.query(`UPDATE user set ${bodyQuery} where user_id=?`, [...arrParams, user_id], (err, row) => {
+        if (err) {
+          this.user = { state: 409, msg: '更新失敗' }
+          reject(this.user)
+        }
+
+        this.user = { state: 200, msg: 'success' }
+        resolve(this.user);
+      })
+    })
   }
 
 }

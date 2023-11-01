@@ -1,4 +1,4 @@
-
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import DashBoard from "../components/DashBoard";
@@ -9,7 +9,6 @@ import DataList from "../pages/DataList";
 import Profile from "../pages/Profile";
 import { sessionCheck, sessionCheck2 } from "./js/sessionPrefetch";
 import { loginAction, registerAction } from "./js/actions";
-
 
 const router = createBrowserRouter([
   {
@@ -43,19 +42,21 @@ const router = createBrowserRouter([
               let UserInfoJson;
               UpdatedUserInfo.forEach((v, key, map) => {
                 v.trim();
-                UserInfoJson = Object.fromEntries(map);
+                if (key == 'user_password') map.set(key, btoa(v));
               })
-              console.log(UserInfoJson)
-              // console.log('!!!',UserInfoJson);
-              // let res = await fetch(`${process.env.REACT_APP_DEV_BASE_URL}/user`, {
-              //   method: 'PUT',
-              //   body: JSON.stringify(UserInfoJson),
-              //   credentials: 'include',
-              //   mode: 'cors',
-              //   headers: {
-              //     'Content-Type': 'application/json',
-              //   },
-              // })
+              UserInfoJson = Object.fromEntries(UpdatedUserInfo);
+              console.log(UserInfoJson, "profile", request)
+              console.log('!!!',UserInfoJson);
+              let res = await fetch(`${process.env.REACT_APP_DEV_BASE_URL}/user`, {
+                method: request.method,
+                body: JSON.stringify(UserInfoJson),
+                credentials: 'include',
+                mode: 'cors',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              })
+              console.log(await res.json());
               
               return "noting"
             },

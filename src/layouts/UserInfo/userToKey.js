@@ -1,6 +1,14 @@
 import { Fragment } from 'react';
 
 const regex = /^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/;
+
+const fetcherState = {
+  idle: false,
+  submitting: true,
+  loading: true,
+
+}
+
 function InputComponent(key, v, edit) {
 
   const editToKeys = {
@@ -67,8 +75,9 @@ const userToKeys = {
       user_age: '年齡',
       user_phone: '電話'
     };
+    const keys = ['user_id', 'user_password', 'user_oldPassword', 'user_newPassword'];
     param.forEach((v, k) => {
-      if (k == 'user_id' || k == 'user_password') return;
+      if (keys.includes(k)) return;
       userArr.push(<Fragment key={k}>
         <tr >
           <td className='p-3 fs-5'>{key[k]}</td>
@@ -118,4 +127,4 @@ const userToKeys = {
 
 
 
-export { userToKeys }
+export { userToKeys, fetcherState }

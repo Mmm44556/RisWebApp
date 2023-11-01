@@ -1,27 +1,51 @@
-import { useState, memo } from 'react';
+import { useState, memo, useRef,useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { useFetcher } from 'react-router-dom';
+import {  useLocation } from 'react-router-dom';
+import { fetcherState } from '../userToKey';
 import style from '../../scss/styles.module.scss'
-function EditModal({ setNormalInfo, type, edit }) {
-
-  const fetcher = useFetcher();
-  const { func, header, body, footer } = description(type, fetcher);
+function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, setShowToast, setToastDetail, showToast }) {
+  const location = useLocation();
+  const formRef = useRef();
+  const [hasLength, setHasLength] = useState(false);
+  const { func, header, body, footer } = description(type, formRef, fetcher, setHasLength);
   const [show, setShow] = useState(false);
+
   const handleModalShow = () => setShow(v => !v);
   const resetButton = () => {
     handleModalShow();
+    setShowToast(v => !v);
+    setToastDetail({ detail: '重置成功!', theme: 'Warning', spinner:"", timeStamp: new Date().toLocaleTimeString() })
     return setNormalInfo();
 
   }
+
+
   return (
     <>
-      <Button variant="light" className='fw-bold' type='reset'
+      <Button variant="light" className='fw-bold'
+       type={type=="submit"?'button':'reset'}
         onClick={handleModalShow}
         disabled={!edit}
       >
         {func}
       </Button>
-      <Modal show={show} onHide={handleModalShow} animation={false} centered className='text-center'>
+      <Modal show={show}
+       onHide={handleModalShow} 
+       animation={false} centered
+        className='text-center'
+        onShow={type=='reset'?() => null:()=>{
+          Object.values(formRef.current).forEach(v=>{
+            if (v.localName=='input'){ //判斷是否是Input標籤
+              if(v.value.length==0){
+                setHasLength(true)
+                return
+              }
+            }else{
+              return;
+            };
+          })
+        }}
+        >
         <Modal.Header
           className='border border-0 justify-content-center '>
           <Modal.Title className='fw-bold' >{header}</Modal.Title>
@@ -31,47 +55,82 @@ function EditModal({ setNormalInfo, type, edit }) {
           <Button variant="secondary" onClick={handleModalShow}>
             取消
           </Button>
-          <Button variant="danger" onClick={resetButton}>
+          <Button variant="danger" onClick={type == 'reset' ? resetButton : (() => {
+            // console.log(formRef.current, userState.normalInfo)
+
+            if (formRef.current[0].value == userState.normalInfo['user_password']) {
+  
+              fetcher.submit({ user_password: formRef.current[1].value,user_id:userState.normalInfo['user_id'] }, {
+                action: location.pathname,
+                method: 'PATCH'
+              })
+              console.log(fetcher.data)
+              dispatch({ type: 'normalInfo', data: { ...userState.normalInfo, user_password: formRef.current[1].value }})
+              setShowToast(true);
+              setToastDetail({ detail: '修改成功!', theme: 'success', spinner: fetcherState[fetcher.state], timeStamp: new Date().toLocaleTimeString() })
+              return
+            }
+
+            setShowToast(v => !v);
+            setToastDetail({ detail: '密碼錯誤!', theme: 'danger', spinner: "", timeStamp: new Date().toLocaleTimeString() })
+
+
+          })}
+            type={type}
+            disabled={showToast || hasLength}
+          >
             {footer}
           </Button>
+
         </Modal.Footer>
       </Modal>
+
     </>
   )
 
 }
-function description(type, fetcher) {
+function description(type, formRef, fetcher, setHasLength) {
+  
   switch (type) {
-    case 'resetPassword':
+    case 'submit':
+      //如果輸入長度為0關閉確認按鈕
+      const enabledConfirmButton = () => {
+        if (formRef.current[0].value.length !== 0 && formRef.current[1].value.length !== 0 ) {
+          setHasLength(false)
+        } else {
+          setHasLength(true)
+        }
+      }
       return {
         func: "重設密碼",
         header: "確定修改密碼?",
-        body: <>
-          <fetcher.Form className={style.normalInfo}>
-            <div className="vstack gap-2">
-              <p>
-                <h5 className='d-inline fw-bold me-2'>舊密碼:</h5>
-                <input type="password" name="oldPassword"
-                  className="w-50"
-                  required
-                  minLength="0"
-                  maxLength="12"
-                  placeholder='password' />
-              </p>
-              <p>
-                <h5 className='d-inline fw-bold me-2'>新密碼:</h5>
+        body: <fetcher.Form
+          ref={formRef}
+          onInput={enabledConfirmButton}
+        >
+          <div
+            className={`${style.normalInfo} vstack gap-2`}>
+            <p>
+              <h5 className='d-inline fw-bold me-2'>舊密碼:</h5>
+              <input type="password" name="oldPassword"
+                className="w-50"
+                required
+                minLength="0"
+                maxLength="12"
+                placeholder='password' />
+            </p>
+            <p>
+              <h5 className='d-inline fw-bold me-2'>新密碼:</h5>
 
-                <input type="password" name="newPassword"
-                  className="w-50"
-                  required
-                  minLength="0"
-                  maxLength="12"
-                  placeholder='password' />
-              </p>
-            </div>
-
-          </fetcher.Form>
-        </>,
+              <input type="password" name="newPassword"
+                className="w-50"
+                required
+                minLength="0"
+                maxLength="12"
+                placeholder='password' />
+            </p>
+          </div>
+        </fetcher.Form>,
         footer: "確定"
       }
     case 'reset':

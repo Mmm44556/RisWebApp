@@ -49,3 +49,19 @@ exports.register = async (req, res) => {
     return
   }
 }
+
+exports.user = async (req, res) => {
+
+  try {
+    const userState = await userModel.updateUser(req.body);
+    const sessionData = await userModel.getSession(req.session.sessionID);
+    const updatedSessionData = { ...JSON.parse(sessionData.data), ...req.body };
+    userModel.setSession(updatedSessionData, req.sessionID);
+    res.status(userState.state).send(userState);
+  } catch (error) {
+    console.log(error)
+  }
+
+
+
+}

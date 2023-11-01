@@ -3,12 +3,14 @@ import Toast from 'react-bootstrap/Toast';
 import Spinner from 'react-bootstrap/Spinner';
 import { AiOutlineCheck } from "react-icons/ai";
 import style from '../scss/styles.module.scss';
+
+
 const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
   const [fadeOut, setFadeOut] = useState(style.toast);
   //設定fadeOut
   useEffect(() => {
-    const classTimer = setTimeout(() => setFadeOut(style.fadeOut), 1500);
-
+    const classTimer = setTimeout(() => setFadeOut(style.fadeOut), 1000);
+    
     return () => {
       clearTimeout(classTimer);
       setFadeOut(style.toast);
@@ -21,6 +23,10 @@ const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
       onMouseEnter={() => setFadeOut(style.toast)}
       onMouseLeave={() => setFadeOut(style.fadeOut)}
       show={showToast}
+      onAnimationEnd={()=>{
+
+        toggleShow();
+      }}
       onClose={toggleShow}
       bg={createDetail.theme.toLowerCase()}
       className={`${fadeOut}`}>

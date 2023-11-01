@@ -48,7 +48,7 @@ function DashBoard() {
               </Col>
               <Col >
                 {/* DashBoard內部路由組件 */}
-                <Outlet context={[userState, dispatch, setToastDetail, setShowToast]} />
+                <Outlet context={[userState, dispatch, setToastDetail, setShowToast, showToast]} />
               </Col>
             </Col>
           </Row>

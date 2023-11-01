@@ -8,6 +8,7 @@ const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
 const LoginRoutes = require('./routes/login');
 const RegisterRoutes = require('./routes/register');
+const userRoutes = require('./routes/users');
 
 app.use(cors({
   origin: 'http://localhost:3000',
@@ -34,7 +35,7 @@ app.use(session({
   resave: true,
 }))
 
-// app.use('/users', require('./routes/users'));
+app.use('/user', userRoutes);
 app.use('/login', LoginRoutes);
 app.use('/register', RegisterRoutes);
 
