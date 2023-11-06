@@ -1,0 +1,17 @@
+.navigator_tabs {
+  font-size: 1.5rem;
+
+  svg {
+    font-size: 1.25rem;
+  }
+}
+
+.navigator_badge {
+  display: inline-block;
+  position: absolute;
+  background-color: #3ad29f;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 25%;
+}
