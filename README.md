@@ -20,8 +20,9 @@
 <BR>
 
 |系統架構圖|
-|--|
-|![]((/aseets/architecture.png "plain text")|
+|:-------------------------------------:|
+| ![](/aseets/architecture.png "architecture text") |
+
 
 ### 2.系統角色說明(Role):<BR>
 
