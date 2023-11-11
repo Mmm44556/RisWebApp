@@ -6,10 +6,10 @@ const port = 3301;
 const session = require('express-session');
 const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
-const LoginRoutes = require('./routes/login');
-const RegisterRoutes = require('./routes/register');
+// const LoginRoutes = require('./routes/login');
+// const RegisterRoutes = require('./routes/register');
 const userRoutes = require('./routes/users');
-
+const path = require('path')
 app.use(cors({
   origin: 'http://localhost:5173',
   allowedHeaders: 'Content-Type, Authorization',
@@ -30,14 +30,14 @@ app.use(session({
   store: new FileStore,
   secret: 'mySecret',
   name: 'sid',
-  cookie: { maxAge: 60 * 60 * 1000, httpOnly: true },
+  cookie: { maxAge: 60 * 60 * 1000 * 2, httpOnly: true },
   saveUninitialized: false,
   resave: true,
 }))
-
-app.use('/user', userRoutes);
-app.use('/login', LoginRoutes);
-app.use('/register', RegisterRoutes);
+app.use('/index.html', express.static(path.join(__dirname, '/index.html')))
+app.use('/login', userRoutes);
+// app.use('/login', LoginRoutes);
+// app.use('/register', RegisterRoutes);
 
 // app.post('/users', (req, res, next) => {
 
@@ -60,7 +60,7 @@ app.use('/logout', (req, res) => {
   })
 })
 app.get('/login1', (req, res) => {
-  req.session.s = req.sessionID;
+  // req.session.s = req.sessionID;
   res.cookie('key', 'v', { httpOnly: false })
   res.send('123');
 })
@@ -73,6 +73,7 @@ app.get('/login1', (req, res) => {
 
 //404 處理
 app.use((req, res) => {
+
   res.status(404).send('404 Not Found!');
 })
 app.listen(port, () => {
