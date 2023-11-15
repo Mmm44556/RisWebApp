@@ -5,7 +5,6 @@ import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye, AiFillMedicineBox } from "react-icons/ai";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import style from "../../assets/scss/style.module.scss";
-import Table from 'react-bootstrap/Table';
 import AuthCheck from '../AuthCheck';
 
 function Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus) {

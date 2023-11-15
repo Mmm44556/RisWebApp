@@ -16,7 +16,7 @@
  * @property {number} total_page
  * @property {array} data
  */
-class documentHandler {
+class FileHandler {
   /**
    * @function 獲取檔案資料，依據查詢物件返回結果
    * @param {Query} query 
@@ -41,7 +41,7 @@ class documentHandler {
 
 
 
-class DocumentManager extends documentHandler {
+class FileManager extends FileHandler {
 
   constructor() {
     super()

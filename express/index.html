@@ -24,28 +24,28 @@
   <div id="cube"></div>
 
   <script>
-    const btn = document.getElementById('test');
-    btn.addEventListener('click', async (e) => {
-      const data = await fetch('http://localhost:3301/user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          name: 'admin001',
-          password: btoa('12345')
-        })
-      })
-      const cube = document.getElementById('cube');
-      const json = await data.json();
-      console.log(json)
-      const entries = Object.entries(json.data);
+    // const btn = document.getElementById('test');
+    // btn.addEventListener('click', async (e) => {
+    //   const data = await fetch('http://localhost:3301/user', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'Accept': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //       name: 'admin001',
+    //       password: btoa('12345')
+    //     })
+    //   })
+    //   const cube = document.getElementById('cube');
+    //   const json = await data.json();
+    //   console.log(json)
+    //   const entries = Object.entries(json.data);
 
-      cube.innerHTML = entries.map((v, k) => {
-        return `${v[0]}:${v[1]}</br>`
-      })
-    })
+    //   cube.innerHTML = entries.map((v, k) => {
+    //     return `${v[0]}:${v[1]}</br>`
+    //   })
+    // })
 
     // const style = window.getComputedStyle(cube)
 
@@ -78,24 +78,15 @@
     // }
 
 
-    // function Person(params) {
-    //   this.name = params;
-
-    //   function hi() {
-    //     console.log('@@')
-
-    //   }
-    // }
-    // function Child(args, args2) {
-    //   this.arg2 = args2
-    //   this.age = 200;
-    // Person.call(this, args)
-    // }
-    // Child.__proto__ =Person
-    // Child.prototype.constructor = Child;
-    // const obj = new Child()
-    // console.log(obj)
-    // console.dir('age' in obj)
+    function Parent(...arg) {
+      const p = 'ppp'
+      
+     return function child(params) {
+        const c ='ccc' ;
+        return p
+      }
+    }
+   console.dir(Parent())
   </script>
 
 </body>

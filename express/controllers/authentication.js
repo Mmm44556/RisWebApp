@@ -1,7 +1,8 @@
 /**
  * @File 引入格式化函數
+ * 
  */
-const { formatDateTime, encodeJson } = require('../utils/formatting');
+const { encodeJson } = require('../utils/formatting');
 
 
 /**
@@ -12,10 +13,12 @@ const { formatDateTime, encodeJson } = require('../utils/formatting');
  */
 
 
-// ----用戶請求模塊---- //
-class UserController {
-  constructor(userService) {
-    this._userService = userService;
+/**
+ *  處理驗證請求Controller
+ */
+class AuthenticationController {
+  constructor(authenticationService) {
+    this.authenticationService = authenticationService;
   }
 
   /**
@@ -23,50 +26,65 @@ class UserController {
     * @return {Promise.<object>} 
     */
   login = async (req, res) => {
-    res.header('Cache-Control', 'no-store');
-    res.header('Content-Type', 'application/json');
     const { session, sessionID } = req;
     const { name, password } = req.body;
     /**
      * @type {QueryResult}
      */
-    const result = await this._userService.login({ name, password, session, sessionID });
+
+    const result = await this.authenticationService.login({ name, password, session, sessionID });
 
     let encodeStr = encodeJson(result);
+
     res.status(result.status).send(encodeStr);
   }
 
   /**
-   * 
-   * @param {object} req 
-   * @param {object} res 
-   * @returns {Promise}
+   * 用戶註冊服務
+   * @returns {Promise.<object>}
    */
-  async register(req, res) {
-    // 從 req 取得輸入
-    // 呼叫 UserService 建立使用者 
-    // 將結果回傳至 resp
+  register = async (req, res) => {
+    const result = await this.authenticationService.register(req.body);
+    res.status(result.status).send(result.msg);
   }
+
+  /**
+ * 判斷sessionID是否存在，查詢ID返回用戶資料
+ * @return {Promise.<object>} 
+ */
+authentication=async(req,res)=>{
+  const user =req.user;
+  const sessionData = req.sessionData;
+  //把用戶資料進行轉碼
+  let encodeStr = encodeJson(user);
+  console.log(sessionData)
+  res.status(sessionData.status).send(encodeStr);
+
+}
 
 
   /**
-   * 判斷sessionID是否存在，查詢ID返回用戶資料
+   * 查詢ID返回用戶資料
    * @return {Promise.<object>} 
    */
-  sessionChecker = async (req, res) => {
-    res.header('Cache-Control', 'no-store');
-    res.header('Content-Type', 'html/text');
+  sessionChecker = async (req, _, next) => {
 
     /**
      * @type {QueryResult}
      */
-    const sessionData = await this._userService.ValidateSessionID(req);
-    //把用戶資料進行轉碼
-    let encodeStr = encodeJson(sessionData);
-    res.status(sessionData.status).send(encodeStr);
+    const sessionData = await this.authenticationService.ValidateSessionID(req);
+    req.sessionData = sessionData;
+    req.user = sessionData.data;
+   
+    next();
+
   }
 
+
 }
+
+
+
 //用戶驗證系統
 // const sessionCheck = async (req, res, next) => {
 //   if (req.session.sessionID) {
@@ -84,8 +102,6 @@ class UserController {
 
 //   }
 //   res.redirect(401, 'http://localhost:3000/login')
-
-
 // }
 
 // const login = async (req, res) => {
@@ -135,4 +151,4 @@ class UserController {
 
 // }
 
-module.exports = UserController;
+module.exports = AuthenticationController;

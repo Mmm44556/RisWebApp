@@ -14,13 +14,15 @@
 
 /**
  * 用戶驗證服務模塊
- * 從資料存取層將資料過濾進行較驗，再傳回給業務層
+ * 從Controller獲取資料
+ * 從Modal將資料過濾進行較驗，再傳回Controller
  */
-class UserService {
+class AuthenticationService {
   #userRepository;
   constructor(UserRepository) {
     this.#userRepository = UserRepository;
   }
+
 
   /**
 * 登入驗證
@@ -33,7 +35,7 @@ class UserService {
       /**
        * @type {object} 用戶詳細資料
        */
-      const user = await this.#userRepository.getUser(name, session, sessionID);
+      const user = await this.#userRepository.getUser(name, sessionID);
       const result = new ErrorBoundary({ user, password });
       const loginResult = result.loginResult();
       //有返回用戶資料後設置SessionID、用戶資料
@@ -48,10 +50,33 @@ class UserService {
     }
   }
 
+
   /**
-   * 驗證用戶已有的sessionID是否有資料再進行回傳
-   * @returns {Promise.<object>}
-   */
+* 註冊驗證
+* @param {UserData} userData 表單提交的註冊資料
+* @return {Promise.<object>}  返回註冊結果，返回userModal查找是否已存在用戶的結果
+*/
+  register = async (userData) => {
+
+    try {
+      const result = await this.#userRepository.createUser(userData);
+      if (result) {
+        return { status: 200, msg: 'success' };
+      }
+
+    } catch (error) {
+      let registerResult = new ErrorBoundary(error);
+      return registerResult.registerResult();
+    }
+  }
+
+
+
+  /**
+   * middleware 
+ * 驗證用戶已有的sessionID是否有資料再進行回傳
+ * @returns {Promise.<object>}
+ */
   ValidateSessionID = async (req) => {
 
     try {
@@ -62,33 +87,23 @@ class UserService {
         if (UserSessionData.length === 0) {
           return { status: 204, data: UserSessionData };
         }
+        // console.log(UserSessionData, '@@@@@')
         return { status: 200, data: JSON.parse(UserSessionData) };
+      } else {
+        return { status: 204, data: [] }
       }
     } catch (error) {
-
       return { status: 204, msg: 'User Not Found', data: error };
     }
-
   }
 
-  /**
-* 註冊驗證
-* @param {UserData} userData 表單提交的註冊資料
-* @return {Promise.<object>}  返回註冊結果，返回userModal查找是否已存在用戶的結果
-*/
-  async register(userData) {
-    try {
-      const result = this.#userRepository.createUser(userData);
-      if (result) {
-        return { state: 200, msg: 'success' };
-      }
 
-    } catch (result) {
-      const error = new ErrorBoundary(result);
-      return error.registerResult();
-    }
-  }
+
 }
+
+
+
+
 
 /**
 * 錯誤處理，處理Login、Register傳遞過來的查找結果進行錯誤判斷
@@ -136,17 +151,17 @@ class ErrorBoundary {
   * @returns {object} 返回結果物件
   */
   registerResult() {
-    const { err } = this.result;
+    const err = this.result;
     if (/name/i.test(err.sqlMessage)) {
-      return { state: 409, msg: '名稱已被註冊過' };
+      return { status: 403, msg: '名稱已被註冊過' };
     } else if (/mail/i.test(err.sqlMessage)) {
-      return { state: 409, msg: '信箱已被註冊過' };
+      return { status: 403, msg: '信箱已被註冊過' };
     } else if (/phone/i.test(err.sqlMessage)) {
-      return { state: 409, msg: '電話已被註冊過' };
+      return { status: 403, msg: '電話已被註冊過' };
     }
 
   }
 
 
 }
-module.exports = UserService;
+module.exports = AuthenticationService;
