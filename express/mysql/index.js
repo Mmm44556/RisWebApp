@@ -1,8 +1,9 @@
 const mysql = require('mysql');
 
 
-const conn = mysql.createConnection(
+const conn = mysql.createPool(
   {
+    connectionLimit :10,
     user: 'root',
     password: '',
     host: 'localhost',
@@ -11,15 +12,4 @@ const conn = mysql.createConnection(
   }
 )
 
-/**
- * 創建資料庫實例
- */
-class MySQLConnection {
-  constructor(db) {
-    this.conn = db;
-  }
-}
-const dbConn = new MySQLConnection(conn);
-
-
-module.exports = dbConn ;
+module.exports = conn;

@@ -8,7 +8,8 @@ const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
 // const LoginRoutes = require('./routes/login');
 // const RegisterRoutes = require('./routes/register');
-const userRoutes = require('./routes/users');
+const authenticationRoutes = require('./routes/authentication');
+const employeesRoutes = require('./routes/employees');
 const path = require('path')
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -17,6 +18,13 @@ app.use(cors({
 
 }));
 app.use(express.json());
+app.use((req, res, next) => {
+  req.setTimeout(10000, () => {
+    console.log('timeout');
+    res.status(408).send('nope')
+  })
+  next();
+})
 // app.use((req,res,next)=>{
 //   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
 //   res.header('Access-Control-Allow-Credentials', 'true');
@@ -35,9 +43,9 @@ app.use(session({
   resave: true,
 }))
 app.use('/index.html', express.static(path.join(__dirname, '/index.html')))
-app.use('/login', userRoutes);
-// app.use('/login', LoginRoutes);
-// app.use('/register', RegisterRoutes);
+app.use('/', authenticationRoutes);
+app.use('/', employeesRoutes);
+
 
 // app.post('/users', (req, res, next) => {
 
