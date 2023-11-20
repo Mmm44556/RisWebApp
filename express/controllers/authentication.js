@@ -57,7 +57,6 @@ authentication=async(req,res)=>{
   const sessionData = req.sessionData;
   //把用戶資料進行轉碼
   let encodeStr = encodeJson(user);
-  console.log(sessionData)
   res.status(sessionData.status).send(encodeStr);
 
 }
