@@ -32,6 +32,7 @@ class IUserRepository {
   connectDB() {
     return this.conn = dbConn;
   }
+
   /**
    * 獲取用戶資料
    * @param {string} username 
@@ -56,7 +57,7 @@ class IUserRepository {
  * @param {string} sessionID 用戶sessionID
  * @returns {Promise.<object>} 更新結果物件
  */
-  async updateUser(userInfo, sessionID){
+  async edit(userInfo, sessionID) {
   }
 
   /**
@@ -64,9 +65,22 @@ class IUserRepository {
  * @param {string} sid 用戶sessionID 
  * @returns {Promise.<object>} 用戶詳細物件
  */
-  async getSessionData(sid){
+  async getSessionData(sid) {
 
   }
+
+  /**
+   * 分頁查詢
+   * @param {number} page 查詢頁數
+   * @param {number} per_page 每頁數量
+   */
+  async browse(page, per_page) {
+
+  }
+  async update() {
+
+  }
+
 }
 
 
@@ -81,12 +95,26 @@ class UserRepository extends IUserRepository {
     this.connectDB();
   }
 
-  /**
-   * 登入服務
-   * @param {string} username 用戶名稱 
-   * @param {string} sessionID 用戶sessionID
-   * @return {Promise.<object>} 用戶物件資料
-   */
+  async browse(page, per_page) {
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(userQuery.broseUserData, [page, per_page], (err, row) => {
+          if (err) {
+            reject(err);
+            conn.release();
+            return
+          }
+          resolve(row);
+          conn.release();
+          return;
+
+        })
+      })
+    })
+  }
+
+
   getUser = async (username, sessionID) => {
     // 與資料庫交互取得使用者
     return new Promise((resolve, reject) => {
@@ -137,11 +165,11 @@ class UserRepository extends IUserRepository {
   }
 
 
-  updateUser = async (userInfo, updateUserData, sessionID) => {
+  edit = async (userInfo, updateUserData, sessionID) => {
     try {
       const userSession = new UserSession(this.conn);
       const result = await userSession.updateSession(userInfo);
-      
+
       userSession.setSession(updateUserData, sessionID);
       return result;
     } catch (error) {
@@ -149,7 +177,51 @@ class UserRepository extends IUserRepository {
     }
   }
 
+  read = async (user_id) => {
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(`select data from sessions where user_id=?`, [user_id], (err, row) => {
+          if (err) {
+            reject(err);
+            conn.release();
+            return;
+          }
 
+          resolve({ ...row[0] });
+          conn.release();
+          return;
+        })
+      })
+    })
+  }
+
+  update = async (userInfo, newUserInfo) => {
+    const { user_id, role_uid } = userInfo;
+    const role = {
+      1: 'editor',
+      2: 'visitor'
+    };
+
+    const { queryParams, queryProps } = queryHandler(userInfo);
+    // console.log(queryParams, queryProps)
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(`update user join sessions on user.user_id = sessions.user_id join role on user.user_id = role.user_id  set ${queryProps},sessions.data=?,role.role_uid=?,role.role_name=? where user.user_id=?`, [...queryParams, newUserInfo, role_uid, role[role_uid], user_id], (err, row) => {
+          if (err) {
+            console.log(err)
+            reject({ status: 409, msg: 'SQL error' });
+            conn.release();
+            return;
+          }
+          resolve({ status: 200, msg: 'success' });
+          conn.release();
+          return;
+        })
+      })
+    })
+  }
 
   getSessionData = async (sid) => {
     try {
@@ -261,17 +333,17 @@ class UserSession extends IUserSession {
         //保存用戶編輯
         const { user_id } = userInfo;
         //自動化參數
-        const { queryProps, queryParams } = this.queryHandler(userInfo);
+        const { queryProps, queryParams } = queryHandler(userInfo);
 
         conn.query(`UPDATE user set ${queryProps} where user_id=?`, [...queryParams, user_id], (err, row) => {
           if (err) {
-            reject({ status: 409, msg: 'Update error' });
+            reject({ status: 409, msg: ' error' });
 
             conn.release();
             return
           }
 
-          resolve({ status: 200, msg: 'Update success' });
+          resolve({ status: 200, msg: ' success' });
           conn.release();
         })
 
@@ -281,22 +353,22 @@ class UserSession extends IUserSession {
   }
 
 
-  queryHandler(body) {
-    //將請求體自動化成sql參數
-    const bodyEntries = new Map(Object.entries(body));
-    const arr = [];
-    const queryParams = [];
-    bodyEntries.forEach((value, key, map) => {
-      if (key == 'user_id' || key == 'role_uid') return;
-      arr.push(`${key}=?`);
-      queryParams.push(value);
-    })
-    const queryProps = arr.toString();
-    return { queryProps, queryParams };
 
-  }
 }
+function queryHandler(body) {
+  //將請求體自動化成sql參數
+  const bodyEntries = new Map(Object.entries(body));
+  const arr = [];
+  const queryParams = [];
+  bodyEntries.forEach((value, key, map) => {
+    if (key == 'user_id' || key == 'role_uid') return;
+    arr.push(`${key}=?`);
+    queryParams.push(value);
+  })
+  const queryProps = arr.toString();
+  return { queryProps, queryParams };
 
+}
 
 
 

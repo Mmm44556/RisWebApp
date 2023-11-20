@@ -87,7 +87,7 @@ class AuthenticationService {
         if (UserSessionData.length === 0) {
           return { status: 204, data: UserSessionData };
         }
-        // console.log(UserSessionData, '@@@@@')
+
         return { status: 200, data: JSON.parse(UserSessionData) };
       } else {
         return { status: 204, data: [] }

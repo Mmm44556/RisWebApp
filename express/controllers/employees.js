@@ -8,13 +8,29 @@ class EmployeeController {
 
   }
 
+  /**
+   * 
+   * 瀏覽系統內部所有用戶
+   */
   browse = async (req, res) => {
-    // const {}
-    console.log(req)
-    res.send('123')
+    const { query } = req;
+    const result = await this._userService.browse(query);
+
+    res.status(result.status).send(result)
   }
   read = async (req, res) => {
 
+  }
+
+  /**
+*修改用戶資料
+* @return {Promise.<object>} 
+*/
+  update = async (req, res) => {
+    const { body } = req;
+    const result =await this._userService.update(body);
+    console.log(result)
+    res.status(result.status).send(result.msg);
   }
 
   /**
@@ -24,7 +40,7 @@ class EmployeeController {
   edit = async (req, res) => {
     const { body, session, sessionID, user } = req;
 
-    const result = await this._userService.Update({ body, session, sessionID, user });
+    const result = await this._userService.edit({ body, session, sessionID, user });
     res.status(result.status).send(result.msg)
   }
 

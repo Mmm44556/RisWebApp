@@ -8,7 +8,6 @@ const EmployeeController = require('../controllers/employees');
 const AuthenticationService = require('../services/Authentication.js');
 const AuthenticationController = require('../controllers/authentication.js');
 
-const userRepository = new UserRepository();
 
 const authenticationService = new AuthenticationService(new UserRepository());
 const authenticationController = new AuthenticationController(authenticationService);
@@ -18,9 +17,15 @@ const employeeController = new EmployeeController(employeeService);
 /**
  * 用戶資料BREAD
  */
+router.use((req, res, next) => {
+  res.header('Content-Type', 'application/json');
+  res.header('Cache-Control', 'no-store');
+  next();
+});
 router.use(authenticationController.sessionChecker);
-router.get('employee/a?', employeeController.browse);
+router.get('/employee/search?', employeeController.browse);
 router.get('/employee/:id', employeeController.read);
+router.put('/employee/:id',employeeController.update);
 router.patch('/employee/:id', employeeController.edit);
 router.post('/employee/:id', employeeController.add);
 router.delete('/employee/id', employeeController.delete);
