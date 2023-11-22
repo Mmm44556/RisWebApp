@@ -8,7 +8,7 @@ const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
 // const LoginRoutes = require('./routes/login');
 // const RegisterRoutes = require('./routes/register');
-const authenticationRoutes = require('./routes/authentication');
+const authRouter= require('./routes/authentication');
 const employeesRoutes = require('./routes/employees');
 const path = require('path')
 app.use(cors({
@@ -42,8 +42,10 @@ app.use(session({
   saveUninitialized: false,
   resave: true,
 }))
-app.use('/index.html', express.static(path.join(__dirname, '/index.html')))
-app.use('/', authenticationRoutes);
+
+// app.use('/index.html', express.static(path.join(__dirname, '/index.html')))
+
+app.use('/', authRouter);
 app.use('/', employeesRoutes);
 
 

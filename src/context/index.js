@@ -1,5 +1,5 @@
 import React from "react";
 
 const IsUploadedFiles = React.createContext(null);
-
-export {  IsUploadedFiles }
+const themeContext =React.createContext('light');
+export { IsUploadedFiles, themeContext }

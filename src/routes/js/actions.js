@@ -15,7 +15,7 @@ async function loginAction({ request }) {
     submission[key] = value;
   })
 
-  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/login`, {
+  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/login`, {
     method: 'POST',
     body: JSON.stringify(submission),
     credentials: 'include',
@@ -24,15 +24,17 @@ async function loginAction({ request }) {
       'Content-Type': 'application/json',
     },
   })
+  
   if (res.status == '200') {
     return redirect('/DashBoard');
   }
-  const result = await res.json()
-  return result;
+  // const result = await res.json()
+  // return result;
 }
 
 
 async function saveUserInfoAction({ request, params }) {
+
   const form = await request.formData();
   const UpdatedUserInfo = new Map(form);
   let UserInfoJson;
@@ -41,18 +43,18 @@ async function saveUserInfoAction({ request, params }) {
     if (key == 'user_password') map.set(key, btoa(v));
   })
   UserInfoJson = Object.fromEntries(UpdatedUserInfo);
-  console.log(UserInfoJson, "profile", request);
-  console.log('!!!', UserInfoJson);
-  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/user`, {
+
+  
+  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${UserInfoJson.user_id}`, {
     method: request.method,
-    body: JSON.stringify(UserInfoJson),
     credentials: 'include',
+    body: JSON.stringify(UserInfoJson),
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json',
     },
   })
-  console.log(await res.json());
+  // console.log(await res.json());
 
   return "noting"
 }
@@ -83,10 +85,11 @@ async function registerAction({ request }) {
   if (submission.password !== submission.confirmPassword) {
     return { msg: '請確認密碼是否相同!', icon: 'password' }
   }
-
+const uuid = crypto.randomUUID();
   delete submission.password
+  submission.uuid = uuid;
   submission.confirmPassword = btoa(submission.confirmPassword)
-  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/register`, {
+  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/register`, {
     method: 'POST',
     body: JSON.stringify(submission),
     headers: {

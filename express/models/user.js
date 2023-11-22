@@ -77,10 +77,23 @@ class IUserRepository {
   async browse(page, per_page) {
 
   }
-  async update() {
+
+  /**
+   * 更新用戶所有資料
+   * @param {object} userInfo 
+   * @param {object} newUserInfo 用戶新資料
+   */
+  async update(userInfo, newUserInfo) {
 
   }
 
+  /**
+   * 清空用戶session資料
+   * @param {number} userID 
+   */
+  async deleteSessionData(userID){
+
+  }
 }
 
 
@@ -148,10 +161,11 @@ class UserRepository extends IUserRepository {
 
     return new Promise((resolve, reject) => {
 
-      const { name, department, age, confirmPassword, email, gender, phone } = userData;
+      const { name, department, age, confirmPassword, email, gender, phone, uuid } = userData;
+
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(userQuery.createUserData, [name, department, email, confirmPassword, phone, gender, age], (err) => {
+        conn.query(userQuery.createUserData, [name, department, email, confirmPassword, phone, gender, age, uuid], (err) => {
           if (err) {
             reject(err);
           } else {
@@ -168,8 +182,8 @@ class UserRepository extends IUserRepository {
   edit = async (userInfo, updateUserData, sessionID) => {
     try {
       const userSession = new UserSession(this.conn);
-      const result = await userSession.updateSession(userInfo);
 
+      const result = await userSession.updateSession(userInfo);
       userSession.setSession(updateUserData, sessionID);
       return result;
     } catch (error) {
@@ -196,6 +210,24 @@ class UserRepository extends IUserRepository {
     })
   }
 
+  delete = async (user_id) => {
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(`delete from user where user_id=?`, [user_id], (err, row) => {
+          if (err) {
+            reject(err);
+            conn.release();
+            return;
+          }
+          resolve('success');
+          conn.release();
+          return;
+        })
+      })
+    })
+  }
+
   update = async (userInfo, newUserInfo) => {
     const { user_id, role_uid } = userInfo;
     const role = {
@@ -210,12 +242,11 @@ class UserRepository extends IUserRepository {
         if (err) throw err;
         conn.query(`update user join sessions on user.user_id = sessions.user_id join role on user.user_id = role.user_id  set ${queryProps},sessions.data=?,role.role_uid=?,role.role_name=? where user.user_id=?`, [...queryParams, newUserInfo, role_uid, role[role_uid], user_id], (err, row) => {
           if (err) {
-            console.log(err)
-            reject({ status: 409, msg: 'SQL error' });
+            reject(err);
             conn.release();
             return;
           }
-          resolve({ status: 200, msg: 'success' });
+          resolve('success');
           conn.release();
           return;
         })
@@ -232,7 +263,19 @@ class UserRepository extends IUserRepository {
       return error
     }
   }
+
+  deleteSessionData = async (userID) => {
+    try {
+      const userSession = new UserSession(this.conn);
+      const result = await userSession.deleteSession(userID);
+      return result;
+    } catch (error) {
+
+      return error
+    }
+  }
 }
+
 
 
 
@@ -257,13 +300,24 @@ class IUserSession {
   }
 
   /**
-   * 更新用戶資料
+   * 更新用戶sessionID資料
  * @param {object} userInfo
  */
   updateSession(userInfo) {
 
   }
+
+  /**
+   * 刪除用戶根據已有的sessionID數據資料
+ * @param {number} userID
+ */
+  deleteSession(userID) {
+
+  }
 }
+
+
+
 
 /**
  *  新增、更新SessionID
@@ -303,10 +357,12 @@ class UserSession extends IUserSession {
 
 
   getSession = (sid) => {
+
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
         conn.query(`SELECT data FROM sessions WHERE sid='${sid}'`, (err, row) => {
+
           if (!row.length) {
             reject({});
             conn.release();
@@ -352,6 +408,25 @@ class UserSession extends IUserSession {
     })
   }
 
+  deleteSession(userID) {
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(`update sessions set sid=?,data=?,created_at=?,expires=? WHERE user_id=?`, [null,null,null,null,userID], (err, row) => {
+          if (err) {
+            console.log(err)
+            reject(err);
+            conn.release();
+            return
+          }
+          resolve(1);
+          conn.release();
+          return
+        })
+      })
+
+    })
+  }
 
 
 }

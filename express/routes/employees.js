@@ -20,15 +20,16 @@ const employeeController = new EmployeeController(employeeService);
 router.use((req, res, next) => {
   res.header('Content-Type', 'application/json');
   res.header('Cache-Control', 'no-store');
+
   next();
 });
-router.use(authenticationController.sessionChecker);
-router.get('/employee/search?', employeeController.browse);
-router.get('/employee/:id', employeeController.read);
-router.put('/employee/:id',employeeController.update);
-router.patch('/employee/:id', employeeController.edit);
-router.post('/employee/:id', employeeController.add);
-router.delete('/employee/id', employeeController.delete);
+router.use('/', authenticationController.sessionChecker);
+router.get('/employees?', employeeController.browse);
+router.get('/employees/:id', employeeController.read);
+router.put('/employees/:id', employeeController.update);
+router.patch('/employees/:id', employeeController.edit);
+router.post('/employees', employeeController.add);
+router.delete('/employees/:id', employeeController.delete);
 
 
 

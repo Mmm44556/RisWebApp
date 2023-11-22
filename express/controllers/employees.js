@@ -18,6 +18,7 @@ class EmployeeController {
 
     res.status(result.status).send(result)
   }
+
   read = async (req, res) => {
 
   }
@@ -27,9 +28,9 @@ class EmployeeController {
 * @return {Promise.<object>} 
 */
   update = async (req, res) => {
-    const { body } = req;
-    const result =await this._userService.update(body);
-    console.log(result)
+    const { body,params } = req;
+
+    const result = await this._userService.update(body, params);
     res.status(result.status).send(result.msg);
   }
 
@@ -39,17 +40,23 @@ class EmployeeController {
 */
   edit = async (req, res) => {
     const { body, session, sessionID, user } = req;
-
     const result = await this._userService.edit({ body, session, sessionID, user });
     res.status(result.status).send(result.msg)
   }
-
+  
 
   add = async (req, res) => {
-
+    const { body } = req;
+    const result = await this._userService.add(body);
+    console.log('新增結果:',result);
+    res.status(result.status).send(result.msg);
   }
 
   delete = async (req, res) => {
+    const { params } = req;
+    const result = await this._userService.delete(params.id);
+    console.log('刪除結果:', result);
+    res.status(result.status).send(result.msg);
 
   }
 

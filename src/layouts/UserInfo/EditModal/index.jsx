@@ -1,9 +1,10 @@
-import { useState, memo, useRef,useEffect } from 'react';
+import { useState, memo, useRef, useEffect } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import {  useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { fetcherState } from '../userToKey';
 import style from '../../../assets/scss/style.module.scss'
 function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, setShowToast, setToastDetail, showToast }) {
+
   const location = useLocation();
   const formRef = useRef();
   const [hasLength, setHasLength] = useState(false);
@@ -14,7 +15,7 @@ function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, se
   const resetButton = () => {
     handleModalShow();
     setShowToast(v => !v);
-    setToastDetail({ detail: '重置成功!', theme: 'Warning', spinner:"", timeStamp: new Date().toLocaleTimeString() })
+    setToastDetail({ detail: '重置成功!', theme: 'Warning', spinner: "", timeStamp: new Date().toLocaleTimeString() })
     return setNormalInfo();
 
   }
@@ -23,29 +24,29 @@ function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, se
   return (
     <>
       <Button variant="light" className='fw-bold'
-       type={type=="submit"?'button':'reset'}
+        type={type == "submit" ? 'button' : 'reset'}
         onClick={handleModalShow}
         disabled={!edit}
       >
         {func}
       </Button>
       <Modal show={show}
-       onHide={handleModalShow} 
-       animation={false} centered
+        onHide={handleModalShow}
+        animation={false} centered
         className='text-center'
-        onShow={type=='reset'?() => null:()=>{
-          Object.values(formRef.current).forEach(v=>{
-            if (v.localName=='input'){ //判斷是否是Input標籤
-              if(v.value.length==0){
+        onShow={type == 'reset' ? () => null : () => {
+          Object.values(formRef.current).forEach(v => {
+            if (v.localName == 'input') { //判斷是否是Input標籤
+              if (v.value.length == 0) {
                 setHasLength(true)
                 return
               }
-            }else{
+            } else {
               return;
             };
           })
         }}
-        >
+      >
         <Modal.Header
           className='border border-0 justify-content-center '>
           <Modal.Title className='fw-bold' >{header}</Modal.Title>
@@ -56,16 +57,15 @@ function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, se
             取消
           </Button>
           <Button variant="danger" onClick={type == 'reset' ? resetButton : (() => {
-            // console.log(formRef.current, userState.normalInfo)
-
-            if (formRef.current[0].value == userState.normalInfo['user_password']) {
-  
-              fetcher.submit({ user_password: formRef.current[1].value,user_id:userState.normalInfo['user_id'] }, {
+            
+            if (formRef.current[0].value ==userState.normalInfo['user_password']) {
+              
+              fetcher.submit({ ...userState.normalInfo, user_password: formRef.current[1].value }, {
                 action: location.pathname,
                 method: 'PATCH'
               })
-              console.log(fetcher.data)
-              dispatch({ type: 'normalInfo', data: { ...userState.normalInfo, user_password: formRef.current[1].value }})
+   
+              dispatch({ type: 'normalInfo', data: { ...userState.normalInfo, user_password: formRef.current[1].value } })
               setShowToast(true);
               setToastDetail({ detail: '修改成功!', theme: 'success', spinner: fetcherState[fetcher.state], timeStamp: new Date().toLocaleTimeString() })
               return
@@ -90,12 +90,12 @@ function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, se
 
 }
 function description(type, formRef, fetcher, setHasLength) {
-  
+
   switch (type) {
     case 'submit':
       //如果輸入長度為0關閉確認按鈕
       const enabledConfirmButton = () => {
-        if (formRef.current[0].value.length !== 0 && formRef.current[1].value.length !== 0 ) {
+        if (formRef.current[0].value.length !== 0 && formRef.current[1].value.length !== 0) {
           setHasLength(false)
         } else {
           setHasLength(true)

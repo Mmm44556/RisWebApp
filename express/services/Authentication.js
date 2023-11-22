@@ -39,14 +39,14 @@ class AuthenticationService {
       const result = new ErrorBoundary({ user, password });
       const loginResult = result.loginResult();
       //有返回用戶資料後設置SessionID、用戶資料
-      if (loginResult.status === 200) {
+      if (loginResult.status == 200) {
         session.sessionID = sessionID;
         session.user = loginResult;
       }
-      return loginResult;
+      return { status: 200, msg: loginResult };
     } catch (error) {
 
-      return new Error(error);
+      return { status: 409, msg: error };
     }
   }
 
@@ -81,22 +81,34 @@ class AuthenticationService {
 
     try {
       //先判斷有無sessionID
+      
       if (req.session.sessionID) {
         const UserSessionData = await this.#userRepository.getSessionData(req.session.sessionID);
         //長度為0代表有ID查不到該筆用戶
+      
         if (UserSessionData.length === 0) {
-          return { status: 204, data: UserSessionData };
+          return { status: 401, msg: UserSessionData };
         }
-
-        return { status: 200, data: JSON.parse(UserSessionData) };
+        // console.log('服務曾:',UserSessionData)
+        return { status: 200, msg: JSON.parse(UserSessionData) };
       } else {
-        return { status: 204, data: [] }
+        return { status: 401, msg: [] }
       }
     } catch (error) {
+      
       return { status: 204, msg: 'User Not Found', data: error };
     }
   }
 
+  /**
+   * 用戶ID用於刪除sessions資料
+   * @param {number} user_id 
+   */
+  logout=async (user_id)=>{
+      const result = await this.#userRepository.deleteSessionData(user_id);
+      if(result==1) return {status:204,msg:'success'}
+      return {status:500,msg:'Logout failed!'}
+  }
 
 
 }
