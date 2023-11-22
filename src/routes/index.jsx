@@ -16,6 +16,9 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
+    shouldRevalidate() {
+      return false
+    },
     children: [
       {
         path: 'DashBoard',
@@ -24,14 +27,18 @@ const router = createBrowserRouter([
             <DashBoard />
           </Suspense>
         ,
-        id: "auth",
         loader: sessionCheck,
+        shouldRevalidate() {
+          return false
+        },
         errorElement: <h1>Please check the Internet</h1>,
         children: [
           {
             path: 'dataList',
             element: <DataList />,
-
+            shouldRevalidate() {
+              return false
+            },
           },
           {
             path: 'analysis',
@@ -53,14 +60,18 @@ const router = createBrowserRouter([
           },
           {
             path: 'logout',
-            element: <h1>Logout</h1>
+            element: <h1>Logout</h1>,
+            action:async(req)=>{
+              console.log(req)
+              return null
+            }
           },
         ]
       },
       {
         path: '/',
         element: <Authentication />,
-        loader: sessionCheck2,
+        // loader: sessionCheck2,
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [
           {

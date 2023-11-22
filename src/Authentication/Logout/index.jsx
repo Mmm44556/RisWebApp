@@ -1,13 +1,26 @@
-import { memo, useState } from 'react'
+import { memo } from 'react'
 import { Modal, Button } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
 import { MdLogout } from 'react-icons/md';
+
 function Logout({ normalInfo, show, LogoutModalHandle }) {
- 
+  const navigator = useNavigate();
+
+  const logout = async () => {
+    let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/logout/${normalInfo.user_id}`, {
+      method: 'DELETE',
+      credentials: 'include',
+      mode: 'cors',
+    })
+    if (res.status == 204) {
+      navigator('/login', { replace: true })
+    }
+
+  }
 
   return (
     <>
-      <p style={{ fontSize: "1.1rem" }}
+      <p style={{ fontSize: "1rem" }}
         onClick={LogoutModalHandle}
         className='mb-0 p-0' >
         <MdLogout /> 登出系統
@@ -28,9 +41,10 @@ function Logout({ normalInfo, show, LogoutModalHandle }) {
           <Button variant="secondary" onClick={LogoutModalHandle}>
             關閉
           </Button>
-          <Button variant="danger">
+          <Button variant="danger" onClick={logout}>
             登出
           </Button>
+
         </Modal.Footer>
       </Modal>
     </>

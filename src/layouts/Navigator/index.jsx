@@ -1,13 +1,15 @@
-import { memo, useState, lazy, Suspense } from 'react';
+import { memo, useState, lazy, Suspense, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Nav, Navbar, Form, NavDropdown, Image } from 'react-bootstrap';
-import { IoNotificationsOutline } from "react-icons/io5";
+import { Container, Nav, Navbar, Form, NavDropdown, Image, Button } from 'react-bootstrap';
+import { IoNotificationsOutline } from "react-icons/io5"
+import { FaGithub } from "react-icons/fa";;
 import { BsFilterLeft, BsSearch } from "react-icons/bs";
 import { MdOutlineLightMode, MdOutlineNightlight } from "react-icons/md";
 import style from '../../assets/scss/style.module.scss';
+import { themeContext } from '../../context';
 
 const Logout = lazy(() => import('../../Authentication/Logout'));
-
+const DirectMsg = lazy(() => import('../../components/DashBoard/DirectMsg'));
 function useLogoutModal() {
   //控制登出介面
   const [show, setShow] = useState(false);
@@ -17,8 +19,17 @@ function useLogoutModal() {
 
 
 function Navigator({ normalInfo }) {
+  const { theme, setTheme } = useContext(themeContext);
   const { show, LogoutModalHandle } = useLogoutModal();
   let searchParams = useLocation();
+  const switchTheme = () => setTheme(v => {
+    if (v) {
+      localStorage.setItem('theme', 'Dark');
+    }else{
+      localStorage.setItem('theme', 'Light');
+    }
+    return !v;
+  })
   return <>
     <Navbar expand={"sm"}
       style={{ zIndex: '1000' }}
@@ -51,33 +62,54 @@ function Navigator({ normalInfo }) {
 
         />
         <Navbar.Collapse id="responsive-navbar-nav" >
+
           <Nav className="me-auto" />
           <Nav className={style.navigator_tabs}>
-            <Nav.Link >
-              <MdOutlineLightMode/>
-            </Nav.Link>
-            <Nav.Link >
-              <div className='position-relative'
-                style={{ fontSize: "inherit" }}
+            <Nav.Item >
+              <a href='https://github.com/Mmm44556/RisWebApp'
+                target='_blank'
+                className='text-secondary'
               >
-                <IoNotificationsOutline />
-                <span 
-                className={`start-100 translate-middle ${style.navigator_badge}`}/>
-              </div>
-            </Nav.Link>
-            <Nav.Link >
-              <NavDropdown title={<a><Image src="https://picsum.photos/30/30" roundedCircle className='me-1' />{normalInfo['user_name']}</a>} id="navbarScrollingDropdown">
-                <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
+                <FaGithub />
+              </a>
+            </Nav.Item>
+            <Nav.Item>
+              <Button
+                variant="light"
+                className="d-inline-flex "
+                style={{ borderRadius: "50px" }}
+                onClick={switchTheme}
+              >
+                {
+                  theme === true ? <MdOutlineLightMode /> : <MdOutlineNightlight />
+                }
+              </Button>
+            </Nav.Item>
+
+            <Nav.Item >
+
+              <DirectMsg />
+
+            </Nav.Item>
+            <Nav.Item >
+              <NavDropdown
+                title={<>
+                  <Image src="https://picsum.photos/30/30" roundedCircle className='me-1' />{normalInfo['user_name']}</>}
+                id="navbarScrollingDropdown">
+
+                <NavDropdown.Item href="#action3" >
+                  Action
+                </NavDropdown.Item>
                 <NavDropdown.Item >
 
-                  <Suspense fallback={<h6>lodagin....</h6>}>
+                  <Suspense fallback={<h6>loading....</h6>}>
                     <Logout normalInfo={normalInfo}
                       show={show} LogoutModalHandle={LogoutModalHandle} />
                   </Suspense>
 
                 </NavDropdown.Item>
               </NavDropdown>
-            </Nav.Link>
+            </Nav.Item>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -19,7 +19,7 @@ const getUserData = `SELECT user.\`user_id\`,\`user_name\`,\`user_mail\`,\`user_
  * @constant
  * @type {string}
  */
-const createUserData = `INSERT INTO user(\`user_name\`,\`position_id\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`) VALUES(?,?,?,?,?,?,?)`;
+const createUserData = `INSERT INTO user(\`user_name\`,\`position_id\`,\`user_mail\`,\`user_password\`,\`user_phone\`,\`user_sex\`,\`user_age\`,\`uuid\`) VALUES(?,?,?,?,?,?,?,?)`;
 
 /**
  * 瀏覽所有用戶資料

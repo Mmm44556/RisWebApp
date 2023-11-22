@@ -18,9 +18,12 @@ router.use((req, res, next) => {
 /**
  * 用戶驗證
  */
-router.get('/authentication',authenticationController.sessionChecker, authenticationController.authentication);
-router.post('/login', authenticationController.login);
-router.post('/register', authenticationController.register);
+
+router.get('/authentication', authenticationController.sessionChecker, authenticationController.authentication);
+router.post('/api/login', authenticationController.login);
+router.post('/api/register', authenticationController.register);
+router.delete('/api/logout/:id', authenticationController.logout);
+
 
 
 

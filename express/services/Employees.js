@@ -19,9 +19,9 @@ class EmployeeService {
       page = Number(page) * per_page;
       //查詢當前頁
       const result = await this.#userRepository.browse(page, per_page);
-      return { current: result,status:200 };
+      return { data: result, status: 200 };
     } catch (error) {
-      return {msg:error,status:500};
+      return { msg: error, status: 500 };
     }
   }
 
@@ -34,15 +34,19 @@ class EmployeeService {
 
     try {
       const { body, session, sessionID, user } = userInfo;
+      console.log("user:", user)
+      console.log("body:", body)
       const updateUserData = { ...user, ...body };
+      console.log("updateUserData:",updateUserData)
       const result = await this.#userRepository.edit(body, updateUserData, sessionID);
-      if (result.status === 200) {
-        session.user = updateUserData;
-      }
-      return result;
+
+      // if (result.status === 200) {
+      //   session.user = updateUserData;
+      // }
+      return { msg: result, status: 200 };
 
     } catch (error) {
-      return error;
+      return { msg: error, status: 500 };
     }
   }
 
@@ -52,23 +56,43 @@ class EmployeeService {
   @param { object } userInfo
  * @return {Promise.<object>}
  */
-  update = async (userInfo) => {
-try {
-  const { user_id,role_uid } = userInfo;
-  const userSessionData = await this.#userRepository.read(user_id);
-  delete userInfo.position_id;
+  update = async (userInfo, params) => {
+    try {
+      
+      const userSessionData = await this.#userRepository.read(params.id);
+      delete userInfo.position_id;
+     //合併新、舊資料
+      const newUserInfo = { ...JSON.parse(userSessionData.data), ...userInfo }
 
-  const newUserInfo = { ...JSON.parse(userSessionData.data), ...userInfo }
-  // console.log(newUserInfo)
-  const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
-  return result;
-} catch (error) {
-  return error;
-}
-    
+      const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
+      return { status: 200, msg: result };
+    } catch (error) {
+      
+      return { msg: error, status: 409 };;
+    }
+
   }
 
+  add = async (userInfo) => {
+    try {
+      const result = await this.#userRepository.createUser(userInfo);
 
+      return { msg: result, status: 200 };
+    } catch (error) {
+      return { msg: error, status: 500 };
+    }
+  }
+
+  delete = async (user_id)=>{
+    try {
+
+      const result = await this.#userRepository.delete(user_id);
+
+      return { msg: result, status: 200 };
+    } catch (error) {
+      return { msg: error, status: 409 };
+    }
+  }
 
 }
 
