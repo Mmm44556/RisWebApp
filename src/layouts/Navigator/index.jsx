@@ -7,29 +7,24 @@ import { BsFilterLeft, BsSearch } from "react-icons/bs";
 import { MdOutlineLightMode, MdOutlineNightlight } from "react-icons/md";
 import style from '../../assets/scss/style.module.scss';
 import { themeContext } from '../../context';
-
 const Logout = lazy(() => import('../../Authentication/Logout'));
 const DirectMsg = lazy(() => import('../../components/DashBoard/DirectMsg'));
-function useLogoutModal() {
-  //控制登出介面
-  const [show, setShow] = useState(false);
-  const LogoutModalHandle = () => setShow(v => !v);
-  return { show, LogoutModalHandle }
-}
 
+
+const switchTheme = (setTheme)=>() => setTheme(v => {
+  if (v) {
+    localStorage.setItem('theme', 'Dark');
+  } else {
+    localStorage.setItem('theme', 'Light');
+  }
+  return !v;
+})
 
 function Navigator({ normalInfo }) {
   const { theme, setTheme } = useContext(themeContext);
   const { show, LogoutModalHandle } = useLogoutModal();
   let searchParams = useLocation();
-  const switchTheme = () => setTheme(v => {
-    if (v) {
-      localStorage.setItem('theme', 'Dark');
-    }else{
-      localStorage.setItem('theme', 'Light');
-    }
-    return !v;
-  })
+  
   return <>
     <Navbar expand={"sm"}
       style={{ zIndex: '1000' }}
@@ -78,7 +73,7 @@ function Navigator({ normalInfo }) {
                 variant="light"
                 className="d-inline-flex "
                 style={{ borderRadius: "50px" }}
-                onClick={switchTheme}
+                onClick={switchTheme(setTheme)}
               >
                 {
                   theme === true ? <MdOutlineLightMode /> : <MdOutlineNightlight />
@@ -87,8 +82,10 @@ function Navigator({ normalInfo }) {
             </Nav.Item>
 
             <Nav.Item >
+              <Suspense fallback={<h6>loading....</h6>}>
+                <DirectMsg />
+              </Suspense>
 
-              <DirectMsg />
 
             </Nav.Item>
             <Nav.Item >
@@ -119,3 +116,11 @@ function Navigator({ normalInfo }) {
 }
 
 export default memo(Navigator);
+
+
+function useLogoutModal() {
+  //控制登出介面
+  const [show, setShow] = useState(false);
+  const LogoutModalHandle = () => setShow(v => !v);
+  return { show, LogoutModalHandle }
+}

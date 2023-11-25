@@ -1,6 +1,5 @@
-import { reducer } from './userReducer';
-function useLogin(user = '') {
 
+function userInitial(user = '') {
 
   //初始化用於處理登入
 
@@ -15,7 +14,7 @@ function useLogin(user = '') {
   const initial = { normalInfo, medicalInfo, restInfo }
 
 
-  return [initial, reducer]
+  return initial
 }
 
-export { useLogin }
+export default userInitial 

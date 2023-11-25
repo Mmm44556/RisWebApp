@@ -4,19 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useOutletContext } from 'react-router-dom';
 import { iniFolders } from '../../utils/FileProcess/fetchData';
 import GetData from "../../components/DashBoard/GetData";
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      queryFn: iniFolders,
-    },
 
-    queryCache: new QueryCache({
-      onError: (err) => {
-        console.log(err)
-      }
-    })
-  }
-});
 
 function DataList ({ }) {
   const [userState] = useOutletContext();
