@@ -1,8 +1,7 @@
-import { Form, NavDropdown, Navbar, Row, Col, Dropdown, ButtonGroup, DropdownButton } from 'react-bootstrap';
+import { Form, Navbar, Row, Col, Dropdown, ButtonGroup, DropdownButton } from 'react-bootstrap';
 import { BsSearch, BsFilterLeft } from "react-icons/bs";
-import styled from 'styled-components';
 import { key } from '../../pages/Employees/js/keywords';
-import style from '../../assets/scss/style.module.scss'
+import style from '@style'
 
 
 export default function SearchBar({ filterHandler, filterKeyWord, setFilterKeyWord }) {

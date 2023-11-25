@@ -5,4 +5,18 @@ const key = {
   lastTimeLogin: '上次登入',
 };
 
-export {key}
+
+const paginationComponentOptions = {
+  rowsPerPageText: '每頁資料:',
+  noRowsPerPage: false,
+  rangeSeparatorText: 'of',
+  selectAllRowsItem: true,
+  selectAllRowsItemText: '30',
+
+}
+const fetchState = {
+  fetching: true,
+  idle: false
+}
+
+export { key, fetchState, paginationComponentOptions }
