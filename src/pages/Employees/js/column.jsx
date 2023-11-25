@@ -1,9 +1,17 @@
-import { Image } from "react-bootstrap";
-import { Media } from 'react-data-table-Component';
+
+import { Media } from 'react-data-table-component';
+const sex ={
+  'MALE':'男',
+  'FEMALE':'女',
+  'Bisexual':'跨性別'
+}
 const columns = [
   {
     name: 'ID',
-    selector: row => row.user_id,
+    selector: row =>{
+      if(row.uuid) return row.uuid.slice(0,8);
+      return row.uuid
+    },
     hide: Media.MD
 
   },
@@ -15,7 +23,7 @@ const columns = [
   },
   {
     name: '報告量',
-    selector: row => row.reports,
+    selector: row => row.reports??'無',
     sortable: true,
     reorder: true,
     hide: Media.SM
@@ -34,8 +42,14 @@ const columns = [
     reorder: true,
   },
   {
-    name: '上次登入',
-    selector: row => row.lastTimeLogin,
+    name: '性別',
+    selector: row => sex[row.user_sex.toUpperCase()],
+    sortable: true,
+    reorder: true,
+  },
+  {
+    name: '註冊時間',
+    selector: row => new Date(row.user_register_time).toLocaleDateString(),
     sortable: true,
     reorder: true,
     hide: Media.MD
@@ -46,68 +60,6 @@ const columns = [
     sortable: true,
     reorder: true,
   },
-];
-const data = [
-  {
-    id: 1,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'Beetlejuice',
-    reports: 10,
-    department_name: '放射診斷科',
-    position_name: '主治醫師',
-    lastTimeLogin: new Date().toLocaleDateString(),
-    status: 'online'
-  },
-  {
-    id: 7,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'Beetlejuice',
-    reports: 10,
-    department_name: '放射診斷科',
-    position_name: '主治醫師',
-    lastTimeLogin: new Date().toLocaleDateString(),
-    status: 'online'
-  },
-  {
-    id: 2,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'Ghostbusters',
-    reports: 15,
-    department_name: '磁振造影MRI組',
-    position_name: '醫事放射師',
-    lastTimeLogin: new Date().toLocaleDateString(),
-    status: 'online'
-  },
-  {
-    id: 3,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'hhjdrre',
-    reports: 15,
-    department_name: '磁振造影MRI組',
-    position_name: '醫事放射師',
-    lastTimeLogin: new Date('2019').toLocaleDateString(),
-    status: 'offline'
-  },
-  {
-    id: 4,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'adasdsad',
-    reports: 15,
-    department_name: '電腦斷層CT組',
-    position_name: 'MRI組長',
-    lastTimeLogin: new Date('2019').toLocaleDateString(),
-    status: 'offline'
-  },
-  {
-    id: 5,
-    user_id: <Image src="https://picsum.photos/35/35" roundedCircle />,
-    user_name: 'adasdsad',
-    reports: 15,
-    department_name: '電腦斷層CT組',
-    position_name: 'MRI組長',
-    lastTimeLogin: new Date('2019').toLocaleDateString(),
-    status: 'offline'
-  },
-]
 
-export { columns, data }
+];
+export { columns }

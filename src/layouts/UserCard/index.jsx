@@ -7,7 +7,7 @@ export default function UserCard({ userState: { normalInfo ,medicalInfo} }) {
             <Image src="https://picsum.photos/171/180?random=2" roundedCircle fluid  />
         </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
-          <p>{normalInfo["user_name"].toUpperCase()}</p>
+          <p>{normalInfo["user_name"]}</p>
           <p>{medicalInfo["position_name"]}</p>
         </Card.Subtitle>
         <ListGroup variant="flush">

@@ -22,7 +22,8 @@ function InputComponent(key, v, edit) {
         spellCheck
         required
         maxLength="40"
-        minLength="1" /><p /></>,
+        minLength="1" 
+        key={'name'} /><p /></>,
     user_mail: <>
       <input defaultValue={v}
         data-edit={edit}
@@ -31,9 +32,10 @@ function InputComponent(key, v, edit) {
         maxLength="40"
         pattern={regex}
         type="email"
-        name="mail" /><p /></>,
+        name="mail" 
+        key={"email"}/><p /></>,
     user_sex:
-      <select name="sex" data-edit={edit} disabled={!edit}>
+      <select name="sex" data-edit={edit} disabled={!edit} key={"sex"}>
         <option defaultValue={v}>{v}</option>
         <option defaultValue="Male">Male</option>
         <option defaultValue="Female">Female</option>
@@ -48,7 +50,8 @@ function InputComponent(key, v, edit) {
         required
         min="20"
         max="70"
-      /><p /></>,
+        key={'age'}
+      /></>,
     user_phone: <>
       <input defaultValue={v}
         data-edit={edit}
@@ -59,6 +62,7 @@ function InputComponent(key, v, edit) {
         pattern="[0-9]{9,10}"
         minLength="9"
         maxLength="10"
+        key={"phone"}
       /><p /></>
   }
   return editToKeys[key]

@@ -1,53 +1,40 @@
-import { memo, useState, useCallback, useEffect,lazy } from 'react'
+import { memo, useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import { Table } from 'react-bootstrap';
-import { useFetcher, useLocation } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import { userToKeys, fetcherState } from './userToKey';
-import { useInfoValidation } from '../../hooks/userInfoValidation';
-import style from '../../assets/scss/style.module.scss';
+import { useQueryClient } from '@tanstack/react-query'
+import { useFetcher } from 'react-router-dom';
+
+import Form from './Form';
+import { userToKeys } from './hooks/userToKey';
+import { useSubmission, editTrigger } from './hooks/useForm';
+
 const fontStyle = 'fw-bold';
-const EditModal = lazy(() => import('./EditModal'));
 
 
-//表單提交
-const useSubmitValidation = (fetcher, dispatch, normalInfo, setEdit, setToastDetail, setShowToast, showToast) => {
-  const location = useLocation();
+function UserInfo({ userState, setToastDetail, setShowToast, showToast }) {
+  const fetcher = useFetcher();
+  const fetcherState = fetcher?.data;
+  //用戶資料狀態
+  const [normalInfo, setNormalInfo] = useState({ ...userState.normalInfo });
+  //開啟編輯模式
+  const [edit, setEdit] = useState(true);
+  const editButton = editTrigger(setEdit, setToastDetail, fetcher);
+  //觸發提交表單
+  useSubmission(fetcher, normalInfo, setShowToast, edit);
+
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    //切換表單處理狀態
-    setToastDetail(prev => ({ ...prev, spinner: fetcherState[fetcher.state] }))
-  }, [fetcher.state])
+    //提交成功後將緩存的用戶資料更新
+    if (edit == false) {
+      const user = queryClient.getQueryData(['userCtx']);
+      const submittedForm = normalInfo;
+      const mutationUser = { ...user, normalInfo: { ...submittedForm } };
+      queryClient.setQueryData(['userCtx'], mutationUser);
+      console.log(queryClient.getQueryData(['userCtx']))
 
-
-  //更新全局狀態、提交表單、設定開啟系統提示內容
-  const editButton = useCallback(() => {
-    return setEdit(v => {
-      if (v) {
-        dispatch({ type: "normalInfo", data: normalInfo });
-        fetcher.submit(normalInfo, {
-          method: "PUT",
-          action: location.pathname
-        });
-        setToastDetail({ detail: '儲存成功', theme: 'Success', spinner: fetcherState[fetcher.state], timeStamp: new Date().toLocaleTimeString() });
-      }
-      setShowToast(v);
-      return !v
-    })
-  })
-  return { editButton }
-}
-
-function UserInfo({ userState, dispatch, setToastDetail, setShowToast, showToast }) {
-  const fetcher = useFetcher();
-  //編輯用戶資料的狀態
-  const [normalInfo, setNormalInfo] = useState({ ...userState.normalInfo });
-  const [edit, setEdit] = useState(false);
-
-  const { editButton } = useSubmitValidation(fetcher, dispatch, normalInfo, setEdit, setToastDetail, setShowToast);
-  const { normalInfoChangeCallBack, setNormalInfoCallBack } = useInfoValidation(setNormalInfo, userState);
-
-
-
+    }
+  }, [edit])
   return (
     <Table responsive
       className='mt-4 border shadow p-3 mb-5 bg-body-tertiary rounded' >
@@ -55,7 +42,7 @@ function UserInfo({ userState, dispatch, setToastDetail, setShowToast, showToast
         <tr>
           <td className='position-relative'>
             <h4 className={fontStyle}>用戶資訊</h4>
-            <UserFormData fetch={{ normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher, dispatch, userState, setToastDetail, setShowToast, showToast }} />
+            <Form fetch={{ normalInfo, setNormalInfo, editButton, edit, fetcher, userState, setToastDetail, setShowToast, showToast }} />
           </td>
         </tr>
         <tr>
@@ -78,53 +65,6 @@ function UserInfo({ userState, dispatch, setToastDetail, setShowToast, showToast
     </Table>
   )
 }
-
-function UserFormData({ fetch: { normalInfo, setNormalInfo, setNormalInfoCallBack, normalInfoChangeCallBack, editButton, edit, fetcher, dispatch, userState, setToastDetail, setShowToast, showToast } }) {
-
-
-  return (
-    <>
-      <fetcher.Form
-        onInput={normalInfoChangeCallBack(setNormalInfo)}
-        className={style.normalInfo}
-      >
-        {userToKeys.normalInfo(normalInfo).length ?
-          userToKeys.normalInfo(normalInfo, edit) : '尚無資料'}
-        <div className="hstack gap-3 position-absolute end-0 top-0 mt-2 me-2">
-          <EditModal
-            edit={edit}
-            type={'submit'}
-            dispatch={dispatch}
-            userState={userState}
-            setToastDetail={setToastDetail}
-            setShowToast={setShowToast}
-            showToast={showToast}
-            fetcher={fetcher}
-          />
-          <EditModal
-            setNormalInfo={setNormalInfoCallBack}
-            type={'reset'}
-            edit={edit}
-            setToastDetail={setToastDetail}
-            setShowToast={setShowToast}
-          />
-          <Button variant="light" className='fw-bold' type='button'
-            onClick={editButton}
-          >
-            {edit ? '儲存' : '編輯'}
-          </Button>
-        </div>
-      </fetcher.Form>
-    </>
-  )
-}
-//讓原始數據與修改後數據進行對比，用於開啟編輯按鈕(防呆)
-// const originalUserState = JSON.stringify(userState.normalInfo, transformToString);
-// const UpdatedUserState = JSON.stringify(normalInfo, transformToString);
-// let isTheSameData = UpdatedUserState === originalUserState;
-// console.log(isTheSameData);
-// console.log(userState.normalInfo);
-// console.log(normalInfo);
 
 
 // console.log("fetcher state:", fetcher.state)

@@ -26,7 +26,7 @@ const createUserData = `INSERT INTO user(\`user_name\`,\`position_id\`,\`user_ma
  * @constant
  * @type {string}
  */
-const broseUserData = `SELECT user.user_id,user_name,user_mail,user_phone,user_sex,user_age,user_register_time,
+const broseUserData = `SELECT user.user_id,user.uuid,user_name,user_mail,user_phone,user_sex,user_age,user_register_time,
 position_name,department_name,role_uid FROM user JOIN role on user.user_id=role.user_id JOIN departments_position ON user.position_id = departments_position.position_id 
 JOIN departments ON departments_position.department_id = departments.department_id WHERE user.user_id > 0
 ORDER BY user.user_id asc

@@ -26,17 +26,25 @@ class AuthenticationController {
     * @return {Promise.<object>} 
     */
   login = async (req, res) => {
+    res.header('Cache-Control', 'private');
+    
     const { session, sessionID } = req;
     const { name, password } = req.body;
     /**
      * @type {QueryResult}
      */
-    //  Soeq8Nufz_75bkyV_m6u804fxl2MDgmn
     const result = await this.authenticationService.login({ name, password, session, sessionID });
 
-    let encodeStr = encodeJson(result.msg);
 
-    res.status(result.status).send(encodeStr);
+    //有返回用戶資料後設置SessionID、用戶資料
+    if (result.status == 200) {
+      session.sessionID = sessionID;
+      session.user = result.msg;
+      let encodeStr = encodeJson(result.msg);
+      res.status(result.status).send(encodeStr);
+      return;
+    }
+    res.status(result.status).send(result.msg);
   }
 
   /**
@@ -45,22 +53,22 @@ class AuthenticationController {
    */
   register = async (req, res) => {
     const result = await this.authenticationService.register(req.body);
+
     res.status(result.status).send(result.msg);
   }
 
   logout = async (req, res) => {
-    const {params,session} = req;
+    const { params, session } = req;
     const result = await this.authenticationService.logout(params.id);
-    if(result.status==204){
+    if (result.status == 204) {
       session.destroy(function (err) {
-        console.log(err)
         res.cookie('sid', '', { expires: new Date(0) });
         res.status(result.status).send(result.msg);
       })
-    }else{
+    } else {
       res.status(result.status).send(result.msg);
     }
-   
+
   }
 
   /**
@@ -70,7 +78,7 @@ class AuthenticationController {
   authentication = async (req, res) => {
     const user = req.user;
     const sessionData = req.sessionData;
-    
+
 
     //把用戶資料進行轉碼
     let encodeStr = encodeJson(user);
@@ -84,22 +92,25 @@ class AuthenticationController {
    * 查詢ID返回用戶資料
    * @return {Promise.<object>} 
    */
-  sessionChecker = async (req, _, next) => {
-  
-    console.log(req._parsedUrl)
-    if (req._parsedUrl.includes('logout') ) {
-      _.status(204);
+  sessionChecker = async (req, res, next) => {
+
+    if (req.session.sessionID == undefined) {
+      res.status(401).send('@@');
       return;
     }
+    if (req._parsedUrl == 'logout') {
+      res.status(204);
+      return;
+    }
+
     /**
      * @type {QueryResult}
      */
     const sessionData = await this.authenticationService.ValidateSessionID(req);
+    // let encodeStr = encodeJson(sessionData);
     console.log('-------------')
-    req.sessionData = sessionData;
-    req.user = sessionData.msg;
+    res.status(200).send(sessionData);
 
-    next();
 
   }
 

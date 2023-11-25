@@ -6,12 +6,13 @@ import Authentication from "../Authentication";
 import Login from "../Authentication/Login";
 import Register from "../Authentication/Register";
 import DataList from "../pages/DataList";
-// import Profile from "../pages/Profile";
+import Profile from "../pages/Profile";
+import Employees from "../pages/Employees";
+
 import { sessionCheck, sessionCheck2 } from "./js/sessionPrefetch";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
 
-const Profile = lazy(() => import("../pages/Profile"));
-const Employees = lazy(() => import("../pages/Employees"));
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -22,12 +23,9 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'DashBoard',
-        element:
-          <Suspense fallback={<h1>loading....</h1>}>
-            <DashBoard />
-          </Suspense>
-        ,
-        loader: sessionCheck,
+        element: <DashBoard />,
+        // loader: sessionCheck,
+
         shouldRevalidate() {
           return false
         },
@@ -35,7 +33,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'dataList',
-            element: <DataList />,
+            element: <h1>datalist</h1>,
             shouldRevalidate() {
               return false
             },
@@ -56,12 +54,20 @@ const router = createBrowserRouter([
           },
           {
             path: 'employees',
-            element: <Employees />
+            element: <Employees />,
+            // loader: async ({ request }) => {
+            //   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees?per_page=10&page=0`, {
+            //     method: 'GET',
+            //     credentials: 'include',
+            //     mode: 'cors'
+            //   })
+            //   return await res.json();
+            // }
           },
           {
             path: 'logout',
             element: <h1>Logout</h1>,
-            action:async(req)=>{
+            action: async (req) => {
               console.log(req)
               return null
             }

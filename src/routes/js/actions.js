@@ -24,12 +24,13 @@ async function loginAction({ request }) {
       'Content-Type': 'application/json',
     },
   })
-  
+
   if (res.status == '200') {
+
     return redirect('/DashBoard');
   }
-  // const result = await res.json()
-  // return result;
+  const result = await res.text()
+  return { msg: result };
 }
 
 
@@ -44,7 +45,7 @@ async function saveUserInfoAction({ request, params }) {
   })
   UserInfoJson = Object.fromEntries(UpdatedUserInfo);
 
-  
+
   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${UserInfoJson.user_id}`, {
     method: request.method,
     credentials: 'include',
@@ -54,9 +55,12 @@ async function saveUserInfoAction({ request, params }) {
       'Content-Type': 'application/json',
     },
   })
-  // console.log(await res.json());
+  
+  if (res.status == 409) {
+    return { status: res.status ,msg:'保存失敗'};
+  }
+  return { status: res.status, msg: '保存成功' };
 
-  return "noting"
 }
 
 
@@ -85,7 +89,7 @@ async function registerAction({ request }) {
   if (submission.password !== submission.confirmPassword) {
     return { msg: '請確認密碼是否相同!', icon: 'password' }
   }
-const uuid = crypto.randomUUID();
+  const uuid = crypto.randomUUID();
   delete submission.password
   submission.uuid = uuid;
   submission.confirmPassword = btoa(submission.confirmPassword)

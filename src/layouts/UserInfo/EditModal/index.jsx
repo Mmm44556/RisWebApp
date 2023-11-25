@@ -1,12 +1,13 @@
 import { useState, memo, useRef, useEffect } from 'react';
+
 import { Button, Modal } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { fetcherState } from '../userToKey';
+import { fetcherState } from '../hooks/userToKey';
 import style from '../../../assets/scss/style.module.scss'
-function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, setShowToast, setToastDetail, showToast }) {
-
+function EditModal({ setNormalInfo, type, edit, fetcher, userState, setShowToast, setToastDetail, showToast }) {
   const location = useLocation();
   const formRef = useRef();
+
   const [hasLength, setHasLength] = useState(false);
   const { func, header, body, footer } = description(type, formRef, fetcher, setHasLength);
   const [show, setShow] = useState(false);
@@ -57,15 +58,13 @@ function EditModal({ setNormalInfo, type, edit, fetcher, dispatch, userState, se
             取消
           </Button>
           <Button variant="danger" onClick={type == 'reset' ? resetButton : (() => {
-            
-            if (formRef.current[0].value ==userState.normalInfo['user_password']) {
-              
+
+            if (formRef.current[0].value == userState.normalInfo['user_password']) {
+
               fetcher.submit({ ...userState.normalInfo, user_password: formRef.current[1].value }, {
                 action: location.pathname,
                 method: 'PATCH'
               })
-   
-              dispatch({ type: 'normalInfo', data: { ...userState.normalInfo, user_password: formRef.current[1].value } })
               setShowToast(true);
               setToastDetail({ detail: '修改成功!', theme: 'success', spinner: fetcherState[fetcher.state], timeStamp: new Date().toLocaleTimeString() })
               return

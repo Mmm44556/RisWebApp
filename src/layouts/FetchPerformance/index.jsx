@@ -2,7 +2,7 @@ import { useEffect, useState, memo } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import Spinner from 'react-bootstrap/Spinner';
 import { AiOutlineCheck } from "react-icons/ai";
-import style from '../../assets/scss/style.module.scss';
+import style from '@style';
 
 
 const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {

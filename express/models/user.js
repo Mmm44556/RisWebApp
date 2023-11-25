@@ -79,6 +79,13 @@ class IUserRepository {
   }
 
   /**
+   * 查詢總長度
+   */
+  async getLength() {
+
+  }
+
+  /**
    * 更新用戶所有資料
    * @param {object} userInfo 
    * @param {object} newUserInfo 用戶新資料
@@ -91,7 +98,7 @@ class IUserRepository {
    * 清空用戶session資料
    * @param {number} userID 
    */
-  async deleteSessionData(userID){
+  async deleteSessionData(userID) {
 
   }
 }
@@ -108,6 +115,26 @@ class UserRepository extends IUserRepository {
     this.connectDB();
   }
 
+  async getLength() {
+    return new Promise((resolve, reject) => {
+      this.conn.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(`SELECT COUNT(*) FROM user`, (err, row) => {
+          if (err) {
+            reject(err);
+            conn.release();
+            return
+          }
+
+          resolve(row[0]);
+          conn.release();
+          return;
+
+        })
+      })
+    })
+  }
+
   async browse(page, per_page) {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
@@ -118,6 +145,7 @@ class UserRepository extends IUserRepository {
             conn.release();
             return
           }
+
           resolve(row);
           conn.release();
           return;
@@ -412,9 +440,8 @@ class UserSession extends IUserSession {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(`update sessions set sid=?,data=?,created_at=?,expires=? WHERE user_id=?`, [null,null,null,null,userID], (err, row) => {
+        conn.query(`update sessions set sid=?,data=?,created_at=?,expires=? WHERE user_id=?`, [null, null, null, null, userID], (err, row) => {
           if (err) {
-            console.log(err)
             reject(err);
             conn.release();
             return

@@ -7,21 +7,21 @@ async function sessionCheck() {
       , {
         credentials: 'include',
         mode: 'cors',
-        method:'GET'
+        method: 'GET'
       },
     )
-
-    if (res.status == '401') {
+   
+    if (res.status == 401) {
       alert('登入已逾時，請重新登入!');
       return redirect('/login')
     }
-    console.log(res)
-    if (res.status == '200') {
-      
+    
+    if (res.status == 200) {
+
       let DataBase64Encode = await res.text();
       const dataDecodeJson = decodeBase64(DataBase64Encode);
-     
-      return defer(dataDecodeJson);
+      console.log('loader----:', dataDecodeJson)
+      return dataDecodeJson;
     }
 
   } catch (error) {
