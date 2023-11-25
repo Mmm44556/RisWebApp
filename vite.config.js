@@ -7,24 +7,30 @@ export default defineConfig({
   plugins: [react(), commonjs()],
   resolve: {
     alias: {
+      '@style': resolve(__dirname, 'src/assets/scss/style.module.scss'),
+      '@assets': resolve(__dirname, 'src/assets'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@authentication': resolve(__dirname, 'src/Authentication'),
+      '@context': resolve(__dirname, 'src/context'),
+      '@hooks': resolve(__dirname, 'src/hooks'),
+      '@layouts': resolve(__dirname, 'src/layouts'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@routes': resolve(__dirname, 'src/routes'),
+      '@store': resolve(__dirname, 'src/store'),
+      '@utils': resolve(__dirname, 'src/utils'),
 
     },
+
   },
   build: {
-
+    outDir: 'build',
     rollupOptions: {
-
       input: resolve(__dirname, "public/index.html")
-
     },
-
   },
-
   server: {
     open: true,
     hmr: true,
-    proxy: {
-
-    }
+    host: true
   }
 })

@@ -38,12 +38,8 @@ class AuthenticationService {
       const user = await this.#userRepository.getUser(name, sessionID);
       const result = new ErrorBoundary({ user, password });
       const loginResult = result.loginResult();
-      //有返回用戶資料後設置SessionID、用戶資料
-      if (loginResult.status == 200) {
-        session.sessionID = sessionID;
-        session.user = loginResult;
-      }
-      return { status: 200, msg: loginResult };
+
+      return loginResult;
     } catch (error) {
 
       return { status: 409, msg: error };
@@ -151,7 +147,7 @@ class ErrorBoundary {
     }
 
     if (checkResult.result()) {
-      return { ...user, status: 200, msg: 'success' };
+      return { ...user, status: 200 };
     }
     else {
       return { status: 403, msg: '用戶名稱或密碼錯誤' };

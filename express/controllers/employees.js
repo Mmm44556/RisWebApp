@@ -1,4 +1,4 @@
-
+const md5 = require('crypto-js/md5')
 /**
  *  處理用戶資料存取Controller
  */
@@ -13,9 +13,9 @@ class EmployeeController {
    * 瀏覽系統內部所有用戶
    */
   browse = async (req, res) => {
+    res.header('Cache-Control', 'private');
     const { query } = req;
     const result = await this._userService.browse(query);
-
     res.status(result.status).send(result)
   }
 
@@ -28,9 +28,10 @@ class EmployeeController {
 * @return {Promise.<object>} 
 */
   update = async (req, res) => {
-    const { body,params } = req;
-
+    const { body, params } = req;
+  
     const result = await this._userService.update(body, params);
+
     res.status(result.status).send(result.msg);
   }
 
@@ -39,16 +40,18 @@ class EmployeeController {
 * @return {Promise.<object>} 
 */
   edit = async (req, res) => {
-    const { body, session, sessionID, user } = req;
+   
+    const { body, session, sessionID } = req;
+    const user = session.user;
     const result = await this._userService.edit({ body, session, sessionID, user });
     res.status(result.status).send(result.msg)
   }
-  
+
 
   add = async (req, res) => {
     const { body } = req;
     const result = await this._userService.add(body);
-    console.log('新增結果:',result);
+
     res.status(result.status).send(result.msg);
   }
 

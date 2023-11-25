@@ -6,9 +6,8 @@ const port = 3301;
 const session = require('express-session');
 const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
-// const LoginRoutes = require('./routes/login');
-// const RegisterRoutes = require('./routes/register');
-const authRouter= require('./routes/authentication');
+
+const authRouter = require('./routes/authentication');
 const employeesRoutes = require('./routes/employees');
 const path = require('path')
 app.use(cors({
@@ -35,7 +34,7 @@ app.use((req, res, next) => {
 // console.log(require('dotenv').config('./env'))
 app.use(cookie());
 app.use(session({
-  store: new FileStore,
+  store: new FileStore({ path: path.join(__dirname, '/sessions') }),
   secret: 'mySecret',
   name: 'sid',
   cookie: { maxAge: 60 * 60 * 1000 * 2, httpOnly: true },
@@ -43,7 +42,7 @@ app.use(session({
   resave: true,
 }))
 
-// app.use('/index.html', express.static(path.join(__dirname, '/index.html')))
+// app.use('/index.html', express.static(path.join(__dirname, '/build/index.html')))
 
 app.use('/', authRouter);
 app.use('/', employeesRoutes);
@@ -62,20 +61,6 @@ app.use('/', employeesRoutes);
 //     res.json(req.query);
 //   })
 // })
-
-
-app.use('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    res.send('logout' + err)
-  })
-})
-app.get('/login1', (req, res) => {
-  // req.session.s = req.sessionID;
-  res.cookie('key', 'v', { httpOnly: false })
-  res.send('123');
-})
-
-
 
 
 

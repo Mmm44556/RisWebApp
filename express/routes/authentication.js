@@ -19,7 +19,7 @@ router.use((req, res, next) => {
  * 用戶驗證
  */
 
-router.get('/authentication', authenticationController.sessionChecker, authenticationController.authentication);
+router.get('/authentication', authenticationController.sessionChecker);
 router.post('/api/login', authenticationController.login);
 router.post('/api/register', authenticationController.register);
 router.delete('/api/logout/:id', authenticationController.logout);

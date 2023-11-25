@@ -23,7 +23,7 @@ router.use((req, res, next) => {
 
   next();
 });
-router.use('/', authenticationController.sessionChecker);
+
 router.get('/employees?', employeeController.browse);
 router.get('/employees/:id', employeeController.read);
 router.put('/employees/:id', employeeController.update);
