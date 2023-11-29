@@ -1,69 +1,99 @@
-import React, {  useState, useEffect } from 'react';
-import { Form, useActionData, useOutletContext,useLoaderData } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Form, useActionData, useOutletContext, useBeforeUnload } from 'react-router-dom';
 import { Form as BsForm } from 'react-bootstrap';
+
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye, AiFillMedicineBox } from "react-icons/ai";
 import { BsFillTelephoneFill } from "react-icons/bs";
-import style from "../../assets/scss/style.module.scss";
+import style from "@style";
 import AuthCheck from '../AuthCheck';
+import { useQueryClient } from '@tanstack/react-query';
+//紀錄當前表單資料，進行持久化
+let signUpForm = {
+  Name: '',
+  email: '',
+  phone: '',
+};
 
-function Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus) {
-  if (authCheck?.msg == 'ok') {
-    setRegisterConfirm('Login')
-    setRegisterStatus(e => ({ ...e, is: true, info: authCheck?.info }))
-    Navigate('Login', { replace: true })
-    return
-  }
+export default function Register({ Title, service, location }) {
+  const queryClient = useQueryClient();
+  const authCheckMsg = useActionData();
 
+  const [authCheck, setAuthCheck] = useState(authCheckMsg);
+  const preFormData = JSON.parse(localStorage.getItem('signUpForm') ?? '{}');
 
-}
-
-export default function Register() {
-
-  const authCheck = useActionData();
   const [Navigate, setRegisterConfirm, setRegisterStatus] = useOutletContext();
-  //關閉錯誤提示
-  useEffect(() => {
-    Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus)
-  }, [authCheck])
-
   const genders = ["Male", "Bisexual", "Female"];
   const [TelInit, setTelInit] = useState('');
   const [visible, setVisible] = useState(false);
+
+
+  //路由變化進行持久化表單
+  useBeforeUnload(
+    useCallback(() => {
+      localStorage.setItem('signUpForm', JSON.stringify(signUpForm))
+    }, [])
+  );
+
+  useEffect(() => {
+    return () => {
+      console.log('卸載')
+      setAuthCheck(null);
+    }
+  }, [])
+  //關閉錯誤提示
+  useEffect(() => {
+
+    if (preFormData?.phone) {
+      setTelInit(preFormData?.phone);
+    }
+    Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus, service)
+    return () => {
+
+      //持久化當前表單值
+      localStorage.setItem('signUpForm', JSON.stringify(signUpForm));
+    }
+  }, [authCheck])
+
+ 
   const handleTelChange = (event) => {
     const value = event.target.value.replace(/[\WA-Za-z_]/, '');
     setTelInit(value)
   };
-
   return (
     <>
-      <AuthCheck authCheck={authCheck} />
-      <Form method="post" action="/Register" className={style.login}
-        onKeyDown={(e) => {
-          if (e.key !== undefined) {
-            e.code = e.key;
-          } else if (e.keyIdentifier !== undefined) {
-            e.code = e.keyIdentifier;
-          } else if (e.keyCode !== undefined) {
-            e.code = e.keyCode;
-          }
-          if (/\s/.test(e.code)) {
-            e.preventDefault()
-          }
+      {
+        authCheck?.msg == 'ok' ? null : <AuthCheck authCheck={authCheck} />
+      }
+
+      <Form method="post" action={(location ? location : "/sign-up")}
+        className={style.login}
+        onKeyDown={preventSpaceKeyDown}
+
+        onChange={(e) => {
+          signUpForm[e.target.id] = e.target.value;
         }}
       >
         <p className='text-center fs-4 fw-bold' >
-          Register
-          <AiOutlineProfile className="fs-3" />
+          {
+            Title ?? <>
+              Register
+              <AiOutlineProfile className="fs-3" />
+            </>
+          }
+
         </p>
         <label htmlFor="Name" className="text-center">
           <MdAccountBox />
-          <input id='Name' type="text" name="name"
+          <input id='Name'
+            type="text"
+            name="name"
             placeholder='Name / 名稱'
             className="w-100"
             spellCheck
             required
             maxLength="40"
+            defaultValue={preFormData?.Name}
           />
         </label>
         <label htmlFor="department" className="d-flex">
@@ -88,11 +118,14 @@ export default function Register() {
         </label>
         <label htmlFor="email" className="text-center">
           <AiFillMail />
-          <input id='email' type="text" name="email" placeholder='Email'
+          <input id='email'
+            type="text"
+            name="email"
+            placeholder='Email'
             className="w-100"
             required
             maxLength="40"
-
+            defaultValue={preFormData?.email}
           />
         </label>
         <div style={{ display: 'grid', position: 'relative' }}>
@@ -116,7 +149,9 @@ export default function Register() {
 
         <label htmlFor="confirmPassword" className="text-center">
           <MdPassword />
-          <input id='confirmPassword' type='password' name="confirmPassword"
+          <input id='confirmPassword'
+            type='password'
+            name="confirmPassword"
             className="w-100"
             required
             autoComplete='off'
@@ -128,14 +163,18 @@ export default function Register() {
 
         <label htmlFor="phone" className="text-center">
           <BsFillTelephoneFill />
-          <input id='phone' type='tel' name="phone"
+          <input id='phone'
+            type='tel'
+            name="phone"
             className="w-100"
             required
             minLength="9"
             maxLength="9"
             placeholder='+886-xxxxxxxxx'
             value={TelInit}
-            onInput={handleTelChange} />
+            onInput={handleTelChange}
+
+          />
         </label>
 
         <div className="d-flex" >
@@ -147,38 +186,77 @@ export default function Register() {
             max="70"
             placeholder='age'
           />
-            <tbody>
-              <tr className={style.gender}>
-                {
-                  genders.map((e, index) => {
-                    return (
-                      <th key={index} >
-                        <label
-                          htmlFor={e}
-                        >{e}</label>
-                        <input id={e}
-                          type="radio"
-                          name="gender"
-                          value={e}
-                        />
-                      </th>
-                    )
-                  })
-                }
-              </tr>
-            </tbody>
-         
+          <tbody>
+            <tr className={style.gender}>
+              {
+                genders.map((e, index) => {
+                  return (
+                    <th key={index} >
+                      <label
+                        htmlFor={e}
+                      >{e}</label>
+                      <input id={e}
+                        type="radio"
+                        name="gender"
+                        value={e}
+                      />
+                    </th>
+                  )
+                })
+              }
+            </tr>
+          </tbody>
+
         </div>
 
         <div>
-          <button type="submit">註冊</button>
-          <button type="reset" onClick={() => {
-            setTelInit('')
-          }}>重置</button>
+          <button type="submit"
+            onClick={() => setAuthCheck(authCheckMsg)}
+          >註冊</button>
+          <button type="reset" onClick={resetForm(setTelInit, setAuthCheck)}>重置</button>
         </div>
 
       </Form>
     </>
   )
+
+  function Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus, service) {
+
+    //註冊成功轉導登入路由
+    if (authCheck?.msg == 'ok' && service !== 'admin') {
+      setRegisterConfirm('Login');
+      setRegisterStatus(e => ({ ...e, is: true, info: authCheck?.info }));
+      Navigate('Login', { replace: true });
+      return;
+    }
+
+  }
 }
 
+function resetForm(setTelInit, setAuthCheck) {
+
+  return () => {
+
+    let entriesForm = Object.entries(signUpForm);
+    entriesForm.forEach(e => e[1] = '');
+    let fromEntriesForm = Object.fromEntries(entriesForm);
+    signUpForm = fromEntriesForm
+    localStorage.setItem('signUpForm', JSON.stringify(signUpForm));
+    setAuthCheck(null)
+    setTelInit('');
+  }
+}
+
+function preventSpaceKeyDown(e) {
+  //限制空格符號輸入
+  if (e.key !== undefined) {
+    e.code = e.key;
+  } else if (e.keyIdentifier !== undefined) {
+    e.code = e.keyIdentifier;
+  } else if (e.keyCode !== undefined) {
+    e.code = e.keyCode;
+  }
+  if (/\s/.test(e.code)) {
+    e.preventDefault()
+  }
+}

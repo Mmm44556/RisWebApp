@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useMemo } from 'react'
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import React, { useEffect, useState } from 'react'
+import { Container, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, Outlet } from 'react-router-dom';
 
-import style from "../assets/scss/style.module.scss";
+import style from "@style";
 export default function Authentication() {
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
+  const queryClient = useQueryClient();
   //註冊通過轉導
-  const [registerConfirm, setRegisterConfirm] = useState('Login');
-  const [registerStatus,setRegisterStatus] = useState({is:false,info:''});
-  
+  const [registerConfirm, setRegisterConfirm] = useState('sign-in');
+  const [registerStatus, setRegisterStatus] = useState({ is: false, info: '' });
+
+
   useEffect(() => {
-    Navigate('Login', { replace: true })
+    Navigate('sign-in', { replace: true })
+    queryClient.removeQueries();
   }, [])
   return (
     <>
@@ -35,17 +35,17 @@ export default function Authentication() {
               onSelect={e => {
                 Navigate(e, { replace: true })
                 setRegisterConfirm(e)
-                setRegisterStatus(e => ({...e,is: false, info: ''}))
+                setRegisterStatus(e => ({ ...e, is: false, info: '' }))
                 return e
               }}
 
             >
-              <Tab eventKey="Login" title="登入" />
-              <Tab eventKey="Register" title="註冊" />
+              <Tab eventKey="sign-in" title="登入" />
+              <Tab eventKey="sign-up" title="註冊" />
             </Tabs>
-            
+
             <Outlet context={[Navigate, setRegisterConfirm, setRegisterStatus]} />
-            {registerStatus.is ? <h2 className={style.regiCheck}>{registerStatus.info}</h2>:null}
+            {registerStatus.is ? <h2 className={style.regiCheck}>{registerStatus.info}</h2> : null}
           </Col>
         </Row>
       </Container>

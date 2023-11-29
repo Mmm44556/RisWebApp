@@ -57,8 +57,9 @@ class EmployeeController {
 
   delete = async (req, res) => {
     const { params } = req;
+    console.log(params)
     const result = await this._userService.delete(params.id);
-    console.log('刪除結果:', result);
+    // console.log('刪除結果:', result);
     res.status(result.status).send(result.msg);
 
   }

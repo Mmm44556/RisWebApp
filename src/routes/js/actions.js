@@ -1,5 +1,5 @@
 import { redirect } from "react-router-dom";
-
+import getRandomHexColor from "@utils/randomColor";
 const reg = new RegExp(/[^\u4e00-\u9fa5a-zA-Z0-9]+/i);
 const space = new RegExp(/\d/i);
 const mail = new RegExp(/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/i);
@@ -26,7 +26,6 @@ async function loginAction({ request }) {
   })
 
   if (res.status == '200') {
-
     return redirect('/DashBoard');
   }
   const result = await res.text()
@@ -55,9 +54,9 @@ async function saveUserInfoAction({ request, params }) {
       'Content-Type': 'application/json',
     },
   })
-  
+
   if (res.status == 409) {
-    return { status: res.status ,msg:'保存失敗'};
+    return { status: res.status, msg: '保存失敗' };
   }
   return { status: res.status, msg: '保存成功' };
 
@@ -103,7 +102,7 @@ async function registerAction({ request }) {
   if (!res.ok) {
     return { msg: await res.text(), icon: 'rest' }
   }
-
+  localStorage.setItem('figure', getRandomHexColor());
   return { msg: 'ok', info: '註冊成功，請重新登入' };
 
 

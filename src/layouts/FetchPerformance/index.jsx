@@ -27,7 +27,10 @@ const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
       }}
       onClose={toggleShow}
       bg={createDetail.theme.toLowerCase()}
-      className={`${layout}`}>
+      className={`${layout} `}
+      style={{ background: (createDetail.theme ??'#ffdb36')}}
+      >
+      
       <Toast.Header>
         {createDetail.spinner ? <Spinner animation="border" variant={createDetail.theme} style={{ width: '1rem', height: '1rem' }} /> : <AiOutlineCheck />}
         <strong className="me-auto">

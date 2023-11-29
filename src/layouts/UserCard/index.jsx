@@ -1,10 +1,10 @@
 import { Card, ListGroup, Image, ProgressBar } from 'react-bootstrap';
-export default function UserCard({ userState: { normalInfo ,medicalInfo} }) {
+export default function UserCard({ userState: { normalInfo, medicalInfo }, Figure }) {
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
       <Card.Body>
         <Card.Title className='pb-2'>
-            <Image src="https://picsum.photos/171/180?random=2" roundedCircle fluid  />
+          {Figure??null}
         </Card.Title>
         <Card.Subtitle className="mb-2 text-muted">
           <p>{normalInfo["user_name"]}</p>

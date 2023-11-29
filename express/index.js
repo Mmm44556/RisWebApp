@@ -11,7 +11,7 @@ const authRouter = require('./routes/authentication');
 const employeesRoutes = require('./routes/employees');
 const path = require('path')
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5174',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 

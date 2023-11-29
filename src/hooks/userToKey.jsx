@@ -119,7 +119,7 @@ const userToKeys = {
       lastTimeLogin: '上次登入時間'
     }
     param.forEach((v, k) => {
-      if (k == 'user_register_time') v = new Date(v).toUTCString();
+      if (k == 'user_register_time') v = new Date(v).toLocaleString();
       userArr.push(<Fragment key={k}>
         <td className='p-3 fs-5'>{key[k]}</td>
         <td className='p-3 ' >{v}</td>

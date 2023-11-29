@@ -139,7 +139,7 @@ class UserRepository extends IUserRepository {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(userQuery.broseUserData, [page, per_page], (err, row) => {
+        conn.query(userQuery.browseUserData, [page, per_page], (err, row) => {
           if (err) {
             reject(err);
             conn.release();
@@ -195,8 +195,10 @@ class UserRepository extends IUserRepository {
         if (err) throw err;
         conn.query(userQuery.createUserData, [name, department, email, confirmPassword, phone, gender, age, uuid], (err) => {
           if (err) {
+
             reject(err);
           } else {
+
             resolve(true);
           }
           conn.release();
@@ -440,7 +442,7 @@ class UserSession extends IUserSession {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(`update sessions set sid=?,data=?,created_at=?,expires=? WHERE user_id=?`, [null, null, null, null, userID], (err, row) => {
+        conn.query(`update sessions set sid=?,data=?,expires=? WHERE user_id=?`, [null, null,  null, userID], (err, row) => {
           if (err) {
             reject(err);
             conn.release();

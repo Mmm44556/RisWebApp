@@ -1,44 +1,17 @@
 
-import { redirect, defer } from "react-router-dom";
-import { decodeBase64 } from "./decodeJson";
-async function sessionCheck() {
-  try {
-    let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/authentication`
-      , {
-        credentials: 'include',
-        mode: 'cors',
-        method: 'GET'
-      },
-    )
-   
-    if (res.status == 401) {
-      alert('登入已逾時，請重新登入!');
-      return redirect('/login')
-    }
-    
-    if (res.status == 200) {
+import { redirect } from "react-router-dom";
 
-      let DataBase64Encode = await res.text();
-      const dataDecodeJson = decodeBase64(DataBase64Encode);
-      console.log('loader----:', dataDecodeJson)
-      return dataDecodeJson;
-    }
-
-  } catch (error) {
-    redirect('/login')
-    return ""
-  }
-
-}
-
-async function sessionCheck2() {
-  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/login`, {
+async function sessionCheck(props) {
+  console.log(props,'@@@@@@@@@')
+  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/authentication`, {
+    method: 'GET',
     credentials: 'include',
     mode: 'cors',
   },
   )
+
   if (res.status == '200') return redirect('/DashBoard/dataList')
   return '';
 }
 
-export { sessionCheck, sessionCheck2 }
+export { sessionCheck }

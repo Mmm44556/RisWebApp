@@ -1,20 +1,14 @@
-import { QueryClient, QueryCache, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Suspense } from 'react';
+import { QueryClient, QueryCache, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
+import Loading from '@error/Loading';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: async () => {
-        let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/authentication`
-          , {
-            credentials: 'include',
-            mode: 'cors',
-            method: 'GET'
-          },
-        )
-        return await res.json();
-      },
-      retryDelay:1500
+      staleTime: 300000,
     },
 
     queryCache: new QueryCache({
@@ -25,14 +19,38 @@ const queryClient = new QueryClient({
   }
 });
 function App() {
-
-
   return (
     <>
       <QueryClientProvider client={queryClient}>
-      <Outlet></Outlet>
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary
+              onReset={reset}
+              fallbackRender={({ resetErrorBoundary }) => {
+                console.log(resetErrorBoundary)
+                return (
+                  < div >
+                    There was an error!
+                    <Button Button onClick={() => resetErrorBoundary()}>Try again</Button>
+                  </div>
+
+                )
+
+              }
+              }
+            >
+              <Suspense fallback={<Loading />}>
+
+                <Outlet></Outlet>
+
+
+              </Suspense>
+
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
         <ReactQueryDevtools></ReactQueryDevtools>
-      </QueryClientProvider>
+      </QueryClientProvider >
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom'
 function useUser() {
   const navigator = useNavigate();
-  const { data, isSuccess, isFetching, status } = useQuery({
+  const { data, isSuccess, isFetching, status ,fetchStatus} = useQuery({
     queryKey: ['userCtx'],
     queryFn: async () => {
       let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/authentication`
@@ -15,20 +15,19 @@ function useUser() {
       )
 
       if (res.status == 401) {
-        alert("登入超時，請重新登入!")
-        navigator('/login')
+        alert('登入逾時，請重新登入!')
+        navigator('/sign-in');
         return;
       }
       const user = await res.json();
       const normalizedUser = userInitial(user.msg);
       return normalizedUser
     },
-    retry: 1,
+    retry:1,
     retryDelay:1500,
     refetchOnWindowFocus: true,
-    suspense:true
   })
-  return { data, isSuccess, isFetching, status }
+  return { data, isSuccess, isFetching, status, fetchStatus }
 }
 
 export default useUser;

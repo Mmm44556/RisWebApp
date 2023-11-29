@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import {  useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-import { fetcherState } from './userToKey';
+import { fetcherState } from '../../../hooks/userToKey';
 //表單提交
 const useSubmission = (fetcher, normalInfo, setShowToast, edit) => {
   const location = useLocation();

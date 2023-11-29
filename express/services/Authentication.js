@@ -62,6 +62,7 @@ class AuthenticationService {
 
     } catch (error) {
       let registerResult = new ErrorBoundary(error);
+      console.log('error:', registerResult);
       return registerResult.registerResult();
     }
   }
@@ -77,11 +78,11 @@ class AuthenticationService {
 
     try {
       //先判斷有無sessionID
-      
+
       if (req.session.sessionID) {
         const UserSessionData = await this.#userRepository.getSessionData(req.session.sessionID);
         //長度為0代表有ID查不到該筆用戶
-      
+
         if (UserSessionData.length === 0) {
           return { status: 401, msg: UserSessionData };
         }
@@ -91,7 +92,7 @@ class AuthenticationService {
         return { status: 401, msg: [] }
       }
     } catch (error) {
-      
+
       return { status: 204, msg: 'User Not Found', data: error };
     }
   }
@@ -100,10 +101,10 @@ class AuthenticationService {
    * 用戶ID用於刪除sessions資料
    * @param {number} user_id 
    */
-  logout=async (user_id)=>{
-      const result = await this.#userRepository.deleteSessionData(user_id);
-      if(result==1) return {status:204,msg:'success'}
-      return {status:500,msg:'Logout failed!'}
+  logout = async (user_id) => {
+    const result = await this.#userRepository.deleteSessionData(user_id);
+    if (result == 1) return { status: 204, msg: 'success' }
+    return { status: 500, msg: 'Logout failed!' }
   }
 
 
