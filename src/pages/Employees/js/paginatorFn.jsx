@@ -12,13 +12,16 @@ function fetchEmployees(page = 0, perPage = 10) {
 }
 
 //過濾功能
-function useFilterComponent(data = []) {
+function useFilterComponent(data = [], queryClient) {
   const [filterKeyWord, setFilterKeyWord] = useState('user_name');
   const [filterText, setFilterText] = useState('');
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
+  const user = queryClient.getQueryData(['userCtx']);
+  const name = user.normalInfo;
+
   //過濾輸入資料，每次輸入都會執行
   const filteredItems = data.filter(
-    item => item[filterKeyWord] && item[filterKeyWord].toLowerCase().includes(filterText.toLowerCase())
+    item => item[filterKeyWord] && item[filterKeyWord].toLowerCase().includes(filterText.toLowerCase()) && !(item['user_name'].includes(name.user_name))
   );
 
   //輸入框組件

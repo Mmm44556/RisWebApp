@@ -11,6 +11,7 @@ function AuthCheck({ authCheck }) {
     'rest': <RxCross2 />
 
   }
+  console.log('authCheck:', authCheck);
   return (
     <>
       {

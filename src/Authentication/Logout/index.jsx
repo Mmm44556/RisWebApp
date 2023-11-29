@@ -1,11 +1,12 @@
-import { memo } from 'react'
+import { memo } from 'react';
+
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { MdLogout } from 'react-icons/md';
 
 function Logout({ normalInfo, show, LogoutModalHandle }) {
   const navigator = useNavigate();
-
+  const queryClient = useQueryClient();
   const logout = async () => {
     let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/logout/${normalInfo.user_id}`, {
       method: 'DELETE',
@@ -13,7 +14,9 @@ function Logout({ normalInfo, show, LogoutModalHandle }) {
       mode: 'cors',
     })
     if (res.status == 204) {
-      navigator('/login', { replace: true })
+      navigator('/sign-in', { replace: true });
+
+
     }
 
   }

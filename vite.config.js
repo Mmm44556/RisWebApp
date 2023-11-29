@@ -18,6 +18,7 @@ export default defineConfig({
       '@routes': resolve(__dirname, 'src/routes'),
       '@store': resolve(__dirname, 'src/store'),
       '@utils': resolve(__dirname, 'src/utils'),
+      '@error': resolve(__dirname, 'src/Errors')
 
     },
 

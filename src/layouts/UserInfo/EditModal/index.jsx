@@ -2,7 +2,7 @@ import { useState, memo, useRef, useEffect } from 'react';
 
 import { Button, Modal } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { fetcherState } from '../hooks/userToKey';
+import { fetcherState } from '../../../hooks/userToKey';
 import style from '../../../assets/scss/style.module.scss'
 function EditModal({ setNormalInfo, type, edit, fetcher, userState, setShowToast, setToastDetail, showToast }) {
   const location = useLocation();

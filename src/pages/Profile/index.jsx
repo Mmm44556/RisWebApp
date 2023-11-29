@@ -1,13 +1,15 @@
-import { useEffect } from 'react';
+
 import { useOutletContext } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import UserCard from '../../layouts/UserCard';
 import UserInfo from '../../layouts/UserInfo';
 
+
 export default function Profile() {
   const [userState, setToastDetail, setShowToast, showToast] = useOutletContext();
 
   return (
+    
     <Container fluid className='mt-3'>
       <Row>
         <Col sm={3}>

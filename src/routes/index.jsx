@@ -1,16 +1,13 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import DashBoard from "../components/DashBoard";
 import Authentication from "../Authentication";
 import Login from "../Authentication/Login";
 import Register from "../Authentication/Register";
-import DataList from "../pages/DataList";
-import Profile from "../pages/Profile";
-import Employees from "../pages/Employees";
 
-import { sessionCheck, sessionCheck2 } from "./js/sessionPrefetch";
+import { sessionCheck } from "./js/sessionPrefetch";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
+
 
 
 const router = createBrowserRouter([
@@ -23,13 +20,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'DashBoard',
-        element: <DashBoard />,
-        // loader: sessionCheck,
-
+        lazy: async () => {
+          let DashBoard = await import("@components/DashBoard");
+          return { Component: DashBoard.default }
+        },
         shouldRevalidate() {
           return false
         },
-        errorElement: <h1>Please check the Internet</h1>,
         children: [
           {
             path: 'dataList',
@@ -45,7 +42,10 @@ const router = createBrowserRouter([
           },
           {
             path: 'user/:id',
-            element: <Profile />,
+            lazy: async () => {
+              let Profile = await import("@pages/Profile");
+              return { Component: Profile.default }
+            },
             action: saveUserInfoAction,
             shouldRevalidate() {
               return false
@@ -53,42 +53,39 @@ const router = createBrowserRouter([
 
           },
           {
-            path: 'employees',
-            element: <Employees />,
-            // loader: async ({ request }) => {
-            //   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees?per_page=10&page=0`, {
-            //     method: 'GET',
-            //     credentials: 'include',
-            //     mode: 'cors'
-            //   })
-            //   return await res.json();
-            // }
+            path: 'employees/*',
+            lazy: async () => {
+              let Employees = await import("@pages/Employees");
+              return { Component: Employees.default }
+            },
+            action: registerAction
           },
           {
-            path: 'logout',
-            element: <h1>Logout</h1>,
-            action: async (req) => {
-              console.log(req)
-              return null
-            }
+            path: 'notifications',
+            async lazy() {
+              let Notifications = await import("@pages/Notifications");
+              return {
+                Component: Notifications.default
+              }
+            },
           },
         ]
       },
       {
         path: '/',
         element: <Authentication />,
-        // loader: sessionCheck2,
+        loader: sessionCheck,
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [
           {
-            path: 'Register',
+            path: 'sign-up/*',
             element: <Register />,
             action: registerAction,
             errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>
 
           },
           {
-            path: 'Login',
+            path: 'sign-in/*',
             element: <Login />,
             action: loginAction,
             errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,

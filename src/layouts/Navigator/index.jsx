@@ -1,17 +1,19 @@
 import { memo, useState, lazy, Suspense, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Nav, Navbar, Form, NavDropdown, Image, Button } from 'react-bootstrap';
+import { Container, Nav, Navbar, Form, NavDropdown, Button } from 'react-bootstrap';
 import { IoNotificationsOutline } from "react-icons/io5"
-import { FaGithub } from "react-icons/fa";;
 import { BsFilterLeft, BsSearch } from "react-icons/bs";
 import { MdOutlineLightMode, MdOutlineNightlight } from "react-icons/md";
-import style from '../../assets/scss/style.module.scss';
-import { themeContext } from '../../context';
+import style from '@style';
+import { themeContext } from '@context';
+import { Figure } from '@assets/styled';
+
 const Logout = lazy(() => import('../../Authentication/Logout'));
 const DirectMsg = lazy(() => import('../../components/DashBoard/DirectMsg'));
 
 
-const switchTheme = (setTheme)=>() => setTheme(v => {
+
+const switchTheme = (setTheme) => () => setTheme(v => {
   if (v) {
     localStorage.setItem('theme', 'Dark');
   } else {
@@ -24,14 +26,15 @@ function Navigator({ normalInfo }) {
   const { theme, setTheme } = useContext(themeContext);
   const { show, LogoutModalHandle } = useLogoutModal();
   let searchParams = useLocation();
-  
+
   return <>
+
     <Navbar expand={"sm"}
       style={{ zIndex: '1000' }}
       className="shadow p-1  rounded bg-light"
       collapseOnSelect
-
     >
+
       <Container >
         {searchParams.pathname.split('/').includes("dataList") ? <><NavDropdown title={<span type="button" className="btn btn-outline-secondary border-0 ">
           <BsFilterLeft className='fs-4' /></span>} id="collasible-nav-dropdown" className='me-3'>
@@ -60,14 +63,6 @@ function Navigator({ normalInfo }) {
 
           <Nav className="me-auto" />
           <Nav className={style.navigator_tabs}>
-            <Nav.Item >
-              <a href='https://github.com/Mmm44556/RisWebApp'
-                target='_blank'
-                className='text-secondary'
-              >
-                <FaGithub />
-              </a>
-            </Nav.Item>
             <Nav.Item>
               <Button
                 variant="light"
@@ -86,12 +81,12 @@ function Navigator({ normalInfo }) {
                 <DirectMsg />
               </Suspense>
 
-
             </Nav.Item>
             <Nav.Item >
               <NavDropdown
                 title={<>
-                  <Image src="https://picsum.photos/30/30" roundedCircle className='me-1' />{normalInfo['user_name']}</>}
+                  <Figure bg={(localStorage.getItem('figure') ?? '#fff')}>{normalInfo['user_name'].charAt(0)}</Figure>
+                  {normalInfo['user_name']}</>}
                 id="navbarScrollingDropdown">
 
                 <NavDropdown.Item href="#action3" >

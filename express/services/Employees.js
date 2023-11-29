@@ -39,7 +39,6 @@ class EmployeeService {
       //把uuid的buffer轉成string
       const normalizedResult = (JSON.parse(JSON.stringify(result, BufferReplacer)));
       const count = Object.values(total)[0];
-     
       if (next.length == 0) {
         return { data: normalizedResult, status: 200, next: false, total: count }
       }
