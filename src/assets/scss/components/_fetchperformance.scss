@@ -17,11 +17,12 @@ $toast_position: fixed;
 
 .fadeIn {
   @extend %toast_layout;
- 
+
 
 }
 
 .fadeOut {
+
   @extend %toast_layout;
   @include fadeOut;
   @include userSelect;

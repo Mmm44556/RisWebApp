@@ -13,14 +13,14 @@ function Form({ fetch: { normalInfo, setNormalInfo, editButton, edit, fetcher, u
   return (
     <>
       <fetcher.Form
-
         onInput={normalInfoChangeCallBack(setNormalInfo)}
         className={style.normalInfo}
       >
-        {userToKeys.normalInfo(normalInfo).length ?
-          userToKeys.normalInfo(normalInfo, edit) : '尚無資料'}
+        <table>
+          {userToKeys.normalInfo(normalInfo).length ?
+            userToKeys.normalInfo(normalInfo, edit) : '尚無資料'}
+        </table>
         <div className="hstack gap-3 position-absolute end-0 top-0 mt-2 me-2">
-
           <EditModal
             edit={edit}
             type={'submit'}

@@ -1,7 +1,7 @@
 import { memo, useState, lazy, Suspense, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container, Nav, Navbar, Form, NavDropdown, Button } from 'react-bootstrap';
-import { IoNotificationsOutline } from "react-icons/io5"
+import { IoNotificationsOutline } from "react-icons/io5";
 import { BsFilterLeft, BsSearch } from "react-icons/bs";
 import { MdOutlineLightMode, MdOutlineNightlight } from "react-icons/md";
 import style from '@style';

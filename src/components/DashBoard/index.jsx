@@ -91,7 +91,7 @@ function useTheme() {
 }
 function useSysToastDetail() {
   //系統Toast內容
-  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "" });
+  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "",show:false });
   return { ToastDetail, setToastDetail }
 }
 function useSysToastShow() {

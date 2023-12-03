@@ -1,63 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Dropdown, ListGroup, Image } from 'react-bootstrap';
-
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Dropdown, ListGroup } from 'react-bootstrap';
+import { Figure } from '@assets/styled';
 import { IoNotificationsOutline } from "react-icons/io5";
 import styled from 'styled-components';
 import style from '@style';
 
 const ScaleDown = styled.div`
-	-webkit-animation:${({ animationName }) => animationName} 0.4s ease-out  backwards !important;
-  animation: ${({ animationName }) => animationName} 0.4s ease-out  backwards !important;
 
-@-webkit-keyframes scale-up-tr {
-  0% {
-    -webkit-transform: scale(0);
-            transform: scale(0);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
-  100% {
-    -webkit-transform: scale(1);
-            transform: scale(1);
-    -webkit-transform-origin: 100% 0%;
-            transform-origin: 100% 0%;
-  }
+  animation: ${({ animationName }) => animationName};
+
 }
 @keyframes scale-up-tr {
   0% {
-    -webkit-transform: scale(0);
             transform: scale(0);
-    -webkit-transform-origin: 100% 0%;
             transform-origin: 100% 0%;
-            opacity:0;
   }
   100% {
-    -webkit-transform: scale(1);
             transform: scale(1);
-    -webkit-transform-origin: 100% 0%;
             transform-origin: 100% 0%;
-            opacity:1;
+          
   }
 }
 
 `
 
 
-const CustomToggle = React.forwardRef(({ children, onClick, setAnimationName }, ref) => (
-  <Button
-    variant='light'
-    ref={ref}
-    onClick={(e) => {
-      e.preventDefault();
-      setAnimationName(v => !v);
-      onClick(e)
-    }
-    }
-    style={{ borderRadius: '50px' }}
-  >
-    {children}
-  </Button>
-));
+const CustomToggle = React.forwardRef((props, ref) => {
+  const { children, onClick, setAnimationName } = props
+  useEffect(() => {
+    if (/show/i.test(props.className) == false) setAnimationName(false);
+  }, [props.className])
+  return (
+    <Button
+      variant='light'
+      ref={ref}
+      onClick={(e) => {
+
+        setAnimationName(v => !v);
+        e.preventDefault();
+        onClick(e)
+      }
+      }
+      style={{ borderRadius: '50px' }}
+    >
+      {children}
+    </Button>
+  )
+});
 
 const CustomMenu = React.forwardRef(
   (props, ref) => {
@@ -66,12 +55,15 @@ const CustomMenu = React.forwardRef(
 
     return (
       <ScaleDown
-        animationName={animationName ? 'scale-up-tr' : ''}>
+        animationName={animationName ? 'scale-up-tr  0.4s ease-out  backwards !important' : null}
+      >
         <div
           ref={ref}
           style={{ ...style, transform: "translateX(-90%)" }}
           className={`${className} p-0  `}
           aria-labelledby={labeledBy}
+
+
         >
           <p className=' fw-bold d-flex justify-content-between p-2 m-0 border-bottom'>
             <span>
@@ -81,7 +73,7 @@ const CustomMenu = React.forwardRef(
               Mark all as read
             </a>
           </p>
-          <ListGroup>
+          <ListGroup >
             {
               ['', 'secondary', 'secondary', ''].map((e, index) => (
                 <ListGroup.Item action
@@ -92,7 +84,7 @@ const CustomMenu = React.forwardRef(
                   <div className='d-flex'>
                     <div>
 
-                      <Image src="https://picsum.photos/30/30" roundedCircle className='me-2' />
+                      <Figure>2</Figure>
                     </div>
                     <div className='d-flex flex-column text-nowrap'>
                       <h5 className='m-0'>tim</h5>
@@ -121,8 +113,11 @@ const CustomMenu = React.forwardRef(
 function DirectMsg() {
   const [animationName, setAnimationName] = useState(false)
 
+
   return (
-    <Dropdown>
+    <Dropdown
+
+    >
       <Dropdown.Toggle as={CustomToggle}
         id="dropdown-custom-components"
         setAnimationName={setAnimationName}>
@@ -134,7 +129,9 @@ function DirectMsg() {
         </div>
       </Dropdown.Toggle>
       <Dropdown.Menu
+
         as={CustomMenu}
+        setAnimationName={setAnimationName}
         animationName={animationName}>
       </Dropdown.Menu>
     </Dropdown>

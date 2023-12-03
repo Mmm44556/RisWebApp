@@ -2,13 +2,10 @@ import React, { useEffect } from 'react';
 import { Form, useActionData } from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import style from "../../assets/scss/style.module.scss";
-import { useQueryClient } from '@tanstack/react-query';
 export default function Login() {
   const LoginState = useActionData();
-  const queryClient = useQueryClient();
-  useEffect(() => {
-    // queryClient.removeQueries()
-  }, [])
+
+
   useEffect(() => {
     if (LoginState?.msg) alert(LoginState.msg)
   }, [LoginState])

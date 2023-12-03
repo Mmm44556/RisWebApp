@@ -29,7 +29,7 @@ class EmployeeController {
 */
   update = async (req, res) => {
     const { body, params } = req;
-  
+
     const result = await this._userService.update(body, params);
 
     res.status(result.status).send(result.msg);

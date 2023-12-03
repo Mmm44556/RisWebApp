@@ -25,6 +25,7 @@ $opacity: 1;
 
 @mixin fadeOut {
   animation: fadeOut 2s forwards;
+
 }
 
 @mixin slideDown {
