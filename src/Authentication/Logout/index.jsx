@@ -6,7 +6,7 @@ import { MdLogout } from 'react-icons/md';
 
 function Logout({ normalInfo, show, LogoutModalHandle }) {
   const navigator = useNavigate();
-  const queryClient = useQueryClient();
+  
   const logout = async () => {
     let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/logout/${normalInfo.user_id}`, {
       method: 'DELETE',

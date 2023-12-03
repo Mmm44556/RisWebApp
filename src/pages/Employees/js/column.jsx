@@ -1,5 +1,5 @@
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import moment from 'moment';
 import EditDropdown from '../EditDropdown';
 import { Media } from 'react-data-table-component';
 import { Figure } from '@assets/styled';
@@ -137,19 +137,26 @@ function getColumns(page) {
       name: '上次登入',
       selector: row => {
 
-        const timeString = new Date(row.lastTimeLogin ?? 'N') ?? '尚未登記';
-        console.log(timeString)
+        const timeString = moment(row.lastTimeLogin);
+
+        const timeValid = /Invalid\b/i.test(timeString);
         return (
           <>
             <OverlayTrigger
               placement={'bottom'}
               overlay={
                 <Tooltip id={`tooltip-${row.uuid}`}>
-                  <time dateTime={`${timeString.toLocaleDateString()}`}>{timeString.toLocaleTimeString()}</time>.
+                  <time dateTime={`${timeString.format('YYYY-MM-DD')}`}>
+                    {timeString.format('h:mm:ss a')}
+                  </time>.
                 </Tooltip>
               }
             >
-              <div variant="secondary">{timeString.toLocaleDateString() ?? '尚未登記'}</div>
+              <div variant="secondary">
+                {
+                  timeValid ? '尚未登記' : timeString.format('YYYY-MM-DD')
+                }
+              </div>
             </OverlayTrigger>
           </>
         )
@@ -175,4 +182,4 @@ function getColumns(page) {
   return columns
 }
 
-export { getColumns, customStyles, sex }
+export { getColumns, customStyles, sex, role }

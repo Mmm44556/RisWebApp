@@ -3,17 +3,11 @@
  * @param {object} date 時間物件
  * @return {object}
  */
-function formatDateTime(date) {
+const moment = require('moment');
+function formatDateTime() {
   //對時間格式化，用於儲存資料庫
-  let year = date.getFullYear();
-  let month = (date.getMonth() + 1).toString().padStart(2, '0');
-  let day = date.getDate().toString().padStart(2, '0');
-  let hours = date.getHours().toString().padStart(2, '0');
-  let lateHours = (date.getHours() + 2).toString().padStart(2, '0');
-  let minutes = date.getMinutes().toString().padStart(2, '0');
-  let seconds = date.getSeconds().toString().padStart(2, '0');
-  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  const formattedExpiresDate = `${year}-${month}-${day} ${lateHours}:${minutes}:${seconds}`;
+  let formattedDate = moment().format('YYYY-MM-DD h:mm:ss');
+  let formattedExpiresDate = moment().add(2, 'hours').format('YYYY-MM-DD h:mm:ss');
   return { formattedDate, formattedExpiresDate };
 }
 

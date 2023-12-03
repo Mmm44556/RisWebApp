@@ -168,8 +168,7 @@ class UserRepository extends IUserRepository {
             conn.release();
           } else {
             //設置sessionID登入、過期時間
-            let currentDate = new Date();
-            let { formattedDate, formattedExpiresDate } = formatDateTime(currentDate);
+            let { formattedDate, formattedExpiresDate } = formatDateTime();
             // @ts-ignore
             const userInfo = { ...row[0], lastTimeLogin: formattedDate };
             resolve(userInfo);
@@ -266,16 +265,19 @@ class UserRepository extends IUserRepository {
     };
 
     const { queryParams, queryProps } = queryHandler(userInfo);
-    // console.log(queryParams, queryProps)
+    const { formattedDate } = formatDateTime();
+
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(`update user join sessions on user.user_id = sessions.user_id join role on user.user_id = role.user_id  set ${queryProps},sessions.data=?,role.role_uid=?,role.role_name=? where user.user_id=?`, [...queryParams, newUserInfo, role_uid, role[role_uid], user_id], (err, row) => {
+        conn.query(`update user join sessions on user.user_id = sessions.user_id join role on user.user_id = role.user_id set ${queryProps},sessions.data=?,sessions.updated_at=?,role.role_uid=?,role.role_name=? where user.user_id=?`, [...queryParams, newUserInfo, formattedDate, role_uid, role[role_uid], user_id], (err, row) => {
           if (err) {
+
             reject(err);
             conn.release();
             return;
           }
+
           resolve('success');
           conn.release();
           return;
@@ -391,15 +393,20 @@ class UserSession extends IUserSession {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(`SELECT data FROM sessions WHERE sid='${sid}'`, (err, row) => {
+        conn.query(`SELECT data,updated_at as lastTimeUpdate FROM sessions WHERE sid='${sid}'`, (err, row) => {
 
           if (!row.length) {
             reject({});
             conn.release();
             return
           }
+          console.log(row[0])
+
+          const data = JSON.parse(row[0].data);
+          const lastTimeUpdate = row[0].lastTimeUpdate;
+          const stringify = JSON.stringify({ ...data, lastTimeUpdate  });
           //@ts-ignore
-          resolve(row[0].data);
+          resolve(stringify);
           conn.release();
           return
         })
@@ -418,10 +425,13 @@ class UserSession extends IUserSession {
         if (err) throw err;
         //保存用戶編輯
         const { user_id } = userInfo;
+       
+        const { formattedDate } = formatDateTime();
         //自動化參數
         const { queryProps, queryParams } = queryHandler(userInfo);
+     
 
-        conn.query(`UPDATE user set ${queryProps} where user_id=?`, [...queryParams, user_id], (err, row) => {
+        conn.query(`UPDATE user join sessions as ses on ses.user_id=user.user_id set ${queryProps},ses.updated_at=? where user_id=?`, [...queryParams, formattedDate, user_id], (err, row) => {
           if (err) {
             reject({ status: 409, msg: ' error' });
 
@@ -442,7 +452,7 @@ class UserSession extends IUserSession {
     return new Promise((resolve, reject) => {
       this.conn.getConnection((err, conn) => {
         if (err) throw err;
-        conn.query(`update sessions set sid=?,data=?,expires=? WHERE user_id=?`, [null, null,  null, userID], (err, row) => {
+        conn.query(`update sessions set sid=?,data=?,expires=? WHERE user_id=?`, [null, null, null, userID], (err, row) => {
           if (err) {
             reject(err);
             conn.release();

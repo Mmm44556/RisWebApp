@@ -1,13 +1,16 @@
 import { forwardRef, useState, useEffect, useMemo } from 'react'
-import { Dropdown, Button, DropdownItem, Container, Row, Col } from 'react-bootstrap';
+import { Dropdown, Button, DropdownItem, Container, Row, Col, Form } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query';
 import { useOutletContext } from 'react-router-dom';
 import { MdAutoDelete } from "react-icons/md";
 import { BsThreeDotsVertical, BsWrench } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
 
+import AdditionalInfo from '@components/AdditionalInfo';
+import NormalCard from '@layouts/NormalCard';
 import UserContainer from '@layouts/UserContainer';
 import UserCard from '@layouts/UserCard';
+import { role } from '../js/column';
 import { userToKeys } from '@hooks/userToKey';
 import useEditGroup from '../js/useEditGroup';
 import userInitial from '@store/userInitial';
@@ -32,8 +35,42 @@ transform:${(({ open }) => open ? 'rotate(-90deg)' : '')}
 const EnhDropdown = styled(DropdownItem)`
 font-weight:bold;
 padding-right:0;
+padding-top:0;
 svg{
 margin-right:5px;
+}`
+const TdElements = styled.table`
+width:100%;
+--fontSize:1.1rem;
+--fontWeight:600;
+--fontColor:#6d6d6d;
+
+tr{
+  margin:0px;
+  border-bottom:1.3px solid #dadada;
+
+
+  td{
+    text-align:left;
+    padding:8px !important;
+    &:first-child{
+    font-weight:700 !important;
+    }
+    &:last-child{
+      display:flex;
+      align-items:center;
+      border:none;
+      font-size:var(--fontSize);
+      font-weight:var(--fontWeight);
+      color:var(--fontColor);
+    }
+  input{
+    border:none;
+    font-size:var(--fontSize);
+    font-weight:var(--fontWeight);
+    color:var(--fontColor);
+  }
+  }
 }
 
 `
@@ -79,26 +116,64 @@ const CustomMenu = forwardRef(
   },
 );
 
-function confirmResult(user_name, setDeleteInfo) {
-  let result = confirm(`確定刪除該筆資料? ${user_name}`);
-  setDeleteInfo(result);
+//Middle ware詢問鍵，確定是否編輯操作
+function confirmResult(user_name, context, setOperations, hint) {
+  let result = confirm(`${context} ${user_name}`);
+  setOperations({ type: hint, bool: result });
   return result;
 }
+//編輯Modal's Header
+function Header({ currentEditUser }) {
+  const { role_uid } = currentEditUser.normalInfo;
+  return (
+    < >人員資料修改-<FaUser className='fs-5  align-baseline' />
+      Role_Group:<Button
+        variant={(role_uid == 1 ? 'danger' : 'primary')}
+        as="div"
+        className='m-1 fw-bold user-select-none'
 
+      >
+        {role[role_uid]}</Button>@
+      <div className='d-inline-block text-secondary'>
+        上次更新:
+        {
+          new Date().toLocaleString()
+        }
+      </div>
+    </>
+  )
+}
 
 export default function EditDropdown({ userData, page }) {
+  //獲取SysToast
   const [userState, setToastDetail, setShowToast, showToast] = useOutletContext();
   const setToast = (details) => {
     setShowToast(v => !v);
     setToastDetail({ ...details });
   }
-  const editUser = useMemo(() => userInitial(userData));
+  const editUser = useMemo(() => userInitial(userData), [userData]);
+
+  const [currentEditUser, setCurrentEditUser] = useState(editUser);
 
   const [open, setIsOpen] = useState(false);
-  const [deleteInfo, setDeleteInfo] = useState(false);
+  //操作Mutation狀態
+  const [operations, setOperations] = useState({ type: 'DEFAULT', bool: false });
+  const [department, setDepartment] = useState({ department_name: currentEditUser.medicalInfo.department_name, position_id: currentEditUser.medicalInfo.position_id });
   const queryClient = useQueryClient();
-  const { mutate } = useEditGroup(queryClient, page, setToast, deleteInfo);
+  const { mutate, combinationUserFields } = useEditGroup(queryClient, page, setToast, operations);
 
+  const submitUpdateUserDate = (e) => {
+    confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE');
+
+    mutate({ newData: currentEditUser, operation: 'UPDATE' })
+
+  }
+  const resetUpdateUserDate = () => {
+    //編輯用戶未修改的話重置
+    const employeesData = queryClient.getQueryData(['employees', page]).data;
+    const defaultUserData = employeesData.filter(e => e.user_id === userData.user_id);
+    setCurrentEditUser(userInitial(defaultUserData[0]));
+  }
 
   return (
     <Dropdown>
@@ -116,41 +191,112 @@ export default function EditDropdown({ userData, page }) {
         >
           <UserContainer
             title={<> <BsWrench className='text-secondary me-1 ' />編輯</>}
-            header={< >人員資料修改-<FaUser className='fs-5  align-baseline' />
-            {userData.user_name}</>}>
+            header={<Header currentEditUser={currentEditUser} />}
+            resetUpdateUserDate={resetUpdateUserDate}
+          >
+
             <Container>
-              <Row >
-                <Col lg={4}>
-                  <UserCard userState={editUser} 
-                  Figure={null}/>
-                </Col>
-                <Col>
-                {
-                    userToKeys.normalInfo(editUser.normalInfo)
-                }
-                </Col>
-              </Row>
+              <form
+                onChange={(e) => {
+                  //捕獲輸入修改當前User資料狀態
+                  let inputTag = `user_${e.target.name}`;
+                  const value = e.target.value;
+                  const combinationUserField = combinationUserFields(currentEditUser);
+                 
+                  if (inputTag === 'user_department') inputTag = 'position_id';
+                  const updateDate = userInitial({ ...combinationUserField, [inputTag]: value });
+
+                  setCurrentEditUser(() => updateDate);
+
+                }}
+              >
 
 
+                <Row >
+
+                  <Col lg={3}>
+                    <Col>
+
+                      <UserCard
+                        userState={currentEditUser}
+                        Figure={null}
+                        role={'admin'}
+                        save={submitUpdateUserDate}
+                      />
+                    </Col>
+                    <Col>
+                      Notifications
+                    </Col>
+                  </Col>
+
+                  <Col lg={9} className="text-nowrap">
+                    <Col>
+
+                      <NormalCard
+                        subtitle={currentEditUser.normalInfo.uuid}
+                        second={0.6}
+                        delay={0.1}
+                      >
+
+                        <TdElements>
+
+
+                          {
+                            userToKeys.normalInfo(currentEditUser.normalInfo, setCurrentEditUser, 'admin')
+                          }
+
+
+                        </TdElements>
+
+                      </NormalCard>
+
+                    </Col>
+                    <Row>
+                      <Col>
+                        <NormalCard
+                          second={3}
+                          delay={0.7}
+                        >
+
+                        </NormalCard>
+                      </Col>
+                      <Col>
+                        <NormalCard
+                          subtitle={<AdditionalInfo ToolText={
+                            '注意!保存後才一併修改'} />}
+                          second={2}
+                          delay={0.5}
+                        >
+                          <TdElements >
+                            {
+                              userToKeys.medicalInfo(currentEditUser.medicalInfo, 'admin', department, setDepartment)
+                            }
+                            {
+                              userToKeys.restInfo(currentEditUser.restInfo)
+                            }
+                          </TdElements>
+                        </NormalCard>
+                      </Col>
+                    </Row>
+
+                  </Col>
+                </Row>
+
+              </form>
             </Container>
-
 
           </UserContainer>
         </EnhDropdown>
 
         <EnhDropdown eventKey="2"
           onClick={(e) => {
-            confirmResult(userData.user_name, setDeleteInfo);
-            mutate(userData)
+            confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE');
+            mutate({ newData: userData, operation: 'DELETE' })
           }}>
           <MdAutoDelete className='text-danger' />
           刪除
         </EnhDropdown>
-
       </Dropdown.Menu>
-
-
-
     </Dropdown>
   );
 }

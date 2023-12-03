@@ -48,12 +48,13 @@ function UserInfo({ userState, setToastDetail, setShowToast, showToast }) {
           <tr>
             <td className='position-relative'>
               <h4 className={fontStyle}>用戶資訊</h4>
-
+            
               <Form fetch={{ normalInfo, setNormalInfo, editButton, edit, fetcher, userState, setToastDetail, setShowToast, showToast }} />
+          
             </td>
           </tr>
           <tr>
-            <td>
+            <td >
               <h4 className={fontStyle}>醫療部門</h4>
               {userToKeys.medicalInfo(userState.medicalInfo).length ?
                 userToKeys.medicalInfo(userState.medicalInfo) : '尚無資料'}
@@ -62,10 +63,10 @@ function UserInfo({ userState, setToastDetail, setShowToast, showToast }) {
           <tr>
             <td>
               <h4 className={fontStyle}>其他</h4>
-              <tr>
-                {userToKeys.restInfo(userState.restInfo).length ?
-                  userToKeys.restInfo(userState.restInfo) : '尚無資料'}
-              </tr>
+
+              {userToKeys.restInfo(userState.restInfo).length ?
+                userToKeys.restInfo(userState.restInfo) : '尚無資料'}
+
             </td>
           </tr>
         </tbody>

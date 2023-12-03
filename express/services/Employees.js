@@ -83,15 +83,19 @@ class EmployeeService {
     try {
 
       const userSessionData = await this.#userRepository.read(params.id);
-      delete userInfo.position_id;
-      //合併新、舊資料
-      const newUserInfo = { ...JSON.parse(userSessionData.data), ...userInfo }
 
+      //合併新、舊資料
+      const newUserInfo = { ...JSON.parse(userSessionData.data), ...userInfo };
+
+      delete userInfo.position_name;
+      delete userInfo.department_name;
       const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
+      
       return { status: 200, msg: result };
     } catch (error) {
-
-      return { msg: error, status: 409 };;
+      const errorBoundary =this.searchResult(error);
+      console.log(errorBoundary)
+      return { msg: errorBoundary, status: 409 };;
     }
 
   }
@@ -115,6 +119,16 @@ class EmployeeService {
     } catch (error) {
       return { msg: error, status: 409 };
     }
+  }
+  searchResult(err) {
+    if (/name/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '名稱已被註冊過' };
+    } else if (/mail/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '信箱已被註冊過' };
+    } else if (/phone/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '電話已被註冊過' };
+    }
+
   }
 
 }

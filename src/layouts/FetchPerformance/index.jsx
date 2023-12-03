@@ -19,7 +19,7 @@ const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
 
   return (
     <Toast
-      onMouseEnter={() => setLayout(style.fadeIn)}
+      onMouseOver={() => setLayout(style.fadeIn)}
       onMouseLeave={() => setLayout(style.fadeOut)}
       show={showToast}
       onAnimationEnd={() => {
@@ -28,9 +28,9 @@ const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
       onClose={toggleShow}
       bg={createDetail.theme.toLowerCase()}
       className={`${layout} `}
-      style={{ background: (createDetail.theme ??'#ffdb36')}}
-      >
-      
+      style={{ background: (createDetail.theme ?? '#ffdb36') }}
+    >
+
       <Toast.Header>
         {createDetail.spinner ? <Spinner animation="border" variant={createDetail.theme} style={{ width: '1rem', height: '1rem' }} /> : <AiOutlineCheck />}
         <strong className="me-auto">

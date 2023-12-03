@@ -1,6 +1,7 @@
 import { Nav, Placeholder } from "react-bootstrap";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDashboardCustomize, MdAccountBox, MdPeople, MdAnalytics } from "react-icons/md";
+import { IoIosMail } from "react-icons/io";
 import { GrSystem } from "react-icons/gr";
 
 
@@ -9,7 +10,7 @@ function SideBar({ userState }) {
 
   const { normalInfo } = userState;
 
-  const navigator = useNavigate();
+
   let url = useLocation(); //匹配當前路由
   url = url.pathname.split('/');
   return (
@@ -64,7 +65,7 @@ function SideBar({ userState }) {
           onClick={useNavigator('notifications')}
           eventKey="notifications"
           title="notifications">
-          <MdDashboardCustomize />郵件通知
+          <IoIosMail />郵件通知
         </Nav.Link>
       </Nav.Item>
     </Nav>

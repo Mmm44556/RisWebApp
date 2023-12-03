@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
-function UserContainer({ title,header, children }) {
+function UserContainer({ title, header, children, resetUpdateUserDate }) {
 
   const [lgShow, setLgShow] = useState(false);
 
@@ -11,9 +11,12 @@ function UserContainer({ title,header, children }) {
         {title}
       </div>
       <Modal
-        size="lg"
+        size="xl"
         show={lgShow}
-        onHide={() => setLgShow(false)}
+        onHide={() => {
+          setLgShow(false);
+          resetUpdateUserDate();
+        }}
         aria-labelledby="example-modal-sizes-title-lg"
       >
         <Modal.Header closeButton>
