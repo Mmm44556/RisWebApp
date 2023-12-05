@@ -11,6 +11,7 @@ import { useUser } from "@hooks";
 
 import style from "@style";
 
+
 const SideBar = lazy(() => import("@components/SideBar"));
 
 
@@ -42,6 +43,7 @@ function DashBoard() {
 
               </Col>
               <Col xl={10} className={style.rightBreakpoint} as="main">
+
                 <Col >
                   {
                     status == 'success' ? <Navigator normalInfo={userState.normalInfo} /> : null
@@ -91,7 +93,7 @@ function useTheme() {
 }
 function useSysToastDetail() {
   //系統Toast內容
-  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "",show:false });
+  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "", show: false });
   return { ToastDetail, setToastDetail }
 }
 function useSysToastShow() {

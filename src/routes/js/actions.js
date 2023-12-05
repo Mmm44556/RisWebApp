@@ -26,12 +26,12 @@ async function loginAction({ request }) {
   })
 
   if (res.status == '200') {
-    return redirect('/DashBoard');
+    return redirect('/DashBoard/dataList');
   }
   const result = await res.text()
   return { msg: result };
-}
 
+}
 
 async function saveUserInfoAction({ request, params }) {
 

@@ -39,12 +39,12 @@ function App() {
               }
               }
             >
-              <Suspense fallback={<Loading />}>
+              {/* <Suspense fallback={<Loading />}> */}
 
                 <Outlet></Outlet>
 
 
-              </Suspense>
+              
 
             </ErrorBoundary>
           )}

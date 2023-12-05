@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import { Container, Row, Col, Tab, Tabs,Image } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, Outlet } from 'react-router-dom';
-
+import background from '@assets/images/sys.png';
 import style from "@style";
 export default function Authentication() {
   const Navigate = useNavigate();
@@ -20,17 +20,17 @@ export default function Authentication() {
     <>
       <Container fluid className={style.authContainer} >
 
-        <Row className='x'>
-          <Col xl={9} md={9} sm={9} xs={6}>
-            1 of 1
+        <Row >
+          <Col xl={4} md={4} sm={4} xs={4} className='p-0'>
+          
           </Col>
-
-          <Col xl={3} md={3} sm={3} xs={6} className='border-start m-0 p-0'>
+          <Col xl={4} md={4} sm={4} xs={4} className='border m-0 p-0'>
 
             <Tabs
               defaultActiveKey="Login"
               id="controlled-tab-example"
               activeKey={registerConfirm}
+
               fill
               onSelect={e => {
                 Navigate(e, { replace: true })
@@ -46,6 +46,9 @@ export default function Authentication() {
 
             <Outlet context={[Navigate, setRegisterConfirm, setRegisterStatus]} />
             {registerStatus.is ? <h2 className={style.regiCheck}>{registerStatus.info}</h2> : null}
+          </Col>
+          <Col xl={4} md={4} sm={4} xs={4} className='p-0'>
+
           </Col>
         </Row>
       </Container>
