@@ -1,6 +1,6 @@
 import { Card, ListGroup, Button, ProgressBar, Stack } from 'react-bootstrap';
 import { IoIosMail } from "react-icons/io";
-export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role,save }) {
+export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role, save }) {
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
       <Card.Body>
@@ -22,7 +22,7 @@ export default function UserCard({ userState: { normalInfo, medicalInfo, reports
               role === 'admin' ? <>  <Stack direction="horizontal" className='justify-content-center' gap={1}>
                 <div className="p-0">
                   <Button variant="success" className='fw-bold' size="sm">
-                    <IoIosMail /> 發送郵件
+                    發送郵件
                   </Button>
                 </div>
                 <div className="p-0">

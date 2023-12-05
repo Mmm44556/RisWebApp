@@ -1,9 +1,9 @@
-import { Suspense, lazy } from "react";
+
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Authentication from "../Authentication";
-import Login from "../Authentication/Login";
-import Register from "../Authentication/Register";
+import Authentication from "@authentication";
+import Login from "@authentication/Login";
+import Register from "@authentication/Register";
 
 import { sessionCheck } from "./js/sessionPrefetch";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
@@ -30,14 +30,42 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'dataList',
-            element: <h1>datalist</h1>,
-            shouldRevalidate() {
-              return false
+            lazy: async () => {
+              let DataList = await import("@pages/dataList");
+              return { Component: DataList.default }
             },
+
+            children: [
+              {
+                path: '',
+                lazy: async () => {
+                  let { Root } = await import("@pages/dataList");
+                  return { Component: Root }
+                },
+              },
+              {
+                path: 'type/*',
+                lazy: async () => {
+                  let Type = await import("@pages/dataList/Type");
+                  return { Component: Type.default }
+                },
+              }
+            ]
+          },
+          {
+            path: 'uploader/*',
+            lazy: async () => {
+              let Uploader = await import("@pages/Uploader");
+              return { Component: Uploader.default }
+            },
+
           },
           {
             path: 'analysis',
-            element: <h1>Analysis</h1>,
+            lazy: async () => {
+              let Analysis = await import("@pages/Analysis");
+              return { Component: Analysis.default }
+            },
 
           },
           {
@@ -68,7 +96,7 @@ const router = createBrowserRouter([
                 Component: Notifications.default
               }
             },
-          },
+          }
         ]
       },
       {

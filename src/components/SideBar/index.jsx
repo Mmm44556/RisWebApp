@@ -1,15 +1,14 @@
-import { Nav, Placeholder } from "react-bootstrap";
+
+import { Nav } from "react-bootstrap";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDashboardCustomize, MdAccountBox, MdPeople, MdAnalytics } from "react-icons/md";
 import { IoIosMail } from "react-icons/io";
 import { GrSystem } from "react-icons/gr";
-
-
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 function SideBar({ userState }) {
 
   const { normalInfo } = userState;
-
 
   let url = useLocation(); //匹配當前路由
   url = url.pathname.split('/');
@@ -26,6 +25,14 @@ function SideBar({ userState }) {
         </Nav.Link>
       </Nav.Item>
       <hr />
+      <Nav.Item as="li">
+        <Nav.Link
+          onClick={useNavigator('uploader')}
+          eventKey="uploader"
+          title="uploader">
+          <FaCloudUploadAlt /> 上傳報告
+        </Nav.Link>
+      </Nav.Item>
       <Nav.Item as="li">
         <Nav.Link
           onClick={useNavigator('dataList')}
@@ -73,6 +80,8 @@ function SideBar({ userState }) {
 }
 function useNavigator( location, options={replace:false} ) {
   const navigator = useNavigate();
+
+
   return () => navigator(location, {...options});
 
 }
