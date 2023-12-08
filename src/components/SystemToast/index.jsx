@@ -1,11 +1,32 @@
 import { useEffect, useState, memo } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import Spinner from 'react-bootstrap/Spinner';
+import { QueryObserver, useQueryClient } from '@tanstack/react-query';
 import { AiOutlineCheck } from "react-icons/ai";
 import style from '@style';
 
+function subscribeUserCtx(queryClient) {
+  const observer = new QueryObserver(queryClient, { queryKey: ['userCtx'] })
+  const unsubscribe = observer.subscribe(result => {
+    // console.log(result)
+  })
 
-const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
+}
+
+
+const SystemToast = ({ showToast, createDetail, toggleShow }) => {
+  const queryClient = useQueryClient();
+  const user = queryClient.getQueryData(['userCtx']);
+  useEffect(() => {
+
+    if (user) {
+      // console.log('@@')
+      subscribeUserCtx(queryClient)
+    }
+
+  }, [user])
+
+
   const [layout, setLayout] = useState(style.fadeIn);
   //設定fadeOut
   useEffect(() => {
@@ -42,5 +63,5 @@ const FetchPerformance = ({ showToast, createDetail, toggleShow }) => {
     </Toast>
   );
 }
-export default memo(FetchPerformance)
+export default memo(SystemToast)
 

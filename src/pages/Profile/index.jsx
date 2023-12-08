@@ -6,7 +6,7 @@ import UserInfo from '../../layouts/UserInfo';
 
 
 export default function Profile() {
-  const [userState, setToastDetail, setShowToast, showToast] = useOutletContext();
+  const [userState, setToastDetail] = useOutletContext();
 
   return (
     
@@ -16,7 +16,7 @@ export default function Profile() {
           <UserCard userState={userState} />
         </Col>
         <Col sm={9} className='pe-4'>
-          <UserInfo userState={userState}  setToastDetail={setToastDetail} setShowToast={setShowToast} showToast={showToast} />
+          <UserInfo userState={userState} />
         </Col>
       </Row>
     </Container>

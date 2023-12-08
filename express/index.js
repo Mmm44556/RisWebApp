@@ -2,20 +2,25 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+
 const port = process.env.PORT || 3301;
 const session = require('express-session');
 const cookie = require('cookie-parser');
 const FileStore = require('session-file-store')(session);
+const bodyParser = require('body-parser');
 
 const authRouter = require('./routes/authentication');
 const employeesRoutes = require('./routes/employees');
-const path = require('path')
+const fileRoutes = require('./routes/filemanager');
+const path = require('path');
 app.use(cors({
   origin: 'http://localhost:5173',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 
 }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use((req, res, next) => {
   req.setTimeout(10000, () => {
@@ -46,7 +51,7 @@ app.use(session({
 
 app.use('/', authRouter);
 app.use('/', employeesRoutes);
-
+app.use('/', fileRoutes);
 
 // app.post('/users', (req, res, next) => {
 

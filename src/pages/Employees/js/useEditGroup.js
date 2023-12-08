@@ -1,11 +1,12 @@
 
 import { useMutation } from '@tanstack/react-query';
 
-function useEditGroup(queryClient, page, setToast, operations) {
+
+function useEditGroup(queryClient, page, operations, { initialToast, updateFetchToast, deleteFetchToast, errorFetchToast }) {
   const { mutate } = useMutation({
     mutationFn: async ({ newData }) => {
       if (operations.type === 'DELETE') {
-        const user_id = newData.normalInfo;
+        const {user_id} = newData;
         fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${user_id}`, {
           method: 'DELETE',
           credentials: 'include',
@@ -21,7 +22,7 @@ function useEditGroup(queryClient, page, setToast, operations) {
         } else {
           data.role_uid = 2;
         }
-     const res = await   fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${data.user_id}`, {
+        const res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${data.user_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -30,10 +31,10 @@ function useEditGroup(queryClient, page, setToast, operations) {
           credentials: 'include',
           mode: 'cors'
         });
-        if(!res.ok){
+        if (!res.ok) {
           const json = await res.json();
           throw new Error(json.msg);
-        
+
         }
 
       }
@@ -41,7 +42,7 @@ function useEditGroup(queryClient, page, setToast, operations) {
     },
 
     onMutate: async ({ newData, operation }) => {
-
+      initialToast();
       //中斷其他正在refetch的動作
       await queryClient.cancelQueries({ queryKey: ['employees'] });
       //把舊資料snapShot
@@ -78,21 +79,20 @@ function useEditGroup(queryClient, page, setToast, operations) {
 
     },
     onError: (err, newTodo, context) => {
-      setToast({ detail: err.message, theme: 'danger', timeStamp: new Date().toLocaleTimeString(), show: true })
+      errorFetchToast();
       queryClient.setQueryData(['employees'], context.previousData);
     },
 
     onSettled: (operations) => {
       if (operations.type === 'DELETE' && operations.bool) {
-        setToast({ detail: '刪除成功!', theme: '#ffdb36', timeStamp: new Date().toLocaleTimeString(), show: true })
+        deleteFetchToast();
         return;
       }
 
       if (operations.type === 'UPDATE' && operations.bool) {
-        setToast({ detail: '編輯成功!', theme: 'success', timeStamp: new Date().toLocaleTimeString(),show:true })
+        updateFetchToast();
         return;
       }
-      // queryClient.removeQueries({ queryKey: ['employees', page] })
 
     }
   });

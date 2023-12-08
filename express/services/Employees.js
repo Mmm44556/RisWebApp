@@ -59,14 +59,13 @@ class EmployeeService {
 
 
     try {
-      const { body, session, sessionID, user } = userInfo;
-      const updateUserData = { ...user, ...body };
-      // console.log("updateUserData:",updateUserData)
-      const result = await this.#userRepository.edit(body, updateUserData, sessionID);
-      if (result.status === 200) {
-        session.user = updateUserData;
-      }
-      return { msg: result, status: 200 };
+      const { body, session, sessionID } = userInfo;
+      const updateUserData = body;
+
+      const result = await this.#userRepository.edit(updateUserData, sessionID);
+
+
+      return result;
 
     } catch (error) {
       return { msg: error, status: 500 };
@@ -90,10 +89,10 @@ class EmployeeService {
       delete userInfo.position_name;
       delete userInfo.department_name;
       const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
-      
+
       return { status: 200, msg: result };
     } catch (error) {
-      const errorBoundary =this.searchResult(error);
+      const errorBoundary = this.searchResult(error);
       console.log(errorBoundary)
       return { msg: errorBoundary, status: 409 };;
     }

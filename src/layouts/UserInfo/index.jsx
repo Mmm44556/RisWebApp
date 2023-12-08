@@ -1,44 +1,22 @@
-import { memo, useState, useCallback, useEffect, lazy, Suspense } from 'react'
-import { Table, Button } from 'react-bootstrap';
-import { useQueryClient, QueryErrorResetBoundary, useQueryErrorResetBoundary } from '@tanstack/react-query';
-
-import { ErrorBoundary } from 'react-error-boundary'
-
+import { memo, useState } from 'react'
+import { Table } from 'react-bootstrap';
 import { useFetcher } from 'react-router-dom';
-
 import Form from './Form';
 import { userToKeys } from '../../hooks/userToKey';
-import { useSubmission, editTrigger } from './hooks/useForm';
+import { useUpdateForm } from './hooks/useForm';
 
 const fontStyle = 'fw-bold';
 
-
-function UserInfo({ userState, setToastDetail, setShowToast, showToast }) {
+function UserInfo({ userState }) {
 
   const fetcher = useFetcher();
-  const fetcherState = fetcher?.data;
   //用戶資料狀態
   const [normalInfo, setNormalInfo] = useState({ ...userState.normalInfo });
   //開啟編輯模式
   const [edit, setEdit] = useState(true);
-  const editButton = editTrigger(setEdit, setToastDetail, fetcher);
-  //觸發提交表單
-  useSubmission(fetcher, normalInfo, setShowToast, edit);
+  //更新上傳成功緩存資料
+  useUpdateForm(normalInfo, edit);
 
-
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    //提交成功後將緩存的用戶資料更新
-    if (edit == false) {
-      const user = queryClient.getQueryData(['userCtx']);
-      const submittedForm = normalInfo;
-      const mutationUser = { ...user, normalInfo: { ...submittedForm } };
-      queryClient.setQueryData(['userCtx'], mutationUser);
-      console.log(queryClient.getQueryData(['userCtx']))
-
-    }
-  }, [edit])
   return (
     <>
 
@@ -48,9 +26,9 @@ function UserInfo({ userState, setToastDetail, setShowToast, showToast }) {
           <tr>
             <td className='position-relative'>
               <h4 className={fontStyle}>用戶資訊</h4>
-            
-              <Form fetch={{ normalInfo, setNormalInfo, editButton, edit, fetcher, userState, setToastDetail, setShowToast, showToast }} />
-          
+
+              <Form fetch={{ normalInfo, setNormalInfo, fetcher, userState, setEdit, edit }} />
+
             </td>
           </tr>
           <tr>

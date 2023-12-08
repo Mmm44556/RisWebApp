@@ -1,6 +1,6 @@
 import { Form, Navbar, Row, Col, Dropdown, ButtonGroup, DropdownButton } from 'react-bootstrap';
 import { BsSearch, BsFilterLeft } from "react-icons/bs";
-import { key } from '../../pages/Employees/js/keywords';
+import { key } from '@pages/Employees/js/keywords';
 import style from '@style'
 
 

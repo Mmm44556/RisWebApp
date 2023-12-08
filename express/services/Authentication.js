@@ -36,12 +36,12 @@ class AuthenticationService {
        * @type {object} 用戶詳細資料
        */
       const user = await this.#userRepository.getUser(name, sessionID);
+
       const result = new ErrorBoundary({ user, password });
       const loginResult = result.loginResult();
 
       return loginResult;
     } catch (error) {
-
       return { status: 409, msg: error };
     }
   }
@@ -62,7 +62,6 @@ class AuthenticationService {
 
     } catch (error) {
       let registerResult = new ErrorBoundary(error);
-      console.log('error:', registerResult);
       return registerResult.registerResult();
     }
   }
@@ -135,8 +134,14 @@ class ErrorBoundary {
      * passwordCheck 檢查用戶密碼正確性
      * result 查到已有用戶且密碼正確返回true
      */
+
     const checkResult = {
-      hasProp: () => Object.hasOwn(user, 'user_name'),
+      hasProp: () => {
+        if (user === undefined){
+          return false
+        }
+        return true
+      },
       passwordCheck: () => user.user_password == password,
       result: () => {
         if (checkResult.hasProp()) {
@@ -155,21 +160,21 @@ class ErrorBoundary {
     }
   }
 
-  /**
-  * 驗證註冊結果
-  * @returns {object} 返回結果物件
-  */
-  registerResult() {
-    const err = this.result;
-    if (/name/i.test(err.sqlMessage)) {
-      return { status: 403, msg: '名稱已被註冊過' };
-    } else if (/mail/i.test(err.sqlMessage)) {
-      return { status: 403, msg: '信箱已被註冊過' };
-    } else if (/phone/i.test(err.sqlMessage)) {
-      return { status: 403, msg: '電話已被註冊過' };
-    }
-
+/**
+* 驗證註冊結果
+* @returns {object} 返回結果物件
+*/
+registerResult() {
+  const err = this.result;
+  if (/name/i.test(err.sqlMessage)) {
+    return { status: 403, msg: '名稱已被註冊過' };
+  } else if (/mail/i.test(err.sqlMessage)) {
+    return { status: 403, msg: '信箱已被註冊過' };
+  } else if (/phone/i.test(err.sqlMessage)) {
+    return { status: 403, msg: '電話已被註冊過' };
   }
+
+}
 
 
 }
