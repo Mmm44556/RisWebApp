@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { QueryClient, QueryCache, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
@@ -27,7 +28,7 @@ function App() {
             <ErrorBoundary
               onReset={reset}
               fallbackRender={({ resetErrorBoundary }) => {
-                console.log(resetErrorBoundary)
+
                 return (
                   < div >
                     There was an error!
@@ -39,17 +40,19 @@ function App() {
               }
               }
             >
-              {/* <Suspense fallback={<Loading />}> */}
+              <Suspense fallback={<Loading />}>
 
                 <Outlet></Outlet>
 
+              </Suspense>
 
-              
 
             </ErrorBoundary>
           )}
+          
         </QueryErrorResetBoundary>
         <ReactQueryDevtools></ReactQueryDevtools>
+
       </QueryClientProvider >
     </>
   );

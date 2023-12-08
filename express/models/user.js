@@ -167,8 +167,17 @@ class UserRepository extends IUserRepository {
             reject(err);
             conn.release();
           } else {
+            if (row[0] === undefined) {
+             
+              resolve(row[0]);
+              conn.release();
+              return
+            }
             //設置sessionID登入、過期時間
             let { formattedDate, formattedExpiresDate } = formatDateTime();
+            let convertUID = Buffer.from(row[0].uuid);
+            const stringUID = convertUID.toString('utf8');
+            row[0].uuid = stringUID;
             // @ts-ignore
             const userInfo = { ...row[0], lastTimeLogin: formattedDate };
             resolve(userInfo);
@@ -208,12 +217,14 @@ class UserRepository extends IUserRepository {
   }
 
 
-  edit = async (userInfo, updateUserData, sessionID) => {
+  edit = async (updateUserData, sessionID) => {
     try {
       const userSession = new UserSession(this.conn);
+      const sessionData = await userSession.getSession(sessionID);
+      const updateData = { ...JSON.parse(sessionData), ...updateUserData };
 
-      const result = await userSession.updateSession(userInfo);
-      userSession.setSession(updateUserData, sessionID);
+      const result = await userSession.updateSession(updateUserData);
+      userSession.setSession(updateData, sessionID);
       return result;
     } catch (error) {
       return error;
@@ -400,11 +411,10 @@ class UserSession extends IUserSession {
             conn.release();
             return
           }
-          console.log(row[0])
 
           const data = JSON.parse(row[0].data);
           const lastTimeUpdate = row[0].lastTimeUpdate;
-          const stringify = JSON.stringify({ ...data, lastTimeUpdate  });
+          const stringify = JSON.stringify({ ...data, lastTimeUpdate });
           //@ts-ignore
           resolve(stringify);
           conn.release();
@@ -425,13 +435,13 @@ class UserSession extends IUserSession {
         if (err) throw err;
         //保存用戶編輯
         const { user_id } = userInfo;
-       
+
         const { formattedDate } = formatDateTime();
         //自動化參數
         const { queryProps, queryParams } = queryHandler(userInfo);
-     
 
-        conn.query(`UPDATE user join sessions as ses on ses.user_id=user.user_id set ${queryProps},ses.updated_at=? where user_id=?`, [...queryParams, formattedDate, user_id], (err, row) => {
+
+        conn.query(`UPDATE user join sessions as ses on ses.user_id=user.user_id set ${queryProps},ses.updated_at=? where user.user_id=?`, [...queryParams, formattedDate, user_id], (err, row) => {
           if (err) {
             reject({ status: 409, msg: ' error' });
 

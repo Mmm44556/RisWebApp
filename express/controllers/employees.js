@@ -30,7 +30,7 @@ class EmployeeController {
   update = async (req, res) => {
     const { body, params } = req;
 
-    const result = await this._userService.update(body, params);
+    const result = await this._userService.update({...body}, params);
 
     res.status(result.status).send(result.msg);
   }
@@ -40,11 +40,11 @@ class EmployeeController {
 * @return {Promise.<object>} 
 */
   edit = async (req, res) => {
-   
+
     const { body, session, sessionID } = req;
-    const user = session.user;
-    const result = await this._userService.edit({ body, session, sessionID, user });
-    res.status(result.status).send(result.msg)
+    const result = await this._userService.edit({ body, session, sessionID });
+    console.log(result)
+    res.status(result.status).send(result)
   }
 
 

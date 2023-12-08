@@ -26,10 +26,10 @@ input,select,span{
 }
 `
 
-function FilesForm({ setForm }) {
+function FilesForm({ setForm, setAdditional }) {
   const [isRadiology, setIsRadiology] = useState(false);
-  //是否添加額外補充
-  const [additional, setAdditional] = useState(false);
+
+  //更新上傳描述
   const saveInput = ({ target }) => {
     setForm(v => {
       v[target.name] = target.value;
@@ -46,6 +46,7 @@ function FilesForm({ setForm }) {
         delete v.time;
         delete v.month;
       }
+      delete v.additional;
       return v;
     })
   }
@@ -150,13 +151,12 @@ function FilesForm({ setForm }) {
           {
             isRadiology ? <Col md={12} lg={12} sm={12} className='mb-3'> <Calender>
               <div className='deadline'>設置截止時間:</div>
-              <input type="time" name="time" min="09:00" max="18:00" required />
               <input
                 id="month"
-                type="month"
-                name="month"
-                min={moment().format('YYYY-MM')}
-                max={moment().format('YYYY-MM')}
+                type="datetime-local"
+                name="deadline"
+                min={moment().format('YYYY-MM-DDTh:mm')}
+                max={moment().add(14,'days').format('YYYY-MM-DDTh:mm')}
                 required
                 pattern="[0-9]{4}-[0-9]{2}" />
             </Calender>   </Col> : null
@@ -181,16 +181,14 @@ function FilesForm({ setForm }) {
               label="添加額外說明"
             />
           </Col>
-          {
-            additional ? <Additional/> : null
-          }
+       
         </Row>
       </Form>
     </ContainerProps>
   )
 }
 
-function Additional(){
+export function Additional(){
   return (
     <Col md={12} lg={12} ms={12}>
       <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">

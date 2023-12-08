@@ -1,29 +1,15 @@
 
 
-/**
- * 資料查詢參數
- * @typedef {object} Query 檔案查詢物件
- * @property {string} query.page 頁數
- * @property {string} query.perPage 每頁資料
- * @property {number} query.delay 延遲回傳(second)
- */
+class FileManagerService {
+  #filesRepository;
+  constructor(filesRepository) {
+    this.#filesRepository = filesRepository;
+  }
 
-/**
- * @typedef {Object} QueryResult 檔案查詢結果物件
- * @property {number} page
- * @property {number} per_page
- * @property {number} total
- * @property {number} total_page
- * @property {array} data
- */
-class FileHandler {
-  /**
-   * @function 獲取檔案資料，依據查詢物件返回結果
-   * @param {Query} query 
-   * @return {QueryResult} 
-   */
-  getDoc(query) {
-    return
+  addNewDoc = async (file) => {
+    console.log('file_service')
+    this.#filesRepository.addNewDoc();
+    return;
   }
 
   save() {
@@ -37,17 +23,6 @@ class FileHandler {
   }
 }
 
-
-
-
-
-class FileManager extends FileHandler {
-
-  constructor() {
-    super()
-  }
-
-}
 
 
 /**檔案追蹤的詳細描述
@@ -76,3 +51,5 @@ class LogHandler {
   readLog() {
   }
 }
+
+module.exports = FileManagerService;

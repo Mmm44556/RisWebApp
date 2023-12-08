@@ -1,7 +1,6 @@
 import { forwardRef, useState, useEffect, useMemo } from 'react'
 import { Dropdown, Button, DropdownItem, Container, Row, Col, Form } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query';
-import { useOutletContext } from 'react-router-dom';
 import { MdAutoDelete } from "react-icons/md";
 import { BsThreeDotsVertical, BsWrench } from "react-icons/bs";
 import { FaUser } from "react-icons/fa";
@@ -14,8 +13,10 @@ import { role } from '../js/column';
 import { userToKeys } from '@hooks/userToKey';
 import useEditGroup from '../js/useEditGroup';
 import userInitial from '@store/userInitial';
-
+import { createToast, updateToast, dismissToast } from '@utils/systemToastify';
+import moment from 'moment';
 import styled from 'styled-components';
+
 
 
 const EnhButton = styled(Button)`
@@ -143,14 +144,47 @@ function Header({ currentEditUser }) {
     </>
   )
 }
+const EMPId = 'employee';
+const initialToast = () => {
+
+  createToast(<span>{`處理中...!`}</span>, {
+    type: 'info',
+    isLoading: true,
+    theme: 'colored',
+    position: "top-right",
+    autoClose: 2000,
+    toastId: EMPId
+  })
+};
+const updateFetchToast = () => {
+  dismissToast(EMPId);
+  createToast(<span>{`更新成功! ${moment().format('hh:mm:ss a')}`}</span>, {
+    type: 'success',
+    theme: 'colored',
+    position: "top-right",
+    autoClose: 3000,
+    delay: 1000
+  })
+};
+const deleteFetchToast = () => {
+  dismissToast(EMPId);
+  createToast(<span>{`刪除成功! ${moment().format('hh:mm:ss a')}`}</span>, {
+    type: 'error',
+    theme: 'colored',
+    position: "top-right",
+  })
+};
+const errorFetchToast = () => {
+  dismissToast(EMPId);
+  createToast(<span>{`發生錯誤! ${moment().format('hh:mm:ss a')}`}</span>, {
+    type: 'error',
+    theme: 'colored',
+    position: "top-right"
+  })
+}
 
 export default function EditDropdown({ userData, page }) {
-  //獲取SysToast
-  const [userState, setToastDetail, setShowToast, showToast] = useOutletContext();
-  const setToast = (details) => {
-    setShowToast(v => !v);
-    setToastDetail({ ...details });
-  }
+
   const editUser = useMemo(() => userInitial(userData), [userData]);
 
   const [currentEditUser, setCurrentEditUser] = useState(editUser);
@@ -160,12 +194,13 @@ export default function EditDropdown({ userData, page }) {
   const [operations, setOperations] = useState({ type: 'DEFAULT', bool: false });
   const [department, setDepartment] = useState({ department_name: currentEditUser.medicalInfo.department_name, position_id: currentEditUser.medicalInfo.position_id });
   const queryClient = useQueryClient();
-  const { mutate, combinationUserFields } = useEditGroup(queryClient, page, setToast, operations);
+  const { mutate, combinationUserFields } = useEditGroup(queryClient, page, operations, { updateFetchToast, deleteFetchToast, errorFetchToast, initialToast });
 
   const submitUpdateUserDate = (e) => {
-    confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE');
+    if (confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE')){
+      mutate({ newData: currentEditUser, operation: 'UPDATE' });
+    }
 
-    mutate({ newData: currentEditUser, operation: 'UPDATE' })
 
   }
   const resetUpdateUserDate = () => {
@@ -202,7 +237,7 @@ export default function EditDropdown({ userData, page }) {
                   let inputTag = `user_${e.target.name}`;
                   const value = e.target.value;
                   const combinationUserField = combinationUserFields(currentEditUser);
-                 
+
                   if (inputTag === 'user_department') inputTag = 'position_id';
                   const updateDate = userInitial({ ...combinationUserField, [inputTag]: value });
 
@@ -290,8 +325,13 @@ export default function EditDropdown({ userData, page }) {
 
         <EnhDropdown eventKey="2"
           onClick={(e) => {
-            confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE');
-            mutate({ newData: userData, operation: 'DELETE' })
+            if(confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE'))
+            {
+             
+              mutate({ newData: userData, operation: 'DELETE' })
+            }
+            
+           
           }}>
           <MdAutoDelete className='text-danger' />
           刪除

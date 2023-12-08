@@ -1,5 +1,6 @@
 import { redirect } from "react-router-dom";
 import getRandomHexColor from "@utils/randomColor";
+import { createToast, updateToast } from '@utils/systemToastify';
 const reg = new RegExp(/[^\u4e00-\u9fa5a-zA-Z0-9]+/i);
 const space = new RegExp(/\d/i);
 const mail = new RegExp(/^\w+(\w+)*@\w+([.]\w+)*\.\w+([-.]\w+)*$/i);
@@ -44,6 +45,10 @@ async function saveUserInfoAction({ request, params }) {
   })
   UserInfoJson = Object.fromEntries(UpdatedUserInfo);
 
+  let toastId = createToast('儲存中...', {
+    isLoading: true,
+    theme:'light',
+  })
 
   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${UserInfoJson.user_id}`, {
     method: request.method,
@@ -56,11 +61,27 @@ async function saveUserInfoAction({ request, params }) {
   })
 
   if (res.status == 409) {
+    updateToast(toastId, {
+      type: 'error',
+      render: '保存失敗',
+      autoClose: 4000,
+    });
+
     return { status: res.status, msg: '保存失敗' };
+
   }
-  return { status: res.status, msg: '保存成功' };
+
+  updateToast(toastId, {
+    render: '儲存成功',
+    type: 'success',
+    isLoading: false,
+    autoClose: 4000,
+  });
+
+  return { status: res.status, msg: '儲存成功' };
 
 }
+
 
 
 async function registerAction({ request }) {

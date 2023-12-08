@@ -1,19 +1,29 @@
-import { Suspense, lazy, memo } from 'react';
+import {  memo } from 'react';
 import { Button } from 'react-bootstrap';
-import { userToKeys } from '../../../hooks/userToKey';
+import {useLocation} from 'react-router-dom';
+import { userToKeys } from '@hooks/userToKey';
 import style from '@style';
 import { useInfoValidation } from '@hooks/userInfoValidation';
 import EditModal from '../EditModal';
 
 
-function Form({ fetch: { normalInfo, setNormalInfo, editButton, edit, fetcher, userState, setToastDetail, setShowToast, showToast } }) {
+function Form({ fetch: { normalInfo, setNormalInfo, fetcher, userState, setEdit, edit } }) {
 
-  const { normalInfoChangeCallBack, setNormalInfoCallBack } = useInfoValidation(setNormalInfo, userState);
-
+  const { resetUserInfo, normalInfoChange } = useInfoValidation(setNormalInfo, userState);
+  const location = useLocation();
+  const submitter = () => {
+    if (edit) {
+      fetcher.submit({ ...userState.normalInfo, ...normalInfo }, {
+        action: location.pathname,
+        method: 'PATCH'
+      })
+    }
+    setEdit(v => !v)
+  }
   return (
     <>
       <fetcher.Form
-        onInput={normalInfoChangeCallBack(setNormalInfo)}
+        onInput={normalInfoChange(setNormalInfo)}
         className={style.normalInfo}
       >
         <table>
@@ -23,25 +33,20 @@ function Form({ fetch: { normalInfo, setNormalInfo, editButton, edit, fetcher, u
         <div className="hstack gap-3 position-absolute end-0 top-0 mt-2 me-2">
           <EditModal
             edit={edit}
-            type={'submit'}
+            type={'button'}
             userState={userState}
-            setToastDetail={setToastDetail}
-            setShowToast={setShowToast}
-            showToast={showToast}
             fetcher={fetcher}
           />
 
           <EditModal
-            setNormalInfo={setNormalInfoCallBack}
+            setNormalInfo={resetUserInfo}
             type={'reset'}
             edit={edit}
-            setToastDetail={setToastDetail}
-            setShowToast={setShowToast}
           />
 
 
-          <Button variant="light" className='fw-bold' type='button'
-            onClick={editButton}
+          <Button variant="light" className='fw-bold' type={'button'}
+            onClick={submitter}
           >
             {edit ? '儲存' : '編輯'}
           </Button>

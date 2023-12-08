@@ -2,10 +2,10 @@ import { useState, Suspense, lazy } from "react";
 import { Col, Row, Container, ThemeProvider } from "react-bootstrap";
 import { Outlet } from 'react-router-dom';
 import { FaGithub } from "react-icons/fa";
-
+import { ToastContainer } from 'react-toastify';
 import SideBarHolder from "@components/SideBar/SideBarHolder";
 import Navigator from "@layouts/Navigator";
-import FetchPerformance from "@layouts/FetchPerformance";
+import SystemToast from "@components/SystemToast";
 import { themeContext } from "@context";
 import { useUser } from "@hooks";
 
@@ -19,9 +19,7 @@ function DashBoard() {
 
   //設置主題
   const [theme, setTheme] = useTheme();
-  //設置系統提示
-  const { ToastDetail, setToastDetail } = useSysToastDetail();
-  const { toggleShow, showToast, setShowToast } = useSysToastShow();
+
   //用戶資料
   const { data, status } = useUser();
   const userState = data;
@@ -31,7 +29,23 @@ function DashBoard() {
       <themeContext.Provider value={{ theme, setTheme }}>
         <ThemeProvider breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs']}
           minBreakpoint="xxs">
+
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+      
           <Container fluid >
+          
+
             <Row>
               <Col className={style.leftBreakpoint} xl={2} as="aside"
               >
@@ -48,12 +62,11 @@ function DashBoard() {
                   {
                     status == 'success' ? <Navigator normalInfo={userState.normalInfo} /> : null
                   }
-                  <FetchPerformance showToast={showToast} createDetail={ToastDetail} toggleShow={toggleShow} />
 
                 </Col>
                 <Col style={{ minHeight: '100vh' }} >
                   {
-                    status == 'success' ? <Outlet context={[userState, setToastDetail, setShowToast, showToast]} />
+                    status == 'success' ? <Outlet context={[userState]} />
                       : null
                   }
                 </Col>
@@ -73,9 +86,11 @@ function DashBoard() {
                 </footer>
               </Col>
             </Row>
+
           </Container>
+
         </ThemeProvider>
-      </themeContext.Provider>
+      </themeContext.Provider >
     </>
 
   );
@@ -91,17 +106,7 @@ function useTheme() {
   });
   return [theme, setTheme]
 }
-function useSysToastDetail() {
-  //系統Toast內容
-  const [ToastDetail, setToastDetail] = useState({ detail: '', theme: 'Success', spinner: false, timeStamp: "", show: false });
-  return { ToastDetail, setToastDetail }
-}
-function useSysToastShow() {
-  //系統Toast顯示
-  const [showToast, setShowToast] = useState(false);
-  const toggleShow = () => setShowToast(!showToast);
-  return { toggleShow, showToast, setShowToast }
-}
+
 
 
 export default DashBoard;

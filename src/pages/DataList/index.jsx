@@ -49,11 +49,12 @@ function DataList() {
         className="text-end"
       >
         {
-          currentPath.map(e => {
+          currentPath.map((e,idx) => {
             return (
 
               <Breadcrumb.Item
                 className="fs-4"
+                key={idx}
                 linkProps={
                   {
                     className: "text-decoration-none fs-4 text-secondary fw-lighter"
@@ -191,12 +192,10 @@ export function Root(params) {
                         </Card.Title>
                         <Card.Text>
                           <Row>
-
-
                             {
-                              [1, 2].map(e => {
+                              [1, 2].map((e,idx) => {
                                 return (
-                                  <Col>
+                                  <Col key={idx}>
                                     123
                                   </Col>
                                 )

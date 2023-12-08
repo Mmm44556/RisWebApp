@@ -4,7 +4,8 @@ import App from "../App";
 import Authentication from "@authentication";
 import Login from "@authentication/Login";
 import Register from "@authentication/Register";
-
+import DashBoard from '@components/DashBoard';
+import Employees from '@pages/Employees';
 import { sessionCheck } from "./js/sessionPrefetch";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
 
@@ -20,13 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'DashBoard',
-        lazy: async () => {
-          let DashBoard = await import("@components/DashBoard");
-          return { Component: DashBoard.default }
-        },
-        shouldRevalidate() {
-          return false
-        },
+        element:<DashBoard/>,
         children: [
           {
             path: 'dataList',
@@ -82,10 +77,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'employees/*',
-            lazy: async () => {
-              let Employees = await import("@pages/Employees");
-              return { Component: Employees.default }
-            },
+            element: <Employees/>,
             action: registerAction
           },
           {
