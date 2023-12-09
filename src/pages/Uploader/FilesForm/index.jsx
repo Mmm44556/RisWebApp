@@ -37,7 +37,7 @@ function FilesForm({ setForm, setAdditional }) {
         v[target.name] = target.checked;
       }
 
-      if (target.name === 'additional' && target.checked==false){
+      if (target.name === 'additional' && target.checked == false) {
         delete v.description;
         delete v.additional;
       }
@@ -84,10 +84,10 @@ function FilesForm({ setForm, setAdditional }) {
         </Row>
         <Row>
           {
-            selection.map(e => {
+            selection.map((e,idx) => {
               return (
 
-                <Col md={12} lg={12} sm={12} className='mb-4'>
+                <Col md={12} lg={12} sm={12} className='mb-4' key={idx}>
                   <Form.Select
                     aria-label="medical selection"
                     id={e.title}
@@ -105,14 +105,13 @@ function FilesForm({ setForm, setAdditional }) {
                     }}
                   >
                     <option
-
                       value={e.default}>
                       {e.title}
                     </option>
                     {
-                      Object.entries(e.values).map(v => {
+                      Object.entries(e.values).map((v,idx) => {
                         return (
-                          <option value={v[0]}>{v[1]}</option>
+                          <option key={idx} value={v[0]}>{v[1]}</option>
                         )
                       })
                     }
@@ -126,18 +125,18 @@ function FilesForm({ setForm, setAdditional }) {
             isRadiology ? <>
               <Col md={12} lg={12} sm={12} className='mb-4'>
                 {
-                  parts.map(e => {
-
+                  parts.map((e,idx) => {
                     return (
                       <Form.Select
                         name={e.name}
                         aria-label="medical selection"
+                        key={idx}
                       >
                         <option value={e.default}>{e.title}</option>
                         {
-                          Object.entries(e.values).map(v => {
+                          Object.entries(e.values).map((v,k,idx) => {
                             return (
-                              <option value={v[0]}>{v[1]}</option>
+                              <option key={idx} value={v[0]}>{v[1]}</option>
                             )
                           })
                         }
@@ -156,7 +155,7 @@ function FilesForm({ setForm, setAdditional }) {
                 type="datetime-local"
                 name="deadline"
                 min={moment().format('YYYY-MM-DDTh:mm')}
-                max={moment().add(14,'days').format('YYYY-MM-DDTh:mm')}
+                max={moment().add(14, 'days').format('YYYY-MM-DDTh:mm')}
                 required
                 pattern="[0-9]{4}-[0-9]{2}" />
             </Calender>   </Col> : null
@@ -181,23 +180,12 @@ function FilesForm({ setForm, setAdditional }) {
               label="添加額外說明"
             />
           </Col>
-       
+
         </Row>
       </Form>
     </ContainerProps>
   )
 }
 
-export function Additional(){
-  return (
-    <Col md={12} lg={12} ms={12}>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-        <Form.Label>說明:</Form.Label>
-        <Form.Control name="description" as="textarea" rows={3} />
-      </Form.Group>
-
-    </Col> 
-  )
-}
 
 export default memo(FilesForm);

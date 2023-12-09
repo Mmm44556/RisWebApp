@@ -1,7 +1,9 @@
+
 const firestoreDB = require('../mysql/firebase');
 const firestore = require('firebase/firestore');
 
-const { addDoc } = firestore;
+const moment = require('moment');
+const { addDoc, collection, doc, setDoc, query, where, getDoc, getDocs ,getCountFromServer} = firestore;
 
 
 /**
@@ -16,8 +18,7 @@ const { addDoc } = firestore;
 * @property {string} parts 檢查部位
 (Liver、Chest、Kidney、Spleen、Liver Transplant) 
 * @property {string} inspection  檢查方法(CT、MRI)
-* @property {string} ext 檔案類型(.txt)
-* @property {object} state 額外描述
+* @property {object} description 額外描述
 * @property {object} state.proposal 狀態:
 完成、未完成、醫師提出是否回覆
 * @property {object} state.review 是否被列入覆閱工作
@@ -28,6 +29,9 @@ const { addDoc } = firestore;
 * @property {string} date.update 更新時間
 */
 
+
+
+
 class IFilesRepository {
 
   connectDB() {
@@ -35,14 +39,21 @@ class IFilesRepository {
   }
 
   /**
-   * 
-   * @param {File} file
+   * 新增報告
+   * @param {array} readAllFile 要新增的資料陣列 
+   * @param {*} privateInfo 上傳者資訊描述
    */
-  addNewDoc = async (file) => {
+  addNewDoc = async (readAllFile, privateInfo) => {
 
-    return
   }
+  /**
+   * 瀏覽各部門報告描述
+   */
+  browseDocs = async () => {
 
+    
+
+  }
 
 }
 
@@ -52,10 +63,55 @@ class FilesRepository extends IFilesRepository {
     super();
     this.connectDB();
   }
-  addNewDoc = async (file) => {
 
-    return
+
+  browseDocs = async () => {
+    //查詢所有部門報告數量
+    const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSAL", "REVIEWS", "PRECESS"].map(async(e)=>{
+      const depart = firestore.collection(firestoreDB, e);
+      const num = (await getCountFromServer(depart)).data().count;
+      return {[e]:num};
+    })
+    return result
   }
+
+
+  addNewDoc = async (readAllFile, privateInfo) => {
+    const { permission } = privateInfo;
+    let time = privateInfo.deadline ?? "";
+    if (Object.hasOwn(privateInfo, 'deadline')) {
+      delete privateInfo.deadline;
+    }
+
+
+    const responses = readAllFile.map(async (e) => {
+      const group = permission ? ["editor", "visitor"] : ["editor"];
+      const a = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
+      //預設屬性
+      const mergePrivateInfo = {
+        ...privateInfo,
+        state: {
+          proposal: false,
+          review: false
+        },
+        group,
+        date: {
+          deadline: time,
+          update: "",
+          created: moment().format("YYYY-MM-DDThh:mm:ss")
+        }
+      }
+      const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
+      //拿到描述文件的hash ID
+      const data = doc(firestoreDB, 'data', department.id);
+      //透過hash id 存入另個data collection
+      const dataCollections = await setDoc(data, { a });
+
+      return dataCollections;
+    });
+    return responses;
+  }
+
 
 }
 
