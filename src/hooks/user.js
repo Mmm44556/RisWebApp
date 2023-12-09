@@ -1,6 +1,7 @@
 import { userInitial } from '@store';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { createToast } from '@utils/systemToastify';
 function useUser() {
   const navigator = useNavigate();
   const { data, isSuccess, isFetching, status ,fetchStatus} = useQuery({
@@ -15,7 +16,12 @@ function useUser() {
       )
 
       if (res.status == 401) {
-        alert('登入逾時，請重新登入!')
+        createToast('登入逾時，請重新登入!',{
+          position:'tosp-center',
+          type:'warning',
+          theme:'colored'
+        })
+
         navigator('/sign-in');
         return;
       }

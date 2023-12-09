@@ -1,15 +1,35 @@
-
-
+const fs = require('fs');
+const path = require('path');
 class FileManagerService {
   #filesRepository;
   constructor(filesRepository) {
     this.#filesRepository = filesRepository;
   }
 
-  addNewDoc = async (file) => {
-    console.log('file_service')
-    this.#filesRepository.addNewDoc();
-    return;
+  browse = async () => {
+    const result = await this.#filesRepository.browseDocs();
+
+    try {
+    const resolves = await  Promise.all(result);
+      return {status:200,data:resolves};
+    } catch (error) {
+      return {status:500,data:error};
+    }
+   
+    
+
+  }
+
+
+  upload = async (reports, privateInfo) => {
+
+    const readAllFile = reports.map(e => {
+      //讀取緩存檔案陣列
+      const files = fs.readFileSync(path.resolve(__dirname, '../temp/uploads/', e.fileName))
+      return JSON.parse(files.toString('utf-8'));
+    })
+    const promisesArray = await this.#filesRepository.addNewDoc(readAllFile, privateInfo);
+    return promisesArray;
   }
 
   save() {

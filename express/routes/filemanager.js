@@ -4,7 +4,16 @@ let router = express.Router();
 const multer = require('multer');
 const { resolve } = require('path');
 
-const uploader = multer({ dest: resolve(__dirname, '../temp/uploads') });
+const preLoader = multer({
+  dest: resolve(__dirname, '../temp/uploads'),
+  fileFilter: (req, file, cb) => {
+    if (!file.originalname.match(/\.(txt|json)/)) {
+      cb(new TypeError('請上傳.txt或.json檔案!'))
+    }
+    cb(null, true);
+  }
+});
+const uploader = multer();
 const FilesRepository = require('../models/files');
 const FileManagerService = require('../services/FileManager');
 const FileManagerController = require('../controllers/filemanager');
@@ -29,8 +38,12 @@ const fileManagerController = new FileManagerController(fileManagerService);
 //   next();
 // });
 
-router.post('/upload', uploader.fields([{ name: 'file' }, { name: 'private' }]), fileManagerController.addNewDoc);
+router.get('/dataList', fileManagerController.browseDocs);
+router.post('/dataList?', uploader.single('response'), fileManagerController.addNewDoc);
 
+router.post('/dataList/preProcess?', preLoader.fields([{ name: 'file' }]), fileManagerController.preProcess);
+
+router.delete('/dataList/:id', fileManagerController.deleteDisk);
 
 
 

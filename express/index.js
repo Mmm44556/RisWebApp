@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use((req, res, next) => {
-  req.setTimeout(10000, () => {
+  req.setTimeout(30000, () => {
     console.log('timeout');
     res.status(408).send('nope')
   })

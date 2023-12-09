@@ -3,6 +3,8 @@ import { useNavigate, Outlet, useLocation, useOutletContext } from 'react-router
 import { Container, Row, Col, Card, ListGroup, Breadcrumb } from 'react-bootstrap';
 import { VscFiles } from "react-icons/vsc";
 import { FaArrowCircleRight } from "react-icons/fa";
+
+import { useDepartmentFiles } from "./useDepartmentFiles";
 import styled from 'styled-components';
 
 
@@ -49,7 +51,7 @@ function DataList() {
         className="text-end"
       >
         {
-          currentPath.map((e,idx) => {
+          currentPath.map((e, idx) => {
             return (
 
               <Breadcrumb.Item
@@ -61,7 +63,7 @@ function DataList() {
                   }
                 }
                 onClick={(e) => {
-                  if (e.target.innerText==='Home'){
+                  if (e.target.innerText === 'Home') {
                     navigator(`/DashBoard/${currentPath[0]}`)
                     return;
                   }
@@ -81,33 +83,84 @@ function DataList() {
 
   );
 }
+
+function reCategory(data) {
+
+  const categories = {
+    INTERNAL: '內科',
+    SURGERY: '外科',
+    ORTHOPEDICS: '骨科',
+    RADIOLOGY: '放射科',
+    PROPOSAL: '臨床醫師未提回',
+    REVIEWS: '報告覆閱工作',
+    PROCESS: '本周已完成報告'
+  };
+
+  const medicalCategories = ['內科', '外科', '骨科', '放射科'];
+  const adminCategories = ['臨床醫師未提回', '報告覆閱工作'];
+  const process = ['本周已完成報告'];
+
+  const result = {
+    medical: [],
+    admin: [],
+    process: []
+  };
+
+  data.forEach(item => {
+    const key = Object.keys(item)[0];
+    const value = item[key];
+    if (key in categories) {
+      const category = categories[key];
+      if (medicalCategories.includes(category)) {
+        result.medical.push({ category, value });
+      } else if (adminCategories.includes(category)) {
+        result.admin.push({ category, value });
+      } else if (process.includes(category)) {
+        result.process.push({ category, value });
+      }
+    } else if (key === 'process') {
+      result.process = value;
+    }
+  });
+
+  const resultArray = Object.values(result);
+
+
+  return resultArray;
+}
 export function Root(params) {
-
+  const { data, refetch, isSuccess } = useDepartmentFiles();
   const [navigator] = useOutletContext();
+  let reCategoryDepartment;
 
+  if (isSuccess) {
+    reCategoryDepartment = reCategory(data.data)
 
+  }
+  console.log(reCategoryDepartment)
   return (
     <>
       <Font>
+        {/* <button onClick={() => refetch()}>123</button> */}
         <Container fluid>
           <Row className="mb-5">
             {
-              ['內科', '外科', '骨科', '放射科'].map((e, idx) => {
+              isSuccess ? reCategoryDepartment[0].map((e, idx) => {
                 return (
                   <Col key={idx}>
-                    <Hover bg={type[e].bg} gd={type[e].gradient}>
+                    <Hover >
                       <Card
-                        style={{ background: type[e].bg }}
-                        onClick={() => navigator(`type/${type[e].title}`)}
+                        style={{ background: type[e.category].bg }}
+                        onClick={() => navigator(`type/${type[e.category].title}`)}
 
                       >
                         <Card.Body className="text-white d-flex justify-content-between text-nowrap">
                           <div>
                             <Card.Title>
-                              {e}
+                              {e.category}
                             </Card.Title>
                             <Card.Text>
-                              數量:&nbsp;{idx}
+                              數量:&nbsp;{e.value}
                             </Card.Text>
                           </div>
                           <div>
@@ -117,7 +170,7 @@ export function Root(params) {
                         <ListGroup variant="flush">
                           <ListGroup.Item
                             className="text-center p-0"
-                            style={{ backgroundColor: type[e].footer }}
+                            style={{ backgroundColor: type[e.category].footer }}
                           >
                             <Card.Link
                               className="text-decoration-none text-white"
@@ -131,27 +184,27 @@ export function Root(params) {
                     </Hover>
                   </Col>
                 )
-              })
+              }) : null
             }
 
           </Row>
           <Row className="mb-5">
             {
-              ['臨床醫師未提回', '報告覆閱工作'].map((e, idx) => {
+              isSuccess ? reCategoryDepartment[1].map(({ category, value }, idx) => {
                 return (
                   <Col key={idx}>
-                    <Hover bg={type[e].bg} gd={type[e].gradient}>
+                    <Hover >
                       <Card
-                        style={{ background: type[e].bg }}
-                        onClick={() => navigator(`type/${type[e].title}`)}>
+                        style={{ background: type[category].bg }}
+                        onClick={() => navigator(`type/${type[category].title}`)}>
                         <Card.Body className="text-white d-flex justify-content-between  text-nowrap">
                           <div>
                             <Card.Title>
-                              {e}
+                              {category}
                             </Card.Title>
 
                             <Card.Text>
-                              {idx}
+                              {value}
                             </Card.Text>
                           </div>
                           <div>
@@ -163,7 +216,7 @@ export function Root(params) {
                         <ListGroup variant="flush">
                           <ListGroup.Item
                             className="text-center "
-                            style={{ backgroundColor: type[e].footer }}>
+                            style={{ backgroundColor: type[category].footer }}>
                             <Card.Link
                               className="text-decoration-none text-white"
                             >
@@ -176,7 +229,7 @@ export function Root(params) {
                     </Hover>
                   </Col>
                 )
-              })
+              }) : null
             }
           </Row>
 
@@ -193,7 +246,7 @@ export function Root(params) {
                         <Card.Text>
                           <Row>
                             {
-                              [1, 2].map((e,idx) => {
+                              [1, 2].map((e, idx) => {
                                 return (
                                   <Col key={idx}>
                                     123

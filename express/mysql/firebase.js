@@ -9,7 +9,8 @@ const firebaseConfig = {
   storageBucket: "ris-webapp.appspot.com",
   messagingSenderId: "172945232686",
   appId: "1:172945232686:web:6c719bf86bf14ebd16a0bf",
-  measurementId: "G-J3V6E20NHN"
+  measurementId: "G-J3V6E20NHN",
+
 };
 
 const app = fireBase.initializeApp(firebaseConfig);
