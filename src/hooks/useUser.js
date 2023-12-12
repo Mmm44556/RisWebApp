@@ -17,7 +17,7 @@ function useUser() {
 
       if (res.status == 401) {
         createToast('登入逾時，請重新登入!',{
-          position:'tosp-center',
+          position:'top-center',
           type:'warning',
           theme:'colored'
         })

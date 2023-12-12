@@ -10,13 +10,11 @@ class FileManagerService {
     const result = await this.#filesRepository.browseDocs();
 
     try {
-    const resolves = await  Promise.all(result);
-      return {status:200,data:resolves};
+      const resolves = await Promise.all(result);
+      return { status: 200, data: resolves };
     } catch (error) {
-      return {status:500,data:error};
+      return { status: 500, data: error };
     }
-   
-    
 
   }
 
@@ -30,6 +28,12 @@ class FileManagerService {
     })
     const promisesArray = await this.#filesRepository.addNewDoc(readAllFile, privateInfo);
     return promisesArray;
+  }
+
+  read = async (type, fileId)=>{
+    const docsArray = await this.#filesRepository.readDoc(type, fileId);
+    return docsArray;
+
   }
 
   save() {

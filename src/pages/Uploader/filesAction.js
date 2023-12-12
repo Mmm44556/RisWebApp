@@ -25,7 +25,7 @@ function uploadFiles(response) {
   const formData = new FormData();
   formData.append('response', response,'.json');
 
-  return fetch(`${import.meta.env.VITE_VAR_BASE_URL}/upload`, {
+  return fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList`, {
     method: 'POST',
     body: formData,
 

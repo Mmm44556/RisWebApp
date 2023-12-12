@@ -1,0 +1,177 @@
+admin:
+account: admin
+passward: admin@0405
+
+USER 員工註冊
+attr:
+1. user_id (auto_increment) not null
+2. user_name (unique key) not null
+3. user_account (unique key, mail or phone num) not null
+4. user_password  not null
+5. user_register datetime currentTimestamp not null 
+primary key (user_id)
+
+
+ROLE 角色分配(權限) (01,admin), (02,user)
+attr:
+1. role_id not null
+2. role_name not null (unique)
+primary key (role_id) 
+
+PERMISSION 權限 01 edit, 02 normal
+attr:
+1. per_id (auto_increment) not null
+2. per_name not null (unique)
+primary key(per_id)
+
+USER_ROLE 用戶跟角色的關係
+1. user_id not null
+2. role_id not null
+primary key (user_id,role_id)
+constraint `user_role_fk_1` foreign key (user_id) references user(user_id)
+constraint `user_role_fk_1` foreign key (role_id) references role(role_id)
+
+
+
+ROLE_PERMISSIOM 角色跟權限關係
+1. role_id not null
+2. per_id not null
+primary key (role_id ,per_id)
+constraint `role_per_fk_1` foreign key (role_id) references role(role_id)
+constraint `role_per_fk_1` foreign key (per_id) references role(per_id)
+
+
+代表說user表透過role表跟permission表建立關係(relationship)
+
+資料表:
+
+radioloyReprot 報告
+1.file_id int (auto_increment,primary key) not null
+2.name varchar(32) not null default "" 
+3.type char(10) not null 
+4.size int unsigned not null 
+5.upload date currentTimestamp not null
+6.modifiy_date datetime not null 
+7.description varchar(128) default ""
+8.input_path varchar(64) not null default ""
+9.output_path varchar(64) not null default ""
+10.folder_id   (foreign key('folder_id') references folder(folder_id)
+
+
+folder 主文件夾
+1.folder_id int (auto_increment,primary key) not null
+2.folder_nmae varchar(20) not null
+3.create_date date datetime currentTimestamp not null
+4.own_name  (foreign key('user_name ') references user(user_name )
+Error Code: 1452. Cannot add or update a child row: a foreign key constraint fails (`radiologyreports`.`record`, CONSTRAINT `fk_record_course_id` FOREIGN KEY (`course_id`) REFERENCES `subject` (`course_id`))
+
+第三第一人稱視角切換
+物體碰撞(得分)
+拿起物體
+碰撞換場景
+物件之間溝通
+sceneSwitch
+raycast
+UI介面
+人物上下車
+
+部門: 
+1.電腦斷層組(CT)201
+CT001:放射師
+CT002:CT組長
+2.磁振造影組(MRI)301
+MRI001:放射師
+MRI002:MRI組長
+3.專科醫師401 (可以撰寫報告跟
+MS001:主治醫師
+MS002:住院醫師
+
+
+急診 (Emergency Room): ER
+門診 (Outpatient Clinic): OPD (Outpatient Department)
+健檢 (Health Examination): PE (Physical Examination)
+體檢 (Medical Check-up): MC (Medical Check)
+住院 (Inpatient): IP (Inpatient)
+職稱: 醫事放射師(CT)、醫事放射師(MRI)
+
+報告量: 關聯資料表
+
+註冊時間
+我想開發一款網頁服務，以下是我的架構需求，
+請你幫我進行系統模塊化區分以及加入可擴展性、可維護性、可靠性三種特性: 
+1.會員系統，包含權限區分、登入、登出功能。
+2.文件管理系統，包含閱讀權限、寫入權限功能。
+	2.2 創建文件描述屬性:
+		1.創建人資訊(創建後會由會員系統提供)
+		2.檔案名稱(title)
+		n.類別:全部、急診、住院、門診、健檢、體檢
+		n.治療部位:Liver、...
+		n.檢查方法:CT、...
+		3.描述(description)
+		4.檔案類型(txt、folder)
+		5.部門
+		6.檔案生命週期(文件可能有一定的保存期限，因為某些文件需要長期保存以遵守法律要求或組織的政策。在保留期限結束後，需要確保文件能夠被安全地銷毀，以防止潛在的信息洩露或風險。)
+ 		7.自訂資料夾、檔案ID(獨立識別符可以作為查詢)、
+		8.開啟追蹤模式(檔案日誌)
+		9.允許查看的權限組(editor、visitor)
+	2.3文件預覽描述屬性:
+		鎖頭(查看權限)
+		創建人
+		標籤(部門)
+		生命週期
+		獨立識別符
+		上次編輯時間
+		追蹤模式狀態
+	2.3.1子功能:
+		查看描述細節(metadata)
+		編輯描述細節
+		刪除文件
+		
+		
+		
+3.文件分析，分析文件數量、品質、狀態等功能。
+	3.1 分析分類: 4小時內到期、4-8小時內到期、8-12內到期、 >24HR住院、急診、>72HR門、體檢、健檢、未判讀、臨床醫師未提回(所提出的基礎問題、對病患的問題)、本周完成報告、院內科報告量
+
+4.人員分析，分析該系統的人員出入品質，以及對於文件的使用狀態。
+	預覽欄位: id、名稱、性別、職位、部門、權限
+
+
+
+系統階層圖:
+
+表示層: RISApp頁面
+業務層:處理註冊、報告等邏輯
+
+数据訪問層:User_Modal
+數據層:db
+系統管理層:監控、日誌等功能。
+
+會員系統
+會員管理模塊:會員註冊、查詢、修改等功能
+權限管理模塊:角色定義、權限定義、會員角色指派等功能
+認證模塊:登入、登出、session 管理等功能
+個人資料模塊:會員個人資料管理功能
+
+文件系統
+文件管理模塊:文件上傳、查詢、修改、下載、刪除等功能
+文件元資料模塊:提取和管理文件元資料,如標題、作者等
+版本控制模塊:文件版本管理、歷史版本查詢等功能
+權限管理模塊:重用會員系統的權限管理模塊
+
+
+分析系統
+文件分析模塊
+文件爬蟲:爬取文件資料
+文件解析:提取文本、標籤等內容
+統計分析:文件數量、類型等統計分析
+內容分析:基於文本的內容分類、摘要等分析
+
+人員分析模塊
+用戶行為跟蹤:記錄人員的文件訪問和操作情況
+統計分析:統計文件使用情況等指標
+內容分析:分析人員的文件使用偏好等
+
+
+planetScale database  main-2023-12-03-ww6ks4
+帳號:7hc2etxr768r4q4jrdbt
+密碼:pscale_pw_KuncMfp2BYRAmg7vIcd7vIF4uEkwfT0KqwvpMDfGuVB

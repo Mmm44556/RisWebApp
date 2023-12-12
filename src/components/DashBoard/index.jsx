@@ -2,12 +2,10 @@ import { useState, Suspense, lazy } from "react";
 import { Col, Row, Container, ThemeProvider } from "react-bootstrap";
 import { Outlet } from 'react-router-dom';
 import { FaGithub } from "react-icons/fa";
-import { ToastContainer } from 'react-toastify';
 import SideBarHolder from "@components/SideBar/SideBarHolder";
 import Navigator from "@layouts/Navigator";
-import SystemToast from "@components/SystemToast";
 import { themeContext } from "@context";
-import { useUser } from "@hooks";
+import useUser from "@hooks/useUser";
 
 import style from "@style";
 
@@ -30,19 +28,6 @@ function DashBoard() {
         <ThemeProvider breakpoints={['xxxl', 'xxl', 'xl', 'lg', 'md', 'sm', 'xs', 'xxs']}
           minBreakpoint="xxs">
 
-            <ToastContainer
-              position="bottom-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="light"
-            />
-      
           <Container fluid >
           
 

@@ -9,7 +9,9 @@ class FileManagerController {
     this._fileService = fileService;
 
   }
-
+  /**
+   * 格式化報告資料
+   */
   preProcess = async (req, res) => {
     res.header('Content-Type', 'application/json');
     const depart = req.query.depart;
@@ -44,13 +46,20 @@ class FileManagerController {
 
 
   }
+  /**
+   * 瀏覽所有部門報告數量
+   */
   browseDocs = async (req, res) => {
     const result = await this._fileService.browse();
     res.status(result.status).send(result);
   }
 
 
+  /**
+   * 新增部門報告資料
+   */
   addNewDoc = async (req, res) => {
+
     const { file } = req;
     const split = file.buffer.toString('utf-8').split('$');
     const reports = JSON.parse(split[0]);
@@ -60,7 +69,19 @@ class FileManagerController {
     res.status(200).send(result.data);
   }
 
+  /**
+   * 獲取單一部門資料
+   */
+  getDocs = async (req, res) => {
+    const { params: { type },query } = req;
+    const docs = await this._fileService.read(type, query.fileId);
 
+    res.status(docs.status).send(docs.data);
+  }
+
+  /**
+   * 刪除預格式化後緩存在Server的資料
+   */
   deleteDisk = async (req, res) => {
     res.header('Content-Type', 'plain/text');
     const { params } = req;
