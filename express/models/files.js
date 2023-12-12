@@ -3,7 +3,7 @@ const firestoreDB = require('../mysql/firebase');
 const firestore = require('firebase/firestore');
 
 const moment = require('moment');
-const { addDoc, collection, doc, setDoc, query, where, getDoc, getDocs ,getCountFromServer} = firestore;
+const { addDoc, collection, doc, setDoc, query, where, getDoc, startAfter, getDocs, orderBy, getCountFromServer, limit } = firestore;
 
 
 /**
@@ -37,7 +37,12 @@ class IFilesRepository {
   connectDB() {
     return this._firestoreDB = firestoreDB;
   }
+  /**
+   * 瀏覽各部門報告描述
+   */
+  browseDocs = async () => {
 
+  }
   /**
    * 新增報告
    * @param {array} readAllFile 要新增的資料陣列 
@@ -47,11 +52,10 @@ class IFilesRepository {
 
   }
   /**
-   * 瀏覽各部門報告描述
+   * 讀取部門報告
+   * @param {string} type 部門類型
    */
-  browseDocs = async () => {
-
-    
+  readDoc = async (type) => {
 
   }
 
@@ -67,10 +71,10 @@ class FilesRepository extends IFilesRepository {
 
   browseDocs = async () => {
     //查詢所有部門報告數量
-    const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSAL", "REVIEWS", "PRECESS"].map(async(e)=>{
+    const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSAL", "REVIEWS", "PRECESS"].map(async (e) => {
       const depart = firestore.collection(firestoreDB, e);
       const num = (await getCountFromServer(depart)).data().count;
-      return {[e]:num};
+      return { [e]: num };
     })
     return result
   }
@@ -86,7 +90,7 @@ class FilesRepository extends IFilesRepository {
 
     const responses = readAllFile.map(async (e) => {
       const group = permission ? ["editor", "visitor"] : ["editor"];
-      const a = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
+      const data = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
       //預設屬性
       const mergePrivateInfo = {
         ...privateInfo,
@@ -103,15 +107,70 @@ class FilesRepository extends IFilesRepository {
       }
       const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
       //拿到描述文件的hash ID
-      const data = doc(firestoreDB, 'data', department.id);
-      //透過hash id 存入另個data collection
-      const dataCollections = await setDoc(data, { a });
+      const DepartmentFiledData = doc(firestoreDB, 'data', department.id);
+      //保存描述文件的hash id 存入另個data collection作為UID
+      const dataCollections = await setDoc(DepartmentFiledData, { data });
 
       return dataCollections;
     });
     return responses;
   }
 
+  readDoc = async (type, id) => {
+
+
+    try {
+      if (id) {
+        const nextDocs = [];
+        const lastVisible = await getDoc(doc(firestoreDB, type, id));
+        // console.log(next)
+        const next2 = query(collection(firestoreDB, type),
+          orderBy('date.created', 'asc'),
+          startAfter(lastVisible),
+          // limit(10)
+        );
+        const nextDocsSnapShots = await getDocs(next2);
+        nextDocsSnapShots.forEach(e => {
+          const data = e.data();
+          nextDocs.push({ data, fileId: e.id });
+        });
+        return { status: 200, data: nextDocs }; 
+      } else {
+        const docs = [];
+        let departmentDocs = query(collection(firestoreDB, type),
+          orderBy('date.created', 'asc'),
+          // limit(10),
+        );
+        const docsSnapShots = await getDocs(departmentDocs);
+
+        docsSnapShots.forEach(e => {
+          const data = e.data();
+          docs.push({ data, fileId: e.id });
+        });
+
+        return { status: 200, data: docs };
+      }
+
+    } catch (error) {
+      console.log(error);
+      return { status: 500, data: error };
+    }
+
+    // const lastVisible = docsSnapShots.docs[docsSnapShots.docs.length - 1];
+
+    // const next = query(collection(firestoreDB, type),
+    //   orderBy('date.created', 'asc'),
+    //   startAfter(lastVisible),
+    //   limit(10)
+    // );
+    // console.log('第二頁:')
+
+    // const nextSnapShots = (await getDocs(next));
+    // nextSnapShots.forEach(e => {
+    //   console.log(e.data(),e.id);
+    // })
+    return;
+  }
 
 }
 

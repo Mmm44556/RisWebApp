@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { QueryClient, QueryCache, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { ToastContainer } from 'react-toastify';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
@@ -22,6 +23,19 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+
       <QueryClientProvider client={queryClient}>
         <QueryErrorResetBoundary>
           {({ reset }) => (

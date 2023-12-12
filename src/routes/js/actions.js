@@ -15,22 +15,35 @@ async function loginAction({ request }) {
     if (key == 'password') value = btoa(value);
     submission[key] = value;
   })
+  try {
+    let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/login`, {
+      method: 'POST',
+      body: JSON.stringify(submission),
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    if (res.status == '200') {
+      return redirect('/DashBoard/dataList');
+    }
+    const result = await res.text();
+    createToast(result, {
+      theme: 'colored',
+      type: 'error',
+      autoClose: 5000,
+    })
+    return null
 
-  let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/login`, {
-    method: 'POST',
-    body: JSON.stringify(submission),
-    credentials: 'include',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  } catch (error) {
+    console.log(error)
 
-  if (res.status == '200') {
-    return redirect('/DashBoard/dataList');
+
+    return null;
   }
-  const result = await res.text()
-  return { msg: result };
+
+
 
 }
 
@@ -47,7 +60,7 @@ async function saveUserInfoAction({ request, params }) {
 
   let toastId = createToast('儲存中...', {
     isLoading: true,
-    theme:'light',
+    theme: 'light',
   })
 
   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${UserInfoJson.user_id}`, {

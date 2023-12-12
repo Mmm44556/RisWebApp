@@ -4,7 +4,7 @@ import { Container, Row, Col, Card, ListGroup, Breadcrumb } from 'react-bootstra
 import { VscFiles } from "react-icons/vsc";
 import { FaArrowCircleRight } from "react-icons/fa";
 
-import { useDepartmentFiles } from "./useDepartmentFiles";
+import { useDepartmentFiles, reCategory } from "@hooks/useDepartmentFiles";
 import styled from 'styled-components';
 
 
@@ -25,10 +25,11 @@ const Font = styled.div`
 `
 
 
-
+//反轉路由key value
 const swappedType = Object.fromEntries(
   Object.entries(type).map(([key, value]) => [value.title, key])
 );
+
 function DataList() {
   const location = useLocation();
   const navigator = useNavigate();
@@ -84,51 +85,9 @@ function DataList() {
   );
 }
 
-function reCategory(data) {
-
-  const categories = {
-    INTERNAL: '內科',
-    SURGERY: '外科',
-    ORTHOPEDICS: '骨科',
-    RADIOLOGY: '放射科',
-    PROPOSAL: '臨床醫師未提回',
-    REVIEWS: '報告覆閱工作',
-    PROCESS: '本周已完成報告'
-  };
-
-  const medicalCategories = ['內科', '外科', '骨科', '放射科'];
-  const adminCategories = ['臨床醫師未提回', '報告覆閱工作'];
-  const process = ['本周已完成報告'];
-
-  const result = {
-    medical: [],
-    admin: [],
-    process: []
-  };
-
-  data.forEach(item => {
-    const key = Object.keys(item)[0];
-    const value = item[key];
-    if (key in categories) {
-      const category = categories[key];
-      if (medicalCategories.includes(category)) {
-        result.medical.push({ category, value });
-      } else if (adminCategories.includes(category)) {
-        result.admin.push({ category, value });
-      } else if (process.includes(category)) {
-        result.process.push({ category, value });
-      }
-    } else if (key === 'process') {
-      result.process = value;
-    }
-  });
-
-  const resultArray = Object.values(result);
 
 
-  return resultArray;
-}
-export function Root(params) {
+export function Root() {
   const { data, refetch, isSuccess } = useDepartmentFiles();
   const [navigator] = useOutletContext();
   let reCategoryDepartment;
@@ -137,11 +96,11 @@ export function Root(params) {
     reCategoryDepartment = reCategory(data.data)
 
   }
-  console.log(reCategoryDepartment)
+
   return (
     <>
       <Font>
-        {/* <button onClick={() => refetch()}>123</button> */}
+        <button onClick={() => refetch()}>123</button>
         <Container fluid>
           <Row className="mb-5">
             {

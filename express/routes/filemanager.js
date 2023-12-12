@@ -38,10 +38,14 @@ const fileManagerController = new FileManagerController(fileManagerService);
 //   next();
 // });
 
-router.get('/dataList', fileManagerController.browseDocs);
-router.post('/dataList?', uploader.single('response'), fileManagerController.addNewDoc);
-
+//預格式化報告資料
 router.post('/dataList/preProcess?', preLoader.fields([{ name: 'file' }]), fileManagerController.preProcess);
+
+router.get('/dataList', fileManagerController.browseDocs);
+
+router.post('/dataList', uploader.single('response'), fileManagerController.addNewDoc);
+
+router.get('/dataList/:type?', fileManagerController.getDocs);
 
 router.delete('/dataList/:id', fileManagerController.deleteDisk);
 
