@@ -24,6 +24,7 @@ class FileManagerController {
     if (depart === 'RADIOLOGY') {
       jsonString = JSON.stringify(process(data, file.originalname), null, 2);
     } else {
+      //非放射報告格式的資料直接緩存
       jsonString = JSON.stringify(data, null, 2);
     }
 
@@ -38,10 +39,10 @@ class FileManagerController {
       .on('finish', () => {
         //結束後返回檔案參數
         res.send({ fileName: file.filename });
-        console.log('Write operation complete using Stream.');
+        console.log('緩存完成!');
       })
       .on('error', (err) => {
-        console.error('Error writing to Stream:', err);
+        console.error('錯誤讀寫!', err);
       });
 
 
@@ -61,8 +62,10 @@ class FileManagerController {
   addNewDoc = async (req, res) => {
 
     const { file } = req;
+
     const split = file.buffer.toString('utf-8').split('$');
     const reports = JSON.parse(split[0]);
+    console.log(split, "REPORTS:", reports)
     const privateInfo = JSON.parse(split[1]);
     const result = this._fileService.upload(reports, privateInfo);
 
@@ -73,7 +76,7 @@ class FileManagerController {
    * 獲取單一部門資料
    */
   getDocs = async (req, res) => {
-    const { params: { type },query } = req;
+    const { params: { type }, query } = req;
     const docs = await this._fileService.read(type, query.fileId);
 
     res.status(docs.status).send(docs.data);
@@ -98,8 +101,8 @@ class FileManagerController {
           fsPromise.unlink(path.join(folderPath, file)),
         );
         await Promise.allSettled(deleteFilePromises);
-        console.log('Folder deleted successfully.');
-        res.status(200).send('Folder deleted successfully.');
+        console.log('緩存資料已全部刪除.');
+        res.status(200).send('緩存資料已全部刪除.');
         return;
       } catch (error) {
         console.error('Error deleting folder:', err);

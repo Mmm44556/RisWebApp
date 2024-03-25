@@ -9,16 +9,16 @@ function useDepartmentFiles() {
       const res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList`
         , {
           method: 'GET',
-          headers:{
-            "Accept":"application/json"
+          headers: {
+            "Accept": "application/json"
           }
-          
+
         },
       )
 
       return await res.json()
     },
-    staleTime:30000,
+    staleTime: 30000,
     // retry: 1,
     retryDelay: 1500,
     // refetchOnWindowFocus: true,

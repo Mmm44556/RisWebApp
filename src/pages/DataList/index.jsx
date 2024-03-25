@@ -100,7 +100,7 @@ export function Root() {
   return (
     <>
       <Font>
-        <button onClick={() => refetch()}>123</button>
+        <button onClick={() => refetch()}>refetch</button>
         <Container fluid>
           <Row className="mb-5">
             {

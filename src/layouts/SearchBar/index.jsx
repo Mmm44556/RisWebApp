@@ -33,17 +33,20 @@ export default function SearchBar({ filterHandler, filterKeyWord, setFilterKeyWo
             as={ButtonGroup}
             size="sm"
             variant="light"
-            onClick={(v)=>{
+
+            onClick={(v) => {
               //切換查詢鍵
-              if(v.target.innerText){
+              if (v.target.innerText) {
                 const reversedKey = Object.fromEntries(
                   Object.entries(key).map(([k, v]) => [v, k])
                 );
                 setFilterKeyWord(reversedKey[v.target.innerText])
               }
             }}
-            title={ <BsFilterLeft className='fs-4 ' />}>
-            {Object.values(key).map(v => <Dropdown.Item key={v} >
+            title={<BsFilterLeft className='fs-4 ' />}>
+            {Object.values(key).map(v => <Dropdown.Item
+              className='z-5'
+              key={v} >
               {v}
             </Dropdown.Item>)}
           </DropdownButton>
