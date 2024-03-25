@@ -52,8 +52,8 @@ const TypeBadges={
 }
 const fileColumns = [
   {
-    name: '#',
-    selector: (row,idx) =>idx,
+    name: '病歷號',
+    selector: (row,idx) =>row.data.title,
     compact: true
   },
   {

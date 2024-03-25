@@ -23,9 +23,14 @@ const role = {
 }
 
 const customStyles = {
+  responsiveWrapper: {
+    style: {
+      zIndex:'10'
+    }
+  },
   table: {
     style: {
-      minHeight: '50dvh'
+      minHeight: '50dvh',
     },
   },
 
@@ -39,6 +44,11 @@ const customStyles = {
       paddingLeft: '8px',
       paddingRight: '8px',
     },
+  },
+  contextMenu:{
+    style:{
+      zIndex:'100'
+    }
   },
   cells: {
     style: {

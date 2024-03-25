@@ -65,6 +65,7 @@ function Uploader() {
     return () => {
       //刪除server端的緩存資料
       deleteDisk('all');
+      resetAll();
     }
   }, [])
 

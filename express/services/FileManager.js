@@ -20,7 +20,7 @@ class FileManagerService {
 
 
   upload = async (reports, privateInfo) => {
-
+    
     const readAllFile = reports.map(e => {
       //讀取緩存檔案陣列
       const files = fs.readFileSync(path.resolve(__dirname, '../temp/uploads/', e.fileName))
@@ -30,7 +30,7 @@ class FileManagerService {
     return promisesArray;
   }
 
-  read = async (type, fileId)=>{
+  read = async (type, fileId) => {
     const docsArray = await this.#filesRepository.readDoc(type, fileId);
     return docsArray;
 

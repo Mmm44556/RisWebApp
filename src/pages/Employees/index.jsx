@@ -76,8 +76,8 @@ export default function Employees() {
       <ActiveTabs
         defaultActiveKey="employees"
         id="justify-tab-example"
-        className="mb-3"
-        justify
+        className="mb-3 "
+
       >
         <Tab eventKey="employees" title={
           <h4 className=' p-0 m-0'>
@@ -85,52 +85,52 @@ export default function Employees() {
             用戶資料
           </h4>
         }>
-        
-            <DataTable
-              customStyles={customStyles}
-              paginationServer
-              paginationTotalRows={data?.total ?? iniPerPage}
-              onChangePage={handlePage}
-              onChangeRowsPerPage={handlePerPage}
-              columns={columns}
-              data={filteredItems}
-              direction="auto"
-              expandableRowsComponent={() => <h5>補充</h5>}
-              expandOnRowClicked
-              expandableRows
-              expandableRowsHideExpander
-              title={<Title isStale={isStale}
-                isFetching={isFetching}
-                refetch={refetch}
-                queryClient={queryClient}
-                data={{ data, dataUpdatedAt }}
-              />}
-              noDataComponent={<>
-                <h3 className="fw-bold">尚無資料</h3>
-              </>}
-              highlightOnHover
 
-              responsive
-              pagination
-              progressPending={isFetching}
-              paginationPerPage={perPage}
-              paginationResetDefaultPage={resetPaginationToggle}
-              paginationComponentOptions={paginationComponentOptions}
-              paginationRowsPerPageOptions={[iniPerPage, 20]}
-              contextMessage={{ singular: '筆資料', plural: '筆資料' }}
-              progressComponent={<LoadingProgress length={7} />}
-              persistTableHead
-              pointerOnHover
-              subHeader
-              subHeaderAlign="right"
-              subHeaderWrap
-              subHeaderComponent={SubHeaderComponentMemo}
-              selectableRows
-              selectableRowsHighlight
-              selectableRowsComponent={Form.Check}
-              sortIcon={<BiSortAlt2 />}
-            />
-         
+          <DataTable
+            customStyles={customStyles}
+            paginationServer
+            paginationTotalRows={data?.total ?? iniPerPage}
+            onChangePage={handlePage}
+            onChangeRowsPerPage={handlePerPage}
+            columns={columns}
+            data={filteredItems}
+            direction="auto"
+            expandableRowsComponent={() => <h5>補充</h5>}
+            expandOnRowClicked
+            expandableRows
+            expandableRowsHideExpander
+            title={<Title isStale={isStale}
+              isFetching={isFetching}
+              refetch={refetch}
+              queryClient={queryClient}
+              data={{ data, dataUpdatedAt }}
+            />}
+            noDataComponent={<>
+              <h3 className="fw-bold">尚無資料</h3>
+            </>}
+            highlightOnHover
+
+            responsive
+            pagination
+            progressPending={isFetching}
+            paginationPerPage={perPage}
+            paginationResetDefaultPage={resetPaginationToggle}
+            paginationComponentOptions={paginationComponentOptions}
+            paginationRowsPerPageOptions={[iniPerPage, 20]}
+            contextMessage={{ singular: '筆資料', plural: '筆資料' }}
+            progressComponent={<LoadingProgress length={7} />}
+            persistTableHead
+            pointerOnHover
+            subHeader
+            subHeaderAlign="right"
+            subHeaderWrap
+            subHeaderComponent={SubHeaderComponentMemo}
+            selectableRows
+            selectableRowsHighlight
+            selectableRowsComponent={Form.Check}
+            sortIcon={<BiSortAlt2 />}
+          />
+
         </Tab>
 
         <Tab eventKey="analytics" title={

@@ -103,8 +103,8 @@ const CustomMenu = forwardRef(
     return (
       <div
         ref={ref}
-        style={{ ...style, transform: "translateX(-25%)" }}
-        className={`${className}`}
+        style={{ ...style, transform: "translateX(-25%)",zIndex:'200' }}
+        className={`${className} `}
         aria-labelledby={labeledBy}
       >
         <ul className="list-unstyled m-0 text-start ">
@@ -197,7 +197,7 @@ export default function EditDropdown({ userData, page }) {
   const { mutate, combinationUserFields } = useEditGroup(queryClient, page, operations, { updateFetchToast, deleteFetchToast, errorFetchToast, initialToast });
 
   const submitUpdateUserDate = (e) => {
-    if (confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE')){
+    if (confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE')) {
       mutate({ newData: currentEditUser, operation: 'UPDATE' });
     }
 
@@ -325,13 +325,12 @@ export default function EditDropdown({ userData, page }) {
 
         <EnhDropdown eventKey="2"
           onClick={(e) => {
-            if(confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE'))
-            {
-             
+            if (confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE')) {
+
               mutate({ newData: userData, operation: 'DELETE' })
             }
-            
-           
+
+
           }}>
           <MdAutoDelete className='text-danger' />
           刪除
