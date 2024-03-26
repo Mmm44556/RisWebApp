@@ -51,7 +51,6 @@ class EmployeeController {
   add = async (req, res) => {
     const { body } = req;
     const result = await this._userService.add(body);
-
     res.status(result.status).send(result.msg);
   }
 

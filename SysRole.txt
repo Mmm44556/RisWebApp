@@ -69,32 +69,69 @@ Error Code: 1452. Cannot add or update a child row: a foreign key constraint fai
 物體碰撞(得分)
 拿起物體
 碰撞換場景
-物件之間溝通
+物件之間溝通d
 sceneSwitch
 raycast
 UI介面
 人物上下車
 
-部門: 
-1.電腦斷層組(CT)201
+開發工具
+
+前端: HTML、Javascript、CSS
+
+切版: CSS、SCSS、Bootstrap、styled-Components
+
+環境: React.js、Node.js
+
+後端技術: express.js、Mysql、Firebase、RESTful API
+
+版本管理: Git
+
+系統架構: 前後端分離
+
+雲端服務:Google Cloud(SQL)、Firebase
+
+API測試: PostMan
+
+功能說明
+--------------
+1.系統概述(System Description):
+
+用戶登入系統，將會判別該用戶權限再進行轉導頁面查看醫療報告，如為管理員身分便能對該病患資料進行相關編輯動作，管理員可透過面板新增一筆病患資料且手動輸入相關資訊。
+
+2.功能與限制(Functions and Limitation):
+
+3.報告規範:
+
+
+4.報告類型、角色說明(Medical Report、Role):
+
+4-1報告類型:
+急診 (Emergency Room): ER
+門診 (Outpatient Department): OPD
+健檢 (Physical Examination): PE 
+體檢 (Medical Check): MC 
+住院 (Inpatient): IP 
+職稱: 醫事放射師(CT)、醫事放射師(MRI)
+
+4-2部門: 
+1.電腦斷層組(CT)
+代號:201
 CT001:放射師
 CT002:CT組長
-2.磁振造影組(MRI)301
+2.磁振造影組(MRI)
+代號:301
 MRI001:放射師
 MRI002:MRI組長
-3.專科醫師401 (可以撰寫報告跟
+3.專科醫師(MS)
+代號:401
 MS001:主治醫師
 MS002:住院醫師
 
 
-急診 (Emergency Room): ER
-門診 (Outpatient Clinic): OPD (Outpatient Department)
-健檢 (Health Examination): PE (Physical Examination)
-體檢 (Medical Check-up): MC (Medical Check)
-住院 (Inpatient): IP (Inpatient)
-職稱: 醫事放射師(CT)、醫事放射師(MRI)
+5.角色架構圖(Role Hierarchy):
 
-報告量: 關聯資料表
+
 
 註冊時間
 我想開發一款網頁服務，以下是我的架構需求，

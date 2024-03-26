@@ -14,6 +14,7 @@ class FileManagerController {
    */
   preProcess = async (req, res) => {
     res.header('Content-Type', 'application/json');
+    const { name } = req.body;
     const depart = req.query.depart;
     //獲取過濾後的POST資料
     const file = req.files['file'][0];
@@ -38,7 +39,7 @@ class FileManagerController {
     readableStream.pipe(fs.createWriteStream(file.path, 'utf-8'))
       .on('finish', () => {
         //結束後返回檔案參數
-        res.send({ fileName: file.filename });
+        res.send({ fileName: file.filename, name });
         console.log('緩存完成!');
       })
       .on('error', (err) => {
@@ -62,12 +63,12 @@ class FileManagerController {
   addNewDoc = async (req, res) => {
 
     const { file } = req;
-
     const split = file.buffer.toString('utf-8').split('$');
+    
     const reports = JSON.parse(split[0]);
-    console.log(split, "REPORTS:", reports)
     const privateInfo = JSON.parse(split[1]);
-    const result = this._fileService.upload(reports, privateInfo);
+   
+    const result = await this._fileService.upload(reports, privateInfo);
 
     res.status(200).send(result.data);
   }

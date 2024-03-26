@@ -3,12 +3,12 @@ const mysql = require('mysql');
 
 const conn = mysql.createPool(
   {
-    connectionLimit :10,
+    connectionLimit: 10,
     user: 'root',
     password: '',
-    host: 'localhost',
+    host: '104.199.189.119',
     database: 'ris',
-    port: 3307
+    port: 3306
   }
 )
 

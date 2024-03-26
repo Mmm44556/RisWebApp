@@ -74,81 +74,97 @@ class FilesRepository extends IFilesRepository {
     const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSAL", "REVIEWS", "PRECESS"].map(async (e) => {
       const depart = firestore.collection(firestoreDB, e);
       const num = (await getCountFromServer(depart)).data().count;
+
       return { [e]: num };
     })
     return result
   }
 
 
-  addNewDoc = async (readAllFile, privateInfo) => {
+  addNewDoc = async (readAllFile, privateInfo, reports) => {
     const { permission } = privateInfo;
     let time = privateInfo.deadline ?? "";
     if (Object.hasOwn(privateInfo, 'deadline')) {
       delete privateInfo.deadline;
     }
-
-
-    const responses = readAllFile.map(async (e) => {
-      const group = permission ? ["editor", "visitor"] : ["editor"];
-      const data = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
-      //預設屬性
-      const mergePrivateInfo = {
-        ...privateInfo,
-        state: {
-          proposal: false,
-          review: false
-        },
-        group,
-        date: {
-          deadline: time,
-          update: "",
-          created: moment().format("YYYY-MM-DDThh:mm:ss")
-        }
+    const group = permission ? ["editor", "visitor"] : ["editor"];
+    // const data = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
+    //預設屬性
+    const mergePrivateInfo = {
+      ...privateInfo,
+      state: {
+        proposal: false,
+        review: false
+      },
+      group,
+      date: {
+        deadline: time,
+        update: "",
+        created: moment().format("YYYY-MM-DDThh:mm:ss")
       }
-      const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
+    }
+    // console.log(reportName)
+    const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
+    const docRef = doc(firestoreDB, privateInfo.department, department.id);
+    const subCollection = collection(docRef, 'data');
+    const responses = readAllFile.map(async (e,idx) => {
+      await addDoc(subCollection, { e, name: reports[idx].name })
       //拿到描述文件的hash ID
-      const DepartmentFiledData = doc(firestoreDB, 'data', department.id);
+      // const DepartmentFiledData = doc(firestoreDB, 'data', department.id);
       //保存描述文件的hash id 存入另個data collection作為UID
-      const dataCollections = await setDoc(DepartmentFiledData, { data });
-
-      return dataCollections;
+      // const dataCollections = await setDoc(DepartmentFiledData, { data });
+      // console.log(dataCollections, DepartmentFiledData)
+      return '';
     });
     return responses;
   }
 
   readDoc = async (type, id) => {
 
-
     try {
+      
       if (id) {
-        const nextDocs = [];
-        const lastVisible = await getDoc(doc(firestoreDB, type, id));
-        // console.log(next)
-        const next2 = query(collection(firestoreDB, type),
-          orderBy('date.created', 'asc'),
-          startAfter(lastVisible),
-          // limit(10)
-        );
-        const nextDocsSnapShots = await getDocs(next2);
-        nextDocsSnapShots.forEach(e => {
-          const data = e.data();
-          nextDocs.push({ data, fileId: e.id });
-        });
-        return { status: 200, data: nextDocs }; 
+        const reports = [];
+        //查詢該筆檔案的全部報告
+        const currentReportDocRef = doc(firestoreDB,type,id);
+        const reportCollection = await getDocs(collection(currentReportDocRef, 'data'));
+        for (const report of reportCollection.docs) {
+          reports.push({...report.data(),fileId:report.id});
+        }
+        return { status: 200, data: reports }
+        // const lastVisible = await getDoc(doc(firestoreDB, type, id));
+
+        // const next2 = query(collection(firestoreDB, type),
+        //   orderBy('date.created', 'asc'),
+        //   startAfter(lastVisible),
+        //   limit(10)
+        // );
+        // const nextDocsSnapShots = await getDocs(next2);
+        // nextDocsSnapShots.forEach(e => {
+        //   const data = e.data();
+        //   nextDocs.push({ data, fileId: e.id });
+        // });
+        // return { status: 200, data: nextDocs };
+
       } else {
         const docs = [];
         let departmentDocs = query(collection(firestoreDB, type),
           orderBy('date.created', 'asc'),
-          // limit(10),
+          limit(10),
         );
         const docsSnapShots = await getDocs(departmentDocs);
-
-        docsSnapShots.forEach(e => {
+        for (const e of docsSnapShots.docs) {
           const data = e.data();
-          docs.push({ data, fileId: e.id });
-        });
+          docs.push({ data, fileId: e.id, reports: [] });
+        }
 
         return { status: 200, data: docs };
+
+
+
+
+
+
       }
 
     } catch (error) {

@@ -1,6 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
 
+//獲取所有報告分類數量
 function useDepartmentFiles() {
 
   const result = useQuery({
@@ -12,23 +13,39 @@ function useDepartmentFiles() {
           headers: {
             "Accept": "application/json"
           }
-
         },
       )
-
       return await res.json()
     },
-    staleTime: 30000,
-    // retry: 1,
-    retryDelay: 1500,
-    // refetchOnWindowFocus: true,
-
-
+    gcTime: Infinity,
+    staleTime:Infinity
   })
-
-
   return result;
+}
 
+//更新所有報告分類數量
+function updateDepartmentReports(queryClient) {
+  const mutate = useMutation({
+    mutationFn: async ({ department, count }) => {
+      const upperCaseD = department.toUpperCase();
+      const departmentReports = queryClient.getQueryData(["department_Reports"]);
+      const updatedDepartments = departmentReports.data.map(e => {
+        if (Object.hasOwn(e, upperCaseD)) {
+          return { [upperCaseD]: e[upperCaseD] + count };
+        }
+        return e;
+      })
+      queryClient.setQueryData(["department_Reports"], { status: '200', data: updatedDepartments });
+      return updatedDepartments;
+    },
+    onMutate: async () => {
+
+    },
+    onSuccess: async () => {
+      console.log('更新完成')
+    }
+  })
+  return mutate;
 }
 
 //反轉Department的Key value資料
@@ -77,4 +94,4 @@ function reCategory(data) {
   return resultArray;
 }
 
-export { useDepartmentFiles, reCategory };
+export { useDepartmentFiles, updateDepartmentReports, reCategory };
