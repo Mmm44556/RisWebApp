@@ -63,13 +63,13 @@
 | ![Image](/aseets/RIS_hierarchy.png "plain text") |
 
 
-## 4-1 報告類型
+### 4-1 報告類型
  - 急診 (Emergency Room): **ER**
  - 門診 (Outpatient Department): **OPD**
  - 健檢 (Physical Examination): **PE**
  - 體檢 (Medical Check): **MC**
  - 住院 (Inpatient): **IP** 
-## 4-2 部門類型
+### 4-2 部門類型
  - 內科(INTERNAL)
  - 外科(SURGERY)
  - 骨科(ORTHOPEDICS)
