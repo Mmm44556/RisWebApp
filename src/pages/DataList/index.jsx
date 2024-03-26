@@ -91,7 +91,6 @@ export function Root() {
   const { data, refetch, isSuccess } = useDepartmentFiles();
   const [navigator] = useOutletContext();
   let reCategoryDepartment;
-
   if (isSuccess) {
     reCategoryDepartment = reCategory(data.data)
 

@@ -5,7 +5,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import FileDropZone from './FileDropZone';
 import FilesForm from './FilesForm';
 import { deleteDisk, uploadFiles } from './filesAction';
-import { createToast, updateToast } from '@utils/SystemToastify';
+import { updateDepartmentReports } from '@hooks/useDepartmentFiles';
+import { createToast } from '@utils/SystemToastify';
 import styled from 'styled-components';
 
 const OverflowCol = styled(Col)`
@@ -40,11 +41,10 @@ const OverflowCol = styled(Col)`
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #888 #eee; /* Firefox */
 `
-const requiredProperties = ['patient', 'title', 'type', 'department','inspection'];
+const requiredProperties = ['patient', 'title', 'type', 'department', 'inspection'];
 function hasRequiredProperties(form) {
 
-  const bool= requiredProperties.every(prop => form.hasOwnProperty(prop));
-  console.log(bool)
+  const bool = requiredProperties.every(prop => form.hasOwnProperty(prop));
   return bool
 }
 
@@ -57,6 +57,8 @@ function Uploader() {
   const [response, setResponse] = useState(null);
   //是否添加額外補充
   const [additional, setAdditional] = useState(false);
+  //更新所有部門報告數量
+  const departmentMutation = updateDepartmentReports(queryClient);
   const resetAll = () => {
     setFiles([]);
     setResponse(null);
@@ -69,49 +71,47 @@ function Uploader() {
     }
   }, [])
 
+  //提交上傳表單
+  const submitForm = (e) => {
+    e.preventDefault();
+    const { normalInfo: { uuid, user_name } } = queryClient.getQueryData(['userCtx']);
+    //檢查表單是否填妥
+    if (hasRequiredProperties(form)) {
+      const newForm = { ...form, uuid, owner: user_name };
+      const jsonRes = JSON.stringify(response);
+      const jsonForm = JSON.stringify(newForm);
+
+      const blobRes = new Blob([jsonRes, '$', jsonForm], { type: 'application/json' });
+
+      const uploadStatus = uploadFiles(blobRes);
+      uploadStatus.then(e => {
+        if (e.ok) {
+          departmentMutation.mutate({ department: form.department, count:1 })
+          createToast('上傳成功!', {
+            theme: 'dark',
+            type: 'success',
+            autoClose: 5000
+          });
+          //重置所有表單
+          deleteDisk('all');
+          resetAll();
+        }
+      });
+    } else {
+      createToast('表單不可為空!', {
+        theme: 'colored',
+        position: 'top-center',
+        type: 'warning',
+        autoClose: 2000
+      });
+    }
+    return;
+  }
 
   return (
     <>
       <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          const { normalInfo: { uuid, user_name } } = queryClient.getQueryData(['userCtx']);
-
-          //檢查表單是否填妥
-          if (hasRequiredProperties(form)) {
-            const newForm = { ...form, uuid, owner: user_name };
-            const jsonRes = JSON.stringify(response);
-            const jsonForm = JSON.stringify(newForm);
-
-            const blobRes = new Blob([jsonRes, '$', jsonForm], { type: 'application/json' });
-
-            const uploadStatus = uploadFiles(blobRes);
-            uploadStatus.then(e => {
-              if (e.ok) {
-                createToast('上傳成功!', {
-                  theme: 'dark',
-                  type: 'success',
-                  autoClose: 5000
-                });
-                //重置所有表單
-                // resetAll();
-              }
-            });
-          }else {
-            createToast('表單不可為空!', {
-              theme: 'colored',
-              position: 'top-center',
-              type: 'warning',
-              autoClose: 2000
-            });
-          }
-
-          return;
-
-
-
-        }}
+        onSubmit={submitForm}
         onChange={({ target }) => {
           if (target.name === 'description') {
             setForm(v => {

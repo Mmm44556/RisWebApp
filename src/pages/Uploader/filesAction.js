@@ -7,11 +7,12 @@ function deleteDisk(id) {
   });
 
 }
-function preProcessFiles(files, { department,title }) {
+function preProcessFiles(files, { department, title }) {
   //先將拖曳區文件給server格式化後，緩存在server
   const uploadPromises = files.map((file) => {
     const formData = new FormData();
     formData.append(`file`, file, `${title}.json`);
+    formData.append('name', file.name);
     return fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList/preProcess?depart=${(department || 'INTERNAL')}`, {
       method: 'POST',
       body: formData,
@@ -57,7 +58,7 @@ function preProcessPromises(uploadPromises, droppedFiles, setFiles, setResponse)
 function uploadFiles(response) {
   //上傳檔案至server端
   const formData = new FormData();
-  formData.append('response', response,'.json');
+  formData.append('response', response, '.json');
 
   return fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList`, {
     method: 'POST',
