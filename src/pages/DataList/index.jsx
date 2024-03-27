@@ -92,9 +92,10 @@ export function Root() {
   const [navigator] = useOutletContext();
   let reCategoryDepartment;
   if (isSuccess) {
-    reCategoryDepartment = reCategory(data.data)
-
+    reCategoryDepartment = reCategory(data.data);
+    refetch();
   }
+
 
   return (
     <>
@@ -142,9 +143,8 @@ export function Root() {
                     </Hover>
                   </Col>
                 )
-              }) : null
+              }) : ''
             }
-
           </Row>
           <Row className="mb-5">
             {

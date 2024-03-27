@@ -1,5 +1,5 @@
 import { Badge } from 'react-bootstrap';
-import moment from 'moment';
+import timeRemaining from '@utils/timeRemaining';
 const customFilesStyles = {
   table: {
     style: {
@@ -74,7 +74,7 @@ const fileColumns = [
   },
   {
     name: '治療部位',
-    selector: row => row.data?.parts,
+    selector: row => row.data?.parts||'N/A',
     reorder: true,
   },
   {
@@ -84,9 +84,8 @@ const fileColumns = [
   },
   {
     name: '剩餘時間',
-    selector: row => moment().to(row.data.date?.deadline, true),
+    selector: row => timeRemaining(row.data.date?.deadline),
     reorder: true,
   }
 ]
-
 export { fileColumns, customFilesStyles, TypeBadges };

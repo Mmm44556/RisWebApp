@@ -92,10 +92,6 @@ class FilesRepository extends IFilesRepository {
     //預設屬性
     const mergePrivateInfo = {
       ...privateInfo,
-      state: {
-        proposal: false,
-        review: false
-      },
       group,
       date: {
         deadline: time,
@@ -107,8 +103,16 @@ class FilesRepository extends IFilesRepository {
     const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
     const docRef = doc(firestoreDB, privateInfo.department, department.id);
     const subCollection = collection(docRef, 'data');
-    const responses = readAllFile.map(async (e,idx) => {
-      await addDoc(subCollection, { e, name: reports[idx].name })
+    const responses = readAllFile.map(async (e, idx) => {
+      await addDoc(subCollection,
+        {
+          e,
+          name: reports[idx].name,
+          state: {
+            proposal: false,
+            review: false
+          },
+        })
       //拿到描述文件的hash ID
       // const DepartmentFiledData = doc(firestoreDB, 'data', department.id);
       //保存描述文件的hash id 存入另個data collection作為UID
@@ -122,14 +126,14 @@ class FilesRepository extends IFilesRepository {
   readDoc = async (type, id) => {
 
     try {
-      
+
       if (id) {
         const reports = [];
         //查詢該筆檔案的全部報告
-        const currentReportDocRef = doc(firestoreDB,type,id);
+        const currentReportDocRef = doc(firestoreDB, type, id);
         const reportCollection = await getDocs(collection(currentReportDocRef, 'data'));
         for (const report of reportCollection.docs) {
-          reports.push({...report.data(),fileId:report.id});
+          reports.push({ ...report.data(), fileId: report.id });
         }
         return { status: 200, data: reports }
         // const lastVisible = await getDoc(doc(firestoreDB, type, id));
