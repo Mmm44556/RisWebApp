@@ -2,8 +2,9 @@ const zhKeys = {
   title: '標題',
   type: '類型',
   patient: '病患姓名',
-  inspection: '檢查部位',
-  department: '部門',
+  parts: '部位',
+  inspection: '方法',
+  // department: '部門',
   // owner: '上傳者',
   // date: '日期',
   // group: '權限',
@@ -11,7 +12,7 @@ const zhKeys = {
 }
 
 //轉換資料對應中文keys
-export default function reportFieldKeys(obj) {
+function reportFieldKeys(obj) {
   const objEntries = new Map(Object.entries(obj))
 
   const sortedObj = {};
@@ -28,4 +29,15 @@ export default function reportFieldKeys(obj) {
   });
   return Array.from(Object.entries(sortedObj))
 }
-
+//進行鍵值反轉
+function reverseObject(obj) {
+  const reversedObj = {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const value = obj[key];
+      reversedObj[value] = key;
+    }
+  }
+  return reversedObj;
+}
+export { reportFieldKeys, zhKeys, reverseObject }

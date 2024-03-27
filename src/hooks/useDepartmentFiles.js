@@ -15,10 +15,22 @@ function useDepartmentFiles() {
           }
         },
       )
-      return await res.json()
+      return await res.json();
     },
     gcTime: Infinity,
-    staleTime:Infinity
+    staleTime: Infinity,
+    initialData: () => {
+      return ({
+        data: [{ INTERNAL: 0 },
+        { SURGERY: 0 },
+        { ORTHOPEDICS: 0 },
+        { RADIOLOGY: 0 },
+        { PROPOSAL: 0 },
+        { REVIEWS: 0 },
+        { PRECESS: 0 }]
+      })
+
+    }
   })
   return result;
 }

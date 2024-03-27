@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import useBreakpoint from '@hooks/useBreakpoint';
-function ReportModal({ lgShow, setLgShow, ModalHeader, children,exit },) {
+function ReportModal({ lgShow, setLgShow, ModalHeader, children, exit },) {
   const breakpoint = useBreakpoint();
 
   return (
@@ -11,8 +11,9 @@ function ReportModal({ lgShow, setLgShow, ModalHeader, children,exit },) {
         size={'xl'}
         fullscreen={breakpoint === 'xxl' ? true : false}
         show={lgShow}
-        onHide={() => setLgShow(false)}
-        onExit={exit}
+        onHide={exit}
+        keyboard={false}
+        backdrop="static"
         aria-labelledby="example-modal-sizes-title-xl"
       >
         <Modal.Header closeButton style={{ backgroundColor: 'rgb(251 253 255)' }}>
@@ -22,7 +23,7 @@ function ReportModal({ lgShow, setLgShow, ModalHeader, children,exit },) {
             }
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className='w-100' style={{ backgroundColor:'rgb(251 253 255)'}}>
+        <Modal.Body className='w-100' style={{ backgroundColor: 'rgb(251 253 255)' }}>
           {children}
         </Modal.Body>
       </Modal>

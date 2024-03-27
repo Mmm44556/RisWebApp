@@ -10,7 +10,7 @@ import Loading from '@error/Loading';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 300000,
+      staleTime: Infinity,
     },
 
     queryCache: new QueryCache({
@@ -63,7 +63,7 @@ function App() {
 
             </ErrorBoundary>
           )}
-          
+
         </QueryErrorResetBoundary>
         <ReactQueryDevtools></ReactQueryDevtools>
 
