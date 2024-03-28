@@ -45,9 +45,11 @@ router.get('/dataList', fileManagerController.browseDocs);
 
 router.post('/dataList', uploader.single('response'), fileManagerController.addNewDoc);
 
-router.get('/dataList/:type?', fileManagerController.getDocs);
+router.get('/dataList/:department?', fileManagerController.getDocs);
 
 router.delete('/dataList/:id', fileManagerController.deleteDisk);
+
+router.put('/dataList/:department', uploader.single('response'), fileManagerController.updateDoc);
 
 
 

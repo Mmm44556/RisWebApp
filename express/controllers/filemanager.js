@@ -64,10 +64,10 @@ class FileManagerController {
 
     const { file } = req;
     const split = file.buffer.toString('utf-8').split('$');
-    
+
     const reports = JSON.parse(split[0]);
     const privateInfo = JSON.parse(split[1]);
-   
+
     const result = await this._fileService.upload(reports, privateInfo);
 
     res.status(200).send(result.data);
@@ -77,12 +77,21 @@ class FileManagerController {
    * 獲取單一部門資料
    */
   getDocs = async (req, res) => {
-    const { params: { type }, query } = req;
-    const docs = await this._fileService.read(type, query.fileId);
+    const { params: { department }, query } = req;
+    const docs = await this._fileService.read(department, query.fileId);
 
     res.status(docs.status).send(docs.data);
   }
 
+  /**
+   * 更新部門資料
+   */
+  updateDoc = async (req, res) => {
+    const { params: { department }, file } = req;
+    const jsonReport = JSON.parse(file.buffer.toString('utf-8'));
+    const docs = await this._fileService.update(jsonReport,department);
+    res.status(docs.status).send(docs);
+  }
   /**
    * 刪除預格式化後緩存在Server的資料
    */

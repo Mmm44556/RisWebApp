@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import FileDropZone from './FileDropZone';
 import FilesForm from './FilesForm';
 import { deleteDisk, uploadFiles } from './filesAction';
-import { updateDepartmentReports } from '@hooks/useDepartmentFiles';
+import { updateDepartmentReportsCounts } from '@hooks/useDepartmentFiles';
 import { createToast } from '@utils/SystemToastify';
 import styled from 'styled-components';
 
@@ -58,7 +58,7 @@ function Uploader() {
   //是否添加額外補充
   const [additional, setAdditional] = useState(false);
   //更新所有部門報告數量
-  const departmentMutation = updateDepartmentReports(queryClient);
+  const departmentMutation = updateDepartmentReportsCounts(queryClient);
   const resetAll = () => {
     setFiles([]);
     setResponse(null);
