@@ -3,7 +3,7 @@ const firestoreDB = require('../mysql/firebase');
 const firestore = require('firebase/firestore');
 
 const moment = require('moment');
-const { addDoc, collection, doc, setDoc, query, where, getDoc, startAfter, getDocs, orderBy, getCountFromServer, limit } = firestore;
+const { addDoc, collection, doc, setDoc, query, where, getDoc, getDocs, orderBy, getCountFromServer, limit, runTransaction } = firestore;
 
 
 /**
@@ -35,6 +35,7 @@ const { addDoc, collection, doc, setDoc, query, where, getDoc, startAfter, getDo
 class IFilesRepository {
 
   connectDB() {
+
     return this._firestoreDB = firestoreDB;
   }
   /**
@@ -59,6 +60,14 @@ class IFilesRepository {
 
   }
 
+  /**
+ * 更新部門報告
+ * @param {object} jsonReport 更新後的報告資料 
+ *  @param {string} department 部門類型
+ */
+  updateDoc = async (jsonReport, department) => {
+
+  }
 }
 
 
@@ -99,7 +108,6 @@ class FilesRepository extends IFilesRepository {
         created: moment().format("YYYY-MM-DDThh:mm:ss")
       }
     }
-    // console.log(reportName)
     const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
     const docRef = doc(firestoreDB, privateInfo.department, department.id);
     const subCollection = collection(docRef, 'data');
@@ -113,11 +121,6 @@ class FilesRepository extends IFilesRepository {
             review: false
           },
         })
-      //拿到描述文件的hash ID
-      // const DepartmentFiledData = doc(firestoreDB, 'data', department.id);
-      //保存描述文件的hash id 存入另個data collection作為UID
-      // const dataCollections = await setDoc(DepartmentFiledData, { data });
-      // console.log(dataCollections, DepartmentFiledData)
       return '';
     });
     return responses;
@@ -136,19 +139,6 @@ class FilesRepository extends IFilesRepository {
           reports.push({ ...report.data(), fileId: report.id });
         }
         return { status: 200, data: reports }
-        // const lastVisible = await getDoc(doc(firestoreDB, type, id));
-
-        // const next2 = query(collection(firestoreDB, type),
-        //   orderBy('date.created', 'asc'),
-        //   startAfter(lastVisible),
-        //   limit(10)
-        // );
-        // const nextDocsSnapShots = await getDocs(next2);
-        // nextDocsSnapShots.forEach(e => {
-        //   const data = e.data();
-        //   nextDocs.push({ data, fileId: e.id });
-        // });
-        // return { status: 200, data: nextDocs };
 
       } else {
         const docs = [];
@@ -161,38 +151,37 @@ class FilesRepository extends IFilesRepository {
           const data = e.data();
           docs.push({ data, fileId: e.id, reports: [] });
         }
-
         return { status: 200, data: docs };
-
-
-
-
-
-
       }
 
     } catch (error) {
       console.log(error);
       return { status: 500, data: error };
     }
+  }
 
-    // const lastVisible = docsSnapShots.docs[docsSnapShots.docs.length - 1];
+  updateDoc = async (jsonReport, department) => {
 
-    // const next = query(collection(firestoreDB, type),
-    //   orderBy('date.created', 'asc'),
-    //   startAfter(lastVisible),
-    //   limit(10)
-    // );
-    // console.log('第二頁:')
+    const parentDocRef = collection(firestoreDB, department);
+    const currentDepartmentDoc = doc(parentDocRef, jsonReport.fileId);
+    return runTransaction(firestoreDB, async transaction => {
+      // 获取父文档数据
+      const parentDocSnapshot = await transaction.get(currentDepartmentDoc);
+      if (!parentDocSnapshot.exists) {
+        throw new Error('Document does not exist!');
+      }
 
-    // const nextSnapShots = (await getDocs(next));
-    // nextSnapShots.forEach(e => {
-    //   console.log(e.data(),e.id);
-    // })
-    return;
+      // 获取子集合文档
+      const childCollectionRef = collection(currentDepartmentDoc, 'data')
+      // 更新父文档数据
+      transaction.update(currentDepartmentDoc, { ...jsonReport.data });
+      // 更新子集合的特定檔案
+      await setDoc(doc(childCollectionRef, jsonReport.reports[0].fileId), jsonReport.reports[0]);
+    });
   }
 
 }
+
 
 
 

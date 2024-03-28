@@ -93,9 +93,10 @@ export function Root() {
   let reCategoryDepartment;
   if (isSuccess) {
     reCategoryDepartment = reCategory(data.data);
-    refetch();
   }
-
+  useEffect(() => {
+    refetch();
+  }, [isSuccess])
 
   return (
     <>

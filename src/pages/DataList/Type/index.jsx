@@ -1,22 +1,24 @@
-import { useEffect, useState, useMemo, Suspense } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, Tab, Row, Col, ListGroup, Card, Stack, Button, Form, Badge, Modal, Spinner } from 'react-bootstrap';
+import { useQueryClient } from '@tanstack/react-query';
 import DataTable from 'react-data-table-component';
+import moment from 'moment';
 import ReportModal from '@layouts/ReportModal';
 import { useTypeFiles, useTypePrefetch, useTypeReports } from '@hooks/useTypeFiles';
+import { useUpdatedAllReport } from '@hooks/useDepartmentFiles';
 import { reportFieldKeys, zhKeys, reverseObject } from '@utils/reportFieldKeys';
 import { customFilesStyles, fileColumns, TypeBadges } from './column';
-import { useQueryClient } from '@tanstack/react-query';
-import moment from 'moment';
 import { BiSortAlt2 } from "react-icons/bi";
 import { FaEdit, FaFileAlt, FaRegEdit } from "react-icons/fa";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
+
 
 export default function Type() {
   const param = useParams();
   const nav = useNavigate();
   const location = useLocation();
-
+  const resetLocation = () => nav(location.pathname);
   const queryClient = useQueryClient();
   const { data, isSuccess, isFetching } = useTypeFiles(param['*']);
   const typeReports = useTypeReports(queryClient);
@@ -27,31 +29,28 @@ export default function Type() {
   const [lgShow, setLgShow] = useState(false);
   //當前選擇的檔案
   const [currentSelected, setCurrentSelected] = useState(null);
-  const currentSelectedMemo = useMemo(() => currentSelected);
+
+  const currentSelectedMemo = useMemo(() => currentSelected, [currentSelected]);
+
   //重置編輯報告內容
   const exit = () => {
-    // const beforeSave = confirm('是否儲存當前修改');
-    nav(location.pathname);
-    // if (beforeSave) {
-    // queryClient.setQueryData(['department', currentSelected.data.department]);
-    // }
-    setLgShow(false)
-    setCurrentReportContent({ fileId: '', e: '' })
+    resetLocation();
+    setLgShow(false);
+    setCurrentReportContent({ fileId: '', e: '' });
   };
-
+  useEffect(() => {
+    resetLocation();
+  }, [])
   // if (isSuccess) {
   //   //當前頁數獲取完後再拿下一頁資料
   //   useTypePrefetch(param['*'], data[data.length - 1]?.fileId, queryClient);
   // }
 
-
   const rowOnclick = (row) => {
     const { fileId, data: { department } } = row;
     setCurrentSelected(row);
     setLgShow(true);
-
     typeReports.mutate({ fileId, department });
-
   }
   useEffect(() => {
     if (isSuccess) {
@@ -62,7 +61,7 @@ export default function Type() {
       // useTypePrefetch(param['*'], data[data.length - 1]?.fileId, queryClient);
     }
 
-  }, [data])
+  }, [data, currentSelected]);
   return (
     <>
       {
@@ -124,7 +123,17 @@ export default function Type() {
           </Row>
 
 
-          <ReportModal lgShow={lgShow} setLgShow={setLgShow} ModalHeader={<ModalHeader user={user} currentSelectedMemo={currentSelectedMemo} setCurrentSelected={setCurrentSelected} currentReportContent={currentReportContent} />} exit={exit}>
+          <ReportModal
+            lgShow={lgShow}
+            setLgShow={setLgShow}
+            exit={exit}
+            resetLocation={resetLocation}
+            ModalHeader={<ModalHeader
+              user={user}
+              currentSelectedMemo={currentSelectedMemo}
+              setCurrentSelected={setCurrentSelected}
+              currentReportContent={currentReportContent}
+              queryClient={queryClient} />} >
 
             <>
               <Row className='h-100'>
@@ -177,13 +186,15 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
     setSaveModalShow(false);
     setConfirmSave(false);
   };
-
+  const resetConfirm = () => setConfirmSave(false);
   return (
     <>
 
       <Modal
         show={saveModalShow}
         onHide={handleClose}
+        onEnter={resetConfirm}
+        onExit={resetConfirm}
         style={{ backgroundColor: '#00000024' }}>
         <Modal.Header closeButton className='border-0 '>
           <Modal.Title className="text-center">是否保存當前修改?</Modal.Title>
@@ -192,7 +203,10 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
           <Button variant="secondary" onClick={handleClose}>
             取消
           </Button>
-          <Button variant="danger" onClick={() => setConfirmSave(true)}>
+          <Button variant="danger" onClick={() => {
+            setConfirmSave(true)
+            setSaveModalShow(false);
+          }}>
             儲存
           </Button>
         </Modal.Footer>
@@ -200,32 +214,40 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
     </>
   );
 }
-function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent }) {
+
+
+function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient }) {
   const { hash } = useLocation();
   const { normalInfo: { role_uid } } = user;
   const { data, reports } = currentSelectedMemo;
   const [saveModalShow, setSaveModalShow] = useState(false);
   const [confirmSave, setConfirmSave] = useState(false);
+  //更新資料庫的報告
+  const { mutate, isSuccess, isLoading } = useUpdatedAllReport(queryClient);
   //尋找當前編輯的報告
-  const findUpdatedReport = () => reports.find(e => `#${e.fileId}` == hash);
+  const findUpdatedReport = (e) => `#${e.fileId}` == hash;
   useEffect(() => {
     if (confirmSave) {
       setCurrentSelected(prev => {
-        return prev
-      })
-      console.log(findUpdatedReport(), currentSelectedMemo);
+        const idx = prev.reports.findIndex(findUpdatedReport);
+        const oldData = queryClient.getQueryData(['department', prev.data.department]);
+        //就資料中找到當前編輯的病人報告
+        const idx2 = oldData.findIndex(e => e.fileId == prev.fileId);
+        prev.reports[idx] = currentReportContent;
+        oldData[idx2] = prev;
+        mutate({ oldData: oldData[idx2], currentData: currentReportContent });
+        console.log(prev)
+        return { ...prev }
+      });
+
     }
-
-
   }, [confirmSave])
   const saveBtn = () => {
-    console.log(findUpdatedReport(), currentSelectedMemo);
-    // const findUpdatedReport = reports.find(e => e.fileId == h)
     setSaveModalShow(true);
   }
 
   const reportState = () => {
-    const currentReportState = findUpdatedReport();
+    const currentReportState = reports.find(findUpdatedReport);
     return (
       <>
         {
@@ -283,6 +305,7 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
                 <SaveModal saveModalShow={saveModalShow} setSaveModalShow={setSaveModalShow} setConfirmSave={setConfirmSave} />
                 <Button
                   onClick={saveBtn}
+                  disabled={isLoading}
                   variant="danger" className='fw-bold' size="sm"
                 >  儲存修改
                 </Button>
@@ -335,19 +358,19 @@ const tabsFormKeys = {
 }
 function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurrentSelected, user }) {
   const reverseObjectZhKeys = reverseObject(zhKeys);
+  const { reports, data } = currentSelectedMemo;
   //更換當前選的報告內容
   const rowSelectedChange = (e) => {
     const splitStr = e.split('#');
-    const { reports } = currentSelectedMemo;
+
     const currentReport = reports.find(e => e.fileId === splitStr[1]);
-
-
     setCurrentReportContent((e) => {
       //當選到同個報告時避免重置內容
       if (splitStr[1] === e.fileId) return e;
       return currentReport
     });
   }
+
   return (
     <Tab.Container
       id="list-group-tabs-example"
@@ -376,7 +399,7 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
             <Card style={{ width: '18rem' }} >
               <ListGroup variant="flush">
                 {
-                  reportFieldKeys(currentSelectedMemo.data).map((e) => (
+                  reportFieldKeys(data).map((e) => (
                     <ListGroup.Item key={e[0]} className='position-relative'>
                       <span >
                         {
@@ -389,15 +412,17 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                           user.normalInfo.role_uid == 1 ? <Form
                             onChange={(e) => {
                               setCurrentSelected(prev => {
-                                const field = e.target.id;
-                                return { ...prev, data: { ...prev.data, [field]: e.target.value } }
+                                const fileId = e.target.id;
+                                return { ...prev, data: { ...prev.data, [fileId]: e.target.value } }
                               })
                             }}
                           >
 
                             {
                               ['title', 'patient'].includes(reverseObjectZhKeys[e[0]]) ?
-                                <Form.Group className="mb-3" controlId={reverseObjectZhKeys[e[0]]}>
+                                <Form.Group className="mb-3"
+                                  controlId={reverseObjectZhKeys[e[0]]}
+                                >
                                   <Form.Label
                                     style={{ right: '5px', top: '3px', cursor: 'pointer' }}
                                     className='position-absolute text-secondary '>
@@ -405,7 +430,6 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                                   </Form.Label>
                                   <Form.Control
                                     className="w-75 mt-1 mb-1 "
-                                    defaultValue={e[1]}
                                     value={e[1]}
                                     size="sm"
                                     type="text"
@@ -415,7 +439,9 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                                     isInvalid={!(e[1])}
                                     style={{ fontSize: '1.125rem' }}
                                   /> </Form.Group> :
-                                <Form.Group className="mb-3" controlId={reverseObjectZhKeys[e[0]]}>
+                                <Form.Group className="mb-3"
+                                  controlId={reverseObjectZhKeys[e[0]]}
+                                >
                                   <Form.Label
                                     style={{ right: '5px', top: '3px', cursor: 'pointer' }}
                                     className='position-absolute text-secondary '>
@@ -424,6 +450,7 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
 
                                   <Form.Select
                                     size="sm"
+                                    value={e[1]}
                                     className='w-75 mt-1 mb-1 '
                                     style={{ fontSize: '1.125rem' }}
                                     aria-label="Default select example">
@@ -431,7 +458,6 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                                     {
                                       tabsFormKeys[reverseObjectZhKeys[e[0]]].map(e => (
                                         <option
-                                          defaultValue={reverseObjectZhKeys[e[0]]}
                                           value={reverseObjectZhKeys[e[0]]}>
                                           {
                                             e

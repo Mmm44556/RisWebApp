@@ -13,7 +13,7 @@ import { role } from '../js/column';
 import { userToKeys } from '@hooks/userToKey';
 import useEditGroup from '../js/useEditGroup';
 import userInitial from '@store/userInitial';
-import { createToast, updateToast, dismissToast } from '@utils/systemToastify';
+import { createToast, dismissToast } from '@utils/systemToastify';
 import moment from 'moment';
 import styled from 'styled-components';
 

@@ -1,10 +1,9 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
+import { useEffect, memo } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import useBreakpoint from '@hooks/useBreakpoint';
-function ReportModal({ lgShow, setLgShow, ModalHeader, children, exit },) {
-  const breakpoint = useBreakpoint();
 
+function ReportModal({ lgShow, ModalHeader, children, exit, resetLocation },) {
+  const breakpoint = useBreakpoint();
   return (
     <>
       <Modal
@@ -34,4 +33,4 @@ function ReportModal({ lgShow, setLgShow, ModalHeader, children, exit },) {
 
 
 
-export default ReportModal;
+export default memo(ReportModal);

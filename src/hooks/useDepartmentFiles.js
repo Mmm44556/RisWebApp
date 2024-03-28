@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-
+import { createToast } from '@utils/systemToastify';
 
 //獲取所有報告分類數量
 function useDepartmentFiles() {
@@ -17,9 +17,8 @@ function useDepartmentFiles() {
       )
       return await res.json();
     },
-    gcTime: Infinity,
-    staleTime: Infinity,
     initialData: () => {
+   
       return ({
         data: [{ INTERNAL: 0 },
         { SURGERY: 0 },
@@ -36,7 +35,7 @@ function useDepartmentFiles() {
 }
 
 //更新所有報告分類數量
-function updateDepartmentReports(queryClient) {
+function updateDepartmentReportsCounts(queryClient) {
   const mutate = useMutation({
     mutationFn: async ({ department, count }) => {
       const upperCaseD = department.toUpperCase();
@@ -59,7 +58,71 @@ function updateDepartmentReports(queryClient) {
   })
   return mutate;
 }
+//更新當前部門底下的特定病患資料
+function useUpdatedAllReport(queryClient) {
+  const mutate = useMutation({
+    mutationFn: async ({ oldData, currentData }) => {
+      const { data } = oldData;
+      const updatedData = { ...oldData, reports: [currentData] }
+      //轉換成blob存入FORM格式
+      const jsonForm = JSON.stringify(updatedData);
+      const blobRes = new Blob([jsonForm], { type: 'application/json' });
+      const formData = new FormData();
+      formData.append('response', blobRes, '.json');
 
+      const result = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList/${data.department}`
+        , {
+          method: 'PUT',
+          headers: {
+            "Accept": "application/json"
+          },
+          body: formData,
+        },
+      );
+      const jsonResult = await result.json();
+      if (jsonResult.status == 200) {
+        return jsonResult
+      }
+      throw new Error(jsonResult.msg);
+
+    },
+    onMutate: async ({ oldData, currentData }) => {
+      const data = queryClient.getQueryData(['department', oldData.data.department]);
+      const filteredData = data.map(e => {
+        if (e.fileId == oldData.fileId) {
+          return oldData;
+        }
+        return e
+      });
+      queryClient.setQueryData(['department', oldData.data.department], filteredData);
+      createToast(`資料更新中...`, {
+        type: 'info',
+        theme: 'colored',
+        position: "bottom-right",
+        autoClose: 3500
+      });
+
+      return filteredData;
+    },
+    onSuccess: async (res) => {
+      createToast(res.msg, {
+        type: 'success',
+        theme: 'colored',
+        position: "bottom-right",
+        autoClose: 4000
+      });
+    },
+    onError: async (err) => {
+      createToast(err.message, {
+        type: 'error',
+        theme: 'colored',
+        position: "bottom-right",
+        autoClose: 5000
+      });
+    }
+  })
+  return mutate;
+}
 //反轉Department的Key value資料
 function reCategory(data) {
 
@@ -106,4 +169,4 @@ function reCategory(data) {
   return resultArray;
 }
 
-export { useDepartmentFiles, updateDepartmentReports, reCategory };
+export { useDepartmentFiles, updateDepartmentReportsCounts, useUpdatedAllReport, reCategory };
