@@ -1,5 +1,4 @@
 import { Card, ListGroup, Button, ProgressBar, Stack } from 'react-bootstrap';
-import { IoIosMail } from "react-icons/io";
 export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role, save }) {
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>

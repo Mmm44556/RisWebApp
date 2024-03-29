@@ -79,15 +79,6 @@ const router = createBrowserRouter([
             path: 'employees/*',
             element: <Employees/>,
             action: registerAction
-          },
-          {
-            path: 'notifications',
-            async lazy() {
-              let Notifications = await import("@pages/Notifications");
-              return {
-                Component: Notifications.default
-              }
-            },
           }
         ]
       },

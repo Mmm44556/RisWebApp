@@ -101,7 +101,6 @@ export function Root() {
   return (
     <>
       <Font>
-        <button onClick={() => refetch()}>refetch</button>
         <Container fluid>
           <Row className="mb-5">
             {
@@ -195,6 +194,7 @@ export function Root() {
           <Row>
             {
               ['院內各科報告', '本周已完成報告'].map((e, idx) => {
+               
                 return (
                   <Col key={idx}>
                     <Card >

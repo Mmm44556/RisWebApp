@@ -34,28 +34,7 @@ function Navigator({ normalInfo }) {
       className="shadow p-1  rounded bg-light"
       collapseOnSelect
     >
-
       <Container >
-        {searchParams.pathname.split('/').includes("dataList") ? <><NavDropdown title={<span type="button" className="btn btn-outline-secondary border-0 ">
-          <BsFilterLeft className='fs-4' /></span>} id="collasible-nav-dropdown" className='me-3'>
-          <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.2">
-            Another action
-          </NavDropdown.Item>
-          <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-          <NavDropdown.Divider />
-        </NavDropdown>
-          <Navbar.Brand className="fs-5">
-            <Form.Group controlId="exampleForm.ControlInput1" className='position-relative'>
-              <div className='position-absolute end-0 '>
-                <Form.Label>
-                  <BsSearch className='m-2 me-3' style={{ cursor: "pointer" }} />
-                </Form.Label>
-              </div>
-              <Form.Control type="email" placeholder="Search" />
-            </Form.Group>
-          </Navbar.Brand></> : null}
-
         <Navbar.Toggle aria-controls="responsive-navbar-nav"
 
         />
@@ -88,10 +67,6 @@ function Navigator({ normalInfo }) {
                   <Figure bg={(localStorage.getItem('figure') ?? '#fff')}>{normalInfo['user_name'].charAt(0)}</Figure>
                   {normalInfo['user_name']}</>}
                 id="navbarScrollingDropdown">
-
-                <NavDropdown.Item href="#action3" >
-                  Action
-                </NavDropdown.Item>
                 <NavDropdown.Item >
 
                   <Suspense fallback={<h6>loading....</h6>}>

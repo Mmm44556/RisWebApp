@@ -67,14 +67,6 @@ function SideBar({ userState }) {
       </Nav.Item>
         : null}
       <hr />
-      <Nav.Item as="li">
-        <Nav.Link
-          onClick={useNavigator('notifications')}
-          eventKey="notifications"
-          title="notifications">
-          <IoIosMail />郵件通知
-        </Nav.Link>
-      </Nav.Item>
     </Nav>
   )
 }

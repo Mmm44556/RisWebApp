@@ -28,7 +28,7 @@ const type = {
     gradient: 'rgba(60,213,72,1)',
   },
   '臨床醫師未提回': {
-    title: 'proposal',
+    title: 'proposals',
     bg: '#3c8dbc',
     footer: '#367fa8'
   },

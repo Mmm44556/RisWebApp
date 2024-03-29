@@ -4,6 +4,7 @@ const customFilesStyles = {
   table: {
     style: {
       minHeight: '50dvh'
+
     },
   },
 
@@ -23,6 +24,8 @@ const customFilesStyles = {
     style: {
       paddingLeft: '8px',
       paddingRight: '8px',
+      marginLeft: '0.3rem',
+      marginRight: '0.5rem'
 
     },
   }
@@ -48,6 +51,10 @@ const TypeBadges = {
   'IP': {
     str: '住院',
     bg: 'warning'
+  },
+    'ALL': {
+    str: '全部',
+    bg: ''
   }
 }
 const fileColumns = [
