@@ -88,6 +88,7 @@ class EmployeeService {
 
       delete userInfo.position_name;
       delete userInfo.department_name;
+    
       const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
 
       return { status: 200, msg: result };

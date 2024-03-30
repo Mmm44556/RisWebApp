@@ -10,8 +10,6 @@ export default function Authentication() {
   const queryClient = useQueryClient();
   //註冊通過轉導
   const [registerConfirm, setRegisterConfirm] = useState('sign-in');
-  const [registerStatus, setRegisterStatus] = useState({ is: false, info: '' });
-
 
   useEffect(() => {
     Navigate('sign-in', { replace: true })
@@ -20,7 +18,7 @@ export default function Authentication() {
   return (
     <div className={style.backgroundImg} >
       <Container fluid className={style.authContainer} >
-       
+
         <Row >
           <Col xl={4} md={4} sm={4} xs={4} className='p-0'>
 
@@ -28,14 +26,13 @@ export default function Authentication() {
           <Col className=' m-0 p-0'>
 
             <Tabs
-              defaultActiveKey="Login"
-              id="controlled-tab-example"
+              defaultActiveKey="sign-in"
               activeKey={registerConfirm}
               fill
               onSelect={e => {
                 Navigate(e, { replace: true })
+           
                 setRegisterConfirm(e)
-                setRegisterStatus(e => ({ ...e, is: false, info: '' }))
                 return e
               }}
 
@@ -44,8 +41,7 @@ export default function Authentication() {
               <Tab eventKey="sign-up" title="註冊" />
             </Tabs>
 
-            <Outlet context={[Navigate, setRegisterConfirm, setRegisterStatus]} />
-            {registerStatus.is ? <h2 className={style.regiCheck}>{registerStatus.info}</h2> : null}
+            <Outlet context={[Navigate, setRegisterConfirm]} />
           </Col>
           <Col xl={4} md={4} sm={4} xs={4} className='p-0'>
 

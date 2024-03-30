@@ -73,7 +73,6 @@ function InputComponent(key, v, edit, positionName) {
             //反轉職位預設值
             if (key === 'position_name') {
               const departmentID = reversePosition[positionName.department_name];
-              console.log(positionName.department_name,v)
               return departmentID[v];
             }
             return ''

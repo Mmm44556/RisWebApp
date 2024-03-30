@@ -56,7 +56,7 @@ function DataList() {
             return (
 
               <Breadcrumb.Item
-                className="fs-4"
+                className="fs-4 mt-2 fw-bold"
                 key={idx}
                 linkProps={
                   {
@@ -160,10 +160,6 @@ export function Root() {
                             <Card.Title>
                               {category}
                             </Card.Title>
-
-                            <Card.Text>
-                              {value}
-                            </Card.Text>
                           </div>
                           <div>
                             <VscFiles
@@ -201,6 +197,7 @@ export function Root() {
                       <Card.Body className="ps-0 pe-0">
                         <Card.Title className="border-bottom">
                           {e}
+                          
                         </Card.Title>
                         <Card.Text>
                           <Row>

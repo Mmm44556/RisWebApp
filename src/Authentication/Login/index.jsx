@@ -1,13 +1,26 @@
-import React, { useEffect } from 'react';
-import { Form, useActionData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useActionData, useNavigate } from 'react-router-dom';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import style from "../../assets/scss/style.module.scss";
 export default function Login() {
-
+  const response = useActionData();
+  const navigator = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (response?.msg == 'ok') {
+      navigator('/DashBoard/dataList',{replace:true});
+      setIsSubmitting(false);
+    }
+    if(response?.msg=="err"){
+      setIsSubmitting(false);
+    }
+  }, [response])
   return (
     <>
 
-      <Form method="post" action="/sign-in" className={style.login}>
+      <Form method="post"
+        onSubmit={() => setIsSubmitting(true)}
+        action="/sign-in" className={`${style.login} d-flex flex-column gap-2`}>
         <p className='text-center fs-4 fw-bold' >Radiology File System</p>
 
         <label htmlFor="name" className="text-center">
@@ -30,14 +43,14 @@ export default function Login() {
             placeholder='password' />
         </label>
 
-
-        <div className='text-end'>
-          <input type="checkbox" id="keeping" name="keeping" style={{ height: '15px' }} />
-          <label htmlFor="keeping" style={{ fontSize: '18px', marginLeft: '7px' }}>保持登入</label>
-        </div>
-
-        <div>
-          <button type="submit">登入</button>
+        <div >
+          <button
+            disabled={isSubmitting}
+            type="submit">
+              {
+              isSubmitting ? "登入中..." : '登入'
+              }
+            </button>
         </div>
 
       </Form>

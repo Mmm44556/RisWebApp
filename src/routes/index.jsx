@@ -21,7 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'DashBoard',
-        element:<DashBoard/>,
+        element: <DashBoard />,
         children: [
           {
             path: 'dataList',
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'employees/*',
-            element: <Employees/>,
+            element: <Employees />,
             action: registerAction
           }
         ]
@@ -85,19 +85,22 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Authentication />,
-        loader: sessionCheck,
+        shouldRevalidate() {
+          return false
+        },
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [
           {
             path: 'sign-up/*',
             element: <Register />,
             action: registerAction,
-            errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>
+            errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,
 
           },
           {
             path: 'sign-in/*',
             element: <Login />,
+            loader: sessionCheck,
             action: loginAction,
             errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,
 

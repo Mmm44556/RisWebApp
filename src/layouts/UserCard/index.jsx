@@ -1,5 +1,6 @@
 import { Card, ListGroup, Button, ProgressBar, Stack } from 'react-bootstrap';
 export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role, save }) {
+
   return (
     <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
       <Card.Body>
@@ -57,7 +58,7 @@ export default function UserCard({ userState: { normalInfo, medicalInfo, reports
             </span>
             <span>
               {
-                reports?.total ?? 0
+                reports?.total ?? '---'
               }
             </span>
           </ListGroup.Item>

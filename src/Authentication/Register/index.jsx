@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Form, useActionData, useOutletContext, useBeforeUnload } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Form, useActionData, useOutletContext } from 'react-router-dom';
 import { Form as BsForm } from 'react-bootstrap';
 
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye, AiFillMedicineBox } from "react-icons/ai";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import style from "@style";
-import AuthCheck from '../AuthCheck';
-import { useQueryClient } from '@tanstack/react-query';
+
 //紀錄當前表單資料，進行持久化
 let signUpForm = {
   Name: '',
@@ -16,56 +15,37 @@ let signUpForm = {
 };
 
 export default function Register({ Title, service, location }) {
-  const queryClient = useQueryClient();
   const authCheckMsg = useActionData();
 
-  const [authCheck, setAuthCheck] = useState(authCheckMsg);
-  const preFormData = JSON.parse(localStorage.getItem('signUpForm') ?? '{}');
-
-  const [Navigate, setRegisterConfirm, setRegisterStatus] = useOutletContext();
+  const [Navigate, setRegisterConfirm] = useOutletContext();
   const genders = ["Male", "Bisexual", "Female"];
   const [TelInit, setTelInit] = useState('');
   const [visible, setVisible] = useState(false);
 
+  const preFormData = JSON.parse(localStorage.getItem('signUpForm') ?? '{}');
 
-  //路由變化進行持久化表單
-  useBeforeUnload(
-    useCallback(() => {
-      localStorage.setItem('signUpForm', JSON.stringify(signUpForm))
-    }, [])
-  );
 
-  useEffect(() => {
-    return () => {
-      console.log('卸載')
-      setAuthCheck(null);
-    }
-  }, [])
   //關閉錯誤提示
   useEffect(() => {
-
     if (preFormData?.phone) {
       setTelInit(preFormData?.phone);
     }
-    Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus, service)
-    return () => {
-
-      //持久化當前表單值
-      localStorage.setItem('signUpForm', JSON.stringify(signUpForm));
+    //註冊通過轉導登入頁面
+    if (authCheckMsg?.msg == 'ok' && service !== 'admin') {
+      setRegisterConfirm('sign-in');
+      Navigate(authCheckMsg?.page, { replace: true });
+      return;
     }
-  }, [authCheck])
 
- 
+  }, [authCheckMsg])
+
+
   const handleTelChange = (event) => {
     const value = event.target.value.replace(/[\WA-Za-z_]/, '');
     setTelInit(value)
   };
   return (
     <>
-      {
-        authCheck?.msg == 'ok' ? null : <AuthCheck authCheck={authCheck} />
-      }
-
       <Form method="post" action={(location ? location : "/sign-up")}
         className={style.login}
         onKeyDown={preventSpaceKeyDown}
@@ -211,29 +191,18 @@ export default function Register({ Title, service, location }) {
 
         <div>
           <button type="submit"
-            onClick={() => setAuthCheck(authCheckMsg)}
           >註冊</button>
-          <button type="reset" onClick={resetForm(setTelInit, setAuthCheck)}>重置</button>
+          <button type="reset" onClick={resetForm(setTelInit)}>重置</button>
         </div>
 
       </Form>
     </>
   )
 
-  function Registered(authCheck, Navigate, setRegisterConfirm, setRegisterStatus, service) {
 
-    //註冊成功轉導登入路由
-    if (authCheck?.msg == 'ok' && service !== 'admin') {
-      setRegisterConfirm('Login');
-      setRegisterStatus(e => ({ ...e, is: true, info: authCheck?.info }));
-      Navigate('Login', { replace: true });
-      return;
-    }
-
-  }
 }
 
-function resetForm(setTelInit, setAuthCheck) {
+function resetForm(setTelInit) {
 
   return () => {
 
@@ -242,7 +211,6 @@ function resetForm(setTelInit, setAuthCheck) {
     let fromEntriesForm = Object.fromEntries(entriesForm);
     signUpForm = fromEntriesForm
     localStorage.setItem('signUpForm', JSON.stringify(signUpForm));
-    setAuthCheck(null)
     setTelInit('');
   }
 }

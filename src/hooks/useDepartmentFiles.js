@@ -36,7 +36,6 @@ function useDepartmentFiles() {
 function userClone(user) {
   const cloneUser = structuredClone(user);
   const { medicalInfo, normalInfo } = cloneUser;
-  delete normalInfo['user_password'];
   delete normalInfo['user_age'];
   delete normalInfo['user_id'];
   const now = moment().format('YYYY-MM-DD h:mm:ss');
@@ -73,6 +72,7 @@ function useUpdatedAllReport(queryClient) {
     mutationFn: async ({ oldData, currentData, proposalContext, user }) => {
       const { data } = oldData;
       const { proposalCtx, reviewCtx, state } = currentData;
+console.log()
       //提出回覆才新增回覆
       if (state.proposal) {
         const { medicalInfo, normalInfo, now } = userClone(user);
@@ -86,24 +86,36 @@ function useUpdatedAllReport(queryClient) {
           }
         })
       }
-      
+
       if (state.review) {
         const { medicalInfo, normalInfo, now } = userClone(user);
         const hasCurrentUser = reviewCtx.some(e => e.reviewer.normalInfo.uuid == normalInfo.uuid);
         //判斷review是否有當前用戶，防止每次都新增覆閱資料
         if (!hasCurrentUser) {
-       
+
         }
         reviewCtx.push({
           path: `${data.department}/${currentData.name}`,
           time: now,
+          type: data.type,
+          inspection: data.inspection,
+          parts: data.parts,
           reviewer: {
             medicalInfo,
             normalInfo
           }
+
         })
       }
-      const updatedData = { ...oldData, reports: [{ ...currentData, proposalCtx, reviewCtx }] }
+      const updatedData = {
+        ...oldData,
+        reports: [{
+          ...currentData,
+          proposalCtx,
+          reviewCtx,
+
+        }]
+      }
       //轉換成blob存入FORM格式
       const jsonForm = JSON.stringify(updatedData);
       const blobRes = new Blob([jsonForm], { type: 'application/json' });
@@ -173,12 +185,12 @@ function reCategory(data) {
     SURGERY: '外科',
     ORTHOPEDICS: '骨科',
     RADIOLOGY: '放射科',
-    PROPOSALS: '臨床醫師未提回',
-    REVIEWS: '報告覆閱工作',
+    PROPOSALS: '醫師回覆紀錄',
+    REVIEWS: '報告覆閱紀錄',
   };
 
   const medicalCategories = ['內科', '外科', '骨科', '放射科'];
-  const adminCategories = ['臨床醫師未提回', '報告覆閱工作'];
+  const adminCategories = ['醫師回覆紀錄', '報告覆閱紀錄'];
 
   const result = {
     medical: [],
@@ -194,8 +206,8 @@ function reCategory(data) {
         result.medical.push({ category, value });
       } else if (adminCategories.includes(category)) {
         result.admin.push({ category, value });
-      } 
-    } 
+      }
+    }
   });
 
   const resultArray = Object.values(result);

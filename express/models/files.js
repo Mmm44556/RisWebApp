@@ -172,7 +172,7 @@ class FilesRepository extends IFilesRepository {
       if (!parentDocSnapshot.exists) {
         throw new Error('Document does not exist!');
       }
-
+      console.log(reports)
       // 获取子集合文档
       const childCollectionRef = collection(currentDepartmentDoc, 'data')
       if (reports[0].state.proposal) {

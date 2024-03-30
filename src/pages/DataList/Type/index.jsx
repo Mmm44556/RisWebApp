@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import moment from 'moment';
 import ReportModal from '@layouts/ReportModal';
 import Proposal from '@components/Proposal';
+import Review from '@components/Review';;
 import { useTypeFiles, useTypeReports } from '@hooks/useTypeFiles';
 import { useUpdatedAllReport } from '@hooks/useDepartmentFiles';
 import { reportFieldKeys, zhKeys, reverseObject } from '@utils/reportFieldKeys';
@@ -37,6 +38,7 @@ export default function Type() {
   const nav = useNavigate();
   const location = useLocation();
   const resetLocation = () => nav(location.pathname);
+  const splitLocation = location.pathname.split('/')
   const queryClient = useQueryClient();
   const { data, isSuccess, isFetching } = useTypeFiles(param['*']);
   const typeReports = useTypeReports(queryClient);
@@ -73,6 +75,7 @@ export default function Type() {
     if (isSuccess) {
       //對所有資料進行類別分類
       const groupData = Object.groupBy(data, ({ data }) => data.type);
+
       setGroupByData({ ALL: data, ...groupData })
 
     }
@@ -83,50 +86,50 @@ export default function Type() {
     <>
       {
         isSuccess ? <>
-          <Row className='me-0'>
+          <Row className='me-0  '>
             <Col lg={9} className="pe-0">
               <BackgroundTabButtons
                 defaultActiveKey={Object.keys(groupByData)[0]}
                 id="justify-tab-example"
                 className="mb-3 bg-primary"
               >
-                {Object.keys(groupByData).length > 0 ? groupByDataKeys ? <Tab active>
-                  {
-                    data[0].data.department === 'PROPOSALS' ? <Proposal proposals={data} /> : <h1>
-                      reviews
-                    </h1>
-                  }
+                {Object.keys(groupByData).length > 0 ? ['proposals', 'reviews'].includes(splitLocation[splitLocation.length - 1]) ? (
+                  <Tab active >
+                    {
+                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal proposals={data} /> :
+                        <Review reviews={data} />
+                    }
+                  </Tab > 
+                ) :
+                  Object.keys(groupByData).map(key => (
+                    <Tab
+                      key={key}
+                      eventKey={key}
+                      title={TypeBadges[key]?.str}
+                    >
+                      <DataTable
+                        customStyles={customFilesStyles}
+                        columns={fileColumns}
+                        data={groupByData[key] || []}
+                        direction="auto"
+                        onRowClicked={rowOnclick}
+                        noDataComponent={<>
+                          <h3 className="fw-bold">尚無資料</h3>
+                        </>}
+                        highlightOnHover
+                        responsive
+                        defaultSortFieldId={1}
+                        progressPending={isFetching}
+                        progressComponent={<h3>報告載入中...</h3>}
+                        persistTableHead
+                        pointerOnHover
+                        subHeaderAlign="right"
+                        subHeaderWrap
+                        sortIcon={<BiSortAlt2 />}
+                      />
+                    </Tab>
 
-
-                </Tab> : Object.keys(groupByData).map(key => (
-                  <Tab
-                    key={key}
-                    eventKey={key}
-                    title={TypeBadges[key]?.str}
-                  >
-                    <DataTable
-                      customStyles={customFilesStyles}
-                      columns={fileColumns}
-                      data={groupByData[key] || []}
-                      direction="auto"
-                      onRowClicked={rowOnclick}
-                      noDataComponent={<>
-                        <h3 className="fw-bold">尚無資料</h3>
-                      </>}
-                      highlightOnHover
-                      responsive
-                      defaultSortFieldId={1}
-                      progressPending={isFetching}
-                      progressComponent={<h3>報告載入中...</h3>}
-                      persistTableHead
-                      pointerOnHover
-                      subHeaderAlign="right"
-                      subHeaderWrap
-                      sortIcon={<BiSortAlt2 />}
-                    />
-                  </Tab>
-
-                )) : <Tab eventKey={'OPD'} title={'---------'}>
+                  )) : <Tab eventKey={'OPD'} title={'---------'}>
                   <div className=' text-center fs-4 fst-italic fw-lighter '>
                     <HiArchiveBoxXMark
                       className="fs-3 align-text-top text-secondary"
@@ -149,6 +152,7 @@ export default function Type() {
             exit={exit}
             resetLocation={resetLocation}
             ModalHeader={<ModalHeader
+              setProposalContext={setProposalContext}
               user={user}
               currentSelectedMemo={currentSelectedMemo}
               setCurrentSelected={setCurrentSelected}
@@ -165,7 +169,8 @@ export default function Type() {
                   style={{ borderRadius: "1.125rem", overflow: 'overlay' }}>
 
                   <ModalReportTabs user={user}
-                    currentSelectedMemo={currentSelectedMemo} setCurrentReportContent={setCurrentReportContent}
+                    currentSelectedMemo={currentSelectedMemo}
+                    setCurrentReportContent={setCurrentReportContent}
                     setCurrentSelected={setCurrentSelected}
                     proposalContext={proposalContext}
                     setProposalContext={setProposalContext}
@@ -242,7 +247,7 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
   );
 }
 
-function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient, proposalContext }) {
+function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient, proposalContext, setProposalContext }) {
   const { hash } = useLocation();
   const { normalInfo: { role_uid } } = user;
   const { data, reports } = currentSelectedMemo;
@@ -253,6 +258,7 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
   //尋找當前編輯的報告
   const findUpdatedReport = (e) => `#${e.fileId}` == hash;
   useEffect(() => {
+    //保存提交
     if (confirmSave) {
       setCurrentSelected(prev => {
         const idx = prev.reports.findIndex(findUpdatedReport);
@@ -286,7 +292,6 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
                 report.reports.forEach(e => {
                   if (`#${e.fileId}` == hash) {
                     e.state[event.target.id] = event.target.checked;
-
                   }
                 })
                 return { ...report }
@@ -397,8 +402,12 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
 
     const currentReport = reports.find(e => e.fileId === splitStr[1]);
     setCurrentReportContent((e) => {
-      //當選到同個報告時避免重置內容
-      if (splitStr[1] === e.fileId) return e;
+      //當選到同個報告時避免重置報告、回覆內容
+      if (splitStr[1] === e.fileId) {
+        setProposalContext(v => v);
+        return e
+      };
+      setProposalContext('')
       return currentReport
     });
   }
@@ -430,7 +439,8 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
 
         <Col sm={4} >
 
-          <ListGroup className="position-relative">
+          <ListGroup
+            className="position-relative">
             {
               currentSelectedMemo.reports.length == 0 ? <h2 className="position-absolute start-50 end-50"><Spinner animation="border" /></h2> :
                 currentSelectedMemo.reports.map((e) => {
