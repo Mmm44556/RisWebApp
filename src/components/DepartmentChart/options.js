@@ -11,11 +11,10 @@ export default {
       }
     },
     legend: {
-
       labels: {
         font: {
           family: "Montserrat",
-          size: 20
+          size: 18
         }
       }
 

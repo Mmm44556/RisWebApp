@@ -104,7 +104,7 @@ async function registerAction({ request }) {
   dataMap.forEach((value, key) => {
     submission[key] = value;
   })
-  console.log(request, '@@@@')
+
   //send post here(api)
   if (reg.test(submission.name)) {
     createToast('姓名禁止@,!~<%等特殊字元!', {
@@ -149,6 +149,7 @@ async function registerAction({ request }) {
   const uuid = crypto.randomUUID();
   delete submission.password
   submission.uuid = uuid;
+
   let res = await fetch(`${import.meta.env.VITE_VAR_BASE_URL}/api/sign-up`, {
     method: 'POST',
     body: JSON.stringify(submission),

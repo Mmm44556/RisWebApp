@@ -56,6 +56,7 @@ class AuthenticationService {
 
     try {
       const result = await this.#userRepository.createUser(userData);
+
       if (result) {
         return { status: 200, msg: 'success' };
       }
@@ -85,7 +86,6 @@ class AuthenticationService {
         if (UserSessionData.length === 0) {
           return { status: 401, msg: UserSessionData };
         }
-        // console.log('服務曾:',UserSessionData)
         return { status: 200, msg: JSON.parse(UserSessionData) };
       } else {
         return { status: 401, msg: [] }

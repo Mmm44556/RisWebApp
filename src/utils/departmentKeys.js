@@ -42,23 +42,28 @@ const type = {
 const TypeBadges = {
   'ER': {
     str: '急診',
-    bg: 'danger'
+    bg: 'danger',
+    color:"#dc3545"
   },
   'OPD': {
     str: '門診',
-    bg: 'primary'
+    bg: 'primary',
+    color:'#0d6efd'
   },
   'PE': {
     str: '健檢',
-    bg: 'success'
+    bg: 'success',
+    color:'#198754'
   },
   'MC': {
     str: '體檢',
-    bg: 'secondary'
+    bg: 'secondary',
+    color:'#6c757d'
   },
   'IP': {
     str: '住院',
-    bg: 'warning'
+    bg: 'warning',
+    color:'#ffc107'
   },
   'ALL': {
     str: '全部',

@@ -134,7 +134,7 @@ function Header({ currentEditUser }) {
         className='m-1 fw-bold user-select-none'
 
       >
-        {role[role_uid]}</Button>@
+        {role[role_uid]}</Button>
       <div className='d-inline-block text-secondary'>
         上次更新:
         {

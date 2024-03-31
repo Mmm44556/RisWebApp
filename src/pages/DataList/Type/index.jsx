@@ -7,16 +7,20 @@ import styled from 'styled-components'
 import moment from 'moment';
 import ReportModal from '@layouts/ReportModal';
 import Proposal from '@components/Proposal';
-import DepartmentChart from '@components/DepartmentChart';
 import Review from '@components/Review';
+import options from '@components/DepartmentChart/options';
+import { Pie } from 'react-chartjs-2';
 import { useTypeFiles, useTypeReports } from '@hooks/useTypeFiles';
 import { useUpdatedAllReport } from '@hooks/useDepartmentFiles';
 import { reportFieldKeys, zhKeys, reverseObject } from '@utils/reportFieldKeys';
+import { dataProcess, downloadJSON } from '@utils/FileProcess/multiFiles';
 import { customFilesStyles, fileColumns, TypeBadges } from './column';
 import { BiSortAlt2 } from "react-icons/bi";
 import { FaEdit, FaFileAlt, FaRegEdit } from "react-icons/fa";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
-
+import { createToast } from '@utils/systemToastify';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { type } from '../../../utils/departmentKeys';
 const BackgroundTabButtons = styled(Tabs)`
 border-top-right-radius:0.375rem !important;
 li{
@@ -35,13 +39,15 @@ button{
 
 
 export default function Type() {
-
+  ChartJS.register(ArcElement, Tooltip, Legend);
   const param = useParams();
   const nav = useNavigate();
   const location = useLocation();
   //關閉編輯MODAL時重置路由
   const resetLocation = () => nav(location.pathname);
-  const splitLocation = location.pathname.split('/')
+  const splitLocation = location.pathname.split('/');
+  //判別當前部門
+  const isDepartment = ['proposals', 'reviews'].includes(splitLocation[splitLocation.length - 1]);
   const queryClient = useQueryClient();
   const { data, isSuccess, isFetching } = useTypeFiles(param['*']);
   const typeReports = useTypeReports(queryClient);
@@ -56,7 +62,9 @@ export default function Type() {
   const currentSelectedMemo = useMemo(() => currentSelected, [currentSelected]);
   //回覆內容
   const [proposalContext, setProposalContext] = useState('');
-
+  //charts報告類別計算
+  const [types, setTypes] = useState({ label: [], bg: [], counts: [] });
+  const [proposalAndReview, setProposalAndReview] = useState({ label: [], bg: [], counts: [] });
   //重置編輯報告內容
   const exit = () => {
     resetLocation();
@@ -75,12 +83,51 @@ export default function Type() {
     setLgShow(true);
     typeReports.mutate({ fileId, department });
   }
+  let typeKeys;
   useEffect(() => {
     if (isSuccess) {
       //對所有資料進行類別分類
       const groupData = Object.groupBy(data, ({ data }) => data.type);
 
       setGroupByData({ ALL: data, ...groupData })
+      const bg = [];
+      const bg2 = [];
+      const counts = [];
+      const a = Object.entries(groupData)
+
+      typeKeys = a.map(e => {
+        bg.push(TypeBadges[e[0]]?.color);
+        counts.push(e[1].length);
+        return TypeBadges[e[0]]?.str
+      })
+      setTypes(v => ({ ...v, label: typeKeys, bg, counts }));
+      //如果再proposal、reviews部門就計算分類
+      if (isDepartment) {
+
+        // 把proposal、reviews用於charts分類
+        const allReview = data.map(e => (e.data.reviewCtx)).flat(Infinity);
+
+        const proposalAndReviewFiltered = allReview.map(e => {
+
+          bg2.push(TypeBadges[e.type]?.color)
+          return TypeBadges[e.type]?.str
+        })
+
+        const countMap = proposalAndReviewFiltered.reduce((acc, val) => {
+          acc[val] = (acc[val] || 0) + 1;
+          return acc;
+        }, {});
+
+        // // 分别存储中文和数量的数组
+        const chineseArray = Object.keys(countMap);
+        const countArray = Object.values(countMap);
+        const setBg2 = Array.from(new Set(bg2));
+        setProposalAndReview(v => ({ ...v, label: chineseArray, counts: countArray, bg: setBg2 }));
+
+      
+      }
+
+
 
     }
 
@@ -100,8 +147,8 @@ export default function Type() {
                 {Object.keys(groupByData).length > 0 ? ['proposals', 'reviews'].includes(splitLocation[splitLocation.length - 1]) ? (
                   <Tab active >
                     {
-                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal 
-                      proposals={data} /> :
+                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal
+                        proposals={data} /> :
                         <Review reviews={data} />
                     }
                   </Tab >
@@ -145,9 +192,28 @@ export default function Type() {
                 }
               </BackgroundTabButtons>
             </Col>
-            <Col lg={3} className='border-start'>
-              {/* <Analytics/> */}
-              123sss
+            <Col lg={3}
+              className='border-start'>
+              <div>
+                {
+                  isSuccess ? <Pie
+                    options={options}
+                    data={{
+                      labels: isDepartment ? proposalAndReview.label: types.label,
+                      datasets: [
+                        {
+                          backgroundColor: isDepartment ? proposalAndReview.bg : types.bg,
+                          borderColor: '#FFF',
+                          data: isDepartment ? proposalAndReview.counts : types.counts,
+
+                        }
+                      ]
+                    }}
+                  /> : "test"
+                }
+
+              </div>
+
             </Col>
           </Row>
 
@@ -278,7 +344,7 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
   );
 }
 
-function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient, proposalContext, setProposalContext }) {
+function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient, proposalContext }) {
   const { hash } = useLocation();
   const { normalInfo: { role_uid } } = user;
   const { data, reports } = currentSelectedMemo;
@@ -376,7 +442,30 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
             }
             {
               data.department === 'RADIOLOGY' ? <div className="p-2 ">
-                <Button variant="success" className='fw-bold' size="sm"
+                <Button
+                  onClick={() => {
+                    if (currentReportContent?.e == '') {
+                      createToast(`尚未選擇報告!`, {
+                        type: 'warning',
+                        theme: 'colored',
+                        position: "bottom-right",
+                        autoClose: 3500
+                      });
+                      return
+                    }
+                    const { e, name } = currentReportContent
+
+                    const json = dataProcess(e, name);
+                    createToast(`下載中...`, {
+                      type: 'info',
+                      theme: 'colored',
+                      position: "bottom-right",
+                      autoClose: 3500
+                    });
+                    downloadJSON(json, name);
+                  }}
+                  variant="success"
+                  className='fw-bold' size="sm"
                 >  下載報告(.json)
                 </Button>
               </div> : null
@@ -442,6 +531,8 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
       return currentReport
     });
   }
+
+
   return (
     <Tab.Container
       id="list-group-tabs-example"
@@ -498,7 +589,7 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
             <Card style={{ width: '18rem' }} >
               <ListGroup variant="flush">
                 {
-                  reportFieldKeys(data).map((e) => (
+                  reportFieldKeys(data).map((e, idx) => (
                     <ListGroup.Item key={e[0]} className='position-relative'>
                       <span >
                         {
@@ -521,6 +612,7 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                               ['title', 'patient'].includes(reverseObjectZhKeys[e[0]]) ?
                                 <Form.Group className="mb-3"
                                   controlId={reverseObjectZhKeys[e[0]]}
+                                  key={idx}
                                 >
                                   <Form.Label
                                     style={{ right: '5px', top: '3px', cursor: 'pointer' }}
