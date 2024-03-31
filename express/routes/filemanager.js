@@ -7,7 +7,7 @@ const { resolve } = require('path');
 const preLoader = multer({
   dest: resolve(__dirname, '../temp/uploads'),
   fileFilter: (req, file, cb) => {
-    if (!file.originalname.match(/\.(txt|json)/)) {
+    if (!file.originalname.match(/\.(txt|json|zip)/)) {
       cb(new TypeError('請上傳.txt或.json檔案!'))
     }
     cb(null, true);

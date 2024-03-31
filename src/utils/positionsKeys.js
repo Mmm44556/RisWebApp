@@ -8,7 +8,7 @@ const reversePosition = {
     '醫事放射師': 'MRI001',
     'MRI組長': 'MRI002'
   },
-  '專科醫師': {
+  '專科': {
     '主治醫師': 'MS001',
     '住院醫師': 'MS002'
   }
@@ -31,11 +31,11 @@ const position_key = {
     position: 'MRI組長'
   },
   'MS001': {
-    depart: '專科醫師',
+    depart: '專科',
     position: '主治醫師'
   },
   'MS002': {
-    depart: '專科醫師',
+    depart: '專科',
     position: '住院醫師'
   },
 }

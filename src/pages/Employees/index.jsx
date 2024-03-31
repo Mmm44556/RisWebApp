@@ -95,10 +95,6 @@ export default function Employees() {
             columns={columns}
             data={filteredItems}
             direction="auto"
-            expandableRowsComponent={() => <h5>補充</h5>}
-            expandOnRowClicked
-            expandableRows
-            expandableRowsHideExpander
             title={<Title isStale={isStale}
               isFetching={isFetching}
               refetch={refetch}
@@ -109,7 +105,6 @@ export default function Employees() {
               <h3 className="fw-bold">尚無資料</h3>
             </>}
             highlightOnHover
-
             responsive
             pagination
             progressPending={isFetching}
@@ -127,21 +122,11 @@ export default function Employees() {
             subHeaderComponent={SubHeaderComponentMemo}
             selectableRows
             selectableRowsHighlight
-            selectableRowsComponent={Form.Check}
+            selectableRowsComponent={Form}
             sortIcon={<BiSortAlt2 />}
           />
 
         </Tab>
-
-        <Tab eventKey="analytics" title={
-          <h4 className='p-0 m-0'>
-            <IoAnalytics className="fs-3" />
-            行為分析
-          </h4>
-        }>
-          Tab content for Home
-        </Tab>
-
       </ActiveTabs>
     </>
   );

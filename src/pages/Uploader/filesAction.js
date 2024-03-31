@@ -8,10 +8,12 @@ function deleteDisk(id) {
 
 }
 function preProcessFiles(files, { department, title }) {
+  //檢查是否為zip或者單筆
+  const detectedTitle = title == undefined ? files[0].name : `${title}.json`;
   //先將拖曳區文件給server格式化後，緩存在server
   const uploadPromises = files.map((file) => {
     const formData = new FormData();
-    formData.append(`file`, file, `${title}.json`);
+    formData.append(`file`, file, detectedTitle);
     formData.append('name', file.name);
     return fetch(`${import.meta.env.VITE_VAR_BASE_URL}/dataList/preProcess?depart=${(department || 'INTERNAL')}`, {
       method: 'POST',

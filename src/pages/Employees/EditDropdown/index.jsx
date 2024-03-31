@@ -9,9 +9,9 @@ import AdditionalInfo from '@components/AdditionalInfo';
 import NormalCard from '@layouts/NormalCard';
 import UserContainer from '@layouts/UserContainer';
 import UserCard from '@layouts/UserCard';
-import { role } from '../js/column';
+import { role } from '@utils/sexKeys';
 import { userToKeys } from '@hooks/userToKey';
-import useEditGroup from '../js/useEditGroup';
+import useEditGroup from '@hooks/useEditGroup';
 import userInitial from '@store/userInitial';
 import { createToast, dismissToast } from '@utils/systemToastify';
 import moment from 'moment';
@@ -161,7 +161,7 @@ const updateFetchToast = () => {
   createToast(<span>{`更新成功! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'success',
     theme: 'colored',
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 3000,
     delay: 1000
   })
@@ -171,7 +171,7 @@ const deleteFetchToast = () => {
   createToast(<span>{`刪除成功! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'error',
     theme: 'colored',
-    position: "top-right",
+    position: "bottom-left",
   })
 };
 const errorFetchToast = () => {
@@ -179,7 +179,7 @@ const errorFetchToast = () => {
   createToast(<span>{`發生錯誤! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'error',
     theme: 'colored',
-    position: "top-right"
+    position: "bottom-left"
   })
 }
 
@@ -257,44 +257,28 @@ export default function EditDropdown({ userData, page }) {
                         Figure={null}
                         role={'admin'}
                         save={submitUpdateUserDate}
+                        cardHeight={'100dvh'}
                       />
                     </Col>
-                    <Col>
-                      Notifications
-                    </Col>
+
                   </Col>
 
                   <Col lg={9} className="text-nowrap">
                     <Col>
-
                       <NormalCard
                         subtitle={currentEditUser.normalInfo.uuid}
                         second={0.6}
                         delay={0.1}
                       >
-
                         <TdElements>
-
-
                           {
                             userToKeys.normalInfo(currentEditUser.normalInfo, setCurrentEditUser, 'admin')
                           }
-
-
                         </TdElements>
-
                       </NormalCard>
-
                     </Col>
                     <Row>
-                      <Col>
-                        <NormalCard
-                          second={3}
-                          delay={0.7}
-                        >
-
-                        </NormalCard>
-                      </Col>
+                      
                       <Col>
                         <NormalCard
                           subtitle={<AdditionalInfo ToolText={

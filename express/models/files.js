@@ -2,8 +2,8 @@
 const firestoreDB = require('../mysql/firebase');
 const firestore = require('firebase/firestore');
 
-const moment = require('moment');
-const { addDoc, collection, doc, setDoc, query, where, getDoc, getDocs, orderBy, getCountFromServer, limit, runTransaction } = firestore;
+const { formatDateTime } = require('../utils/formatting');
+const { addDoc, collection, doc, setDoc, query, where, deleteDoc, getDocs, orderBy, getCountFromServer, limit, runTransaction } = firestore;
 
 
 /**
@@ -80,7 +80,7 @@ class FilesRepository extends IFilesRepository {
 
   browseDocs = async () => {
     //查詢所有部門報告數量
-    const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSAL", "REVIEWS", "PRECESS"].map(async (e) => {
+    const result = ['INTERNAL', 'SURGERY', 'ORTHOPEDICS', 'RADIOLOGY', "PROPOSALS", "REVIEWS"].map(async (e) => {
       const depart = firestore.collection(firestoreDB, e);
       const num = (await getCountFromServer(depart)).data().count;
 
@@ -97,6 +97,7 @@ class FilesRepository extends IFilesRepository {
       delete privateInfo.deadline;
     }
     const group = permission ? ["editor", "visitor"] : ["editor"];
+    const { formattedDate } = formatDateTime();
     // const data = privateInfo.department == "RADIOLOGY" ? { ...e } : e;
     //預設屬性
     const mergePrivateInfo = {
@@ -105,7 +106,7 @@ class FilesRepository extends IFilesRepository {
       date: {
         deadline: time,
         update: "",
-        created: moment().format("YYYY-MM-DDThh:mm:ss")
+        created: formattedDate
       }
     }
     const department = await addDoc(collection(firestoreDB, privateInfo.department), { ...mergePrivateInfo });
@@ -120,6 +121,8 @@ class FilesRepository extends IFilesRepository {
             proposal: false,
             review: false
           },
+          proposalCtx: [],
+          reviewCtx: []
         })
       return '';
     });
@@ -142,9 +145,7 @@ class FilesRepository extends IFilesRepository {
 
       } else {
         const docs = [];
-        let departmentDocs = query(collection(firestoreDB, type),
-          orderBy('date.created', 'asc'),
-          limit(10),
+        let departmentDocs = query(collection(firestoreDB, type)
         );
         const docsSnapShots = await getDocs(departmentDocs);
         for (const e of docsSnapShots.docs) {
@@ -161,22 +162,38 @@ class FilesRepository extends IFilesRepository {
   }
 
   updateDoc = async (jsonReport, department) => {
-
+    const { fileId, data, reports } = jsonReport;
+    const { formattedDate } = formatDateTime();
     const parentDocRef = collection(firestoreDB, department);
-    const currentDepartmentDoc = doc(parentDocRef, jsonReport.fileId);
+    const currentDepartmentDoc = doc(parentDocRef, fileId);
     return runTransaction(firestoreDB, async transaction => {
       // 获取父文档数据
       const parentDocSnapshot = await transaction.get(currentDepartmentDoc);
       if (!parentDocSnapshot.exists) {
         throw new Error('Document does not exist!');
       }
-
+  
       // 获取子集合文档
       const childCollectionRef = collection(currentDepartmentDoc, 'data')
+      if (reports[0].state.proposal) {
+        const proposalCollectionRef = collection(firestoreDB, 'PROPOSALS');
+        await setDoc(doc(proposalCollectionRef, reports[0].fileId), { ...reports[0], department: 'PROPOSALS' });
+      }
+      if (reports[0].state.review) {
+        //新增覆閱資料
+        const reviewCollectionRef = collection(firestoreDB, 'REVIEWS');
+        await setDoc(doc(reviewCollectionRef, reports[0].fileId), { ...reports[0], department: 'REVIEWS' });
+
+      }
       // 更新父文档数据
-      transaction.update(currentDepartmentDoc, { ...jsonReport.data });
+      transaction.update(currentDepartmentDoc, {
+        ...data, date: {
+          ...data.date,
+          update: formattedDate
+        }
+      });
       // 更新子集合的特定檔案
-      await setDoc(doc(childCollectionRef, jsonReport.reports[0].fileId), jsonReport.reports[0]);
+      await setDoc(doc(childCollectionRef, reports[0].fileId), reports[0]);
     });
   }
 

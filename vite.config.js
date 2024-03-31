@@ -4,7 +4,7 @@ import commonjs from 'vite-plugin-commonjs'
 import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
-  // base: "/RisWebApp/",
+  base: "/",
   plugins: [react(), commonjs()],
   resolve: {
     alias: {

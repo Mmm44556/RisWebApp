@@ -6,7 +6,7 @@ function useEditGroup(queryClient, page, operations, { initialToast, updateFetch
   const { mutate } = useMutation({
     mutationFn: async ({ newData }) => {
       if (operations.type === 'DELETE') {
-        const {user_id} = newData;
+        const { user_id } = newData;
         fetch(`${import.meta.env.VITE_VAR_BASE_URL}/employees/${user_id}`, {
           method: 'DELETE',
           credentials: 'include',
@@ -15,7 +15,8 @@ function useEditGroup(queryClient, page, operations, { initialToast, updateFetch
       }
       if (operations.type === 'UPDATE') {
         const { normalInfo, medicalInfo } = newData;
-        const data = { ...normalInfo, user_password: btoa(normalInfo.user_password), ...medicalInfo }
+        console.log(normalInfo)
+        const data = { ...normalInfo, user_password: normalInfo.user_password, ...medicalInfo }
         delete data.uuid;
         if (['MRI002', 'CT002'].includes(medicalInfo.position_id)) {
           data.role_uid = 1;

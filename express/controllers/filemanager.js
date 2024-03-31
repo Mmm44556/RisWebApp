@@ -1,4 +1,4 @@
-const fsPromise = require('fs/promises')
+const fsPromise = require('fs/promises');
 const fs = require('fs')
 const path = require('path');
 const { Readable } = require('stream');
@@ -21,6 +21,10 @@ class FileManagerController {
     const originFile = fs.readFileSync(file.path);
     const data = originFile.toString('utf-8');
     let jsonString;
+
+
+  
+    
     //原始資料進行格式化
     if (depart === 'RADIOLOGY') {
       jsonString = JSON.stringify(process(data, file.originalname), null, 2);
@@ -36,6 +40,7 @@ class FileManagerController {
         this.push(null);
       }
     });
+
     readableStream.pipe(fs.createWriteStream(file.path, 'utf-8'))
       .on('finish', () => {
         //結束後返回檔案參數
@@ -89,7 +94,7 @@ class FileManagerController {
   updateDoc = async (req, res) => {
     const { params: { department }, file } = req;
     const jsonReport = JSON.parse(file.buffer.toString('utf-8'));
-    const docs = await this._fileService.update(jsonReport,department);
+    const docs = await this._fileService.update(jsonReport, department);
     res.status(docs.status).send(docs);
   }
   /**

@@ -1,15 +1,15 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate, Outlet, useLocation, useOutletContext } from 'react-router-dom';
-import { Container, Row, Col, Card, ListGroup, Breadcrumb } from 'react-bootstrap';
+import { Container, Row, Col, Card, ListGroup, Breadcrumb, Spinner } from 'react-bootstrap';
+import { useQueryClient } from '@tanstack/react-query';
 import { VscFiles } from "react-icons/vsc";
 import { FaArrowCircleRight } from "react-icons/fa";
-
+import DepartmentChart from '@components/DepartmentChart';
 import { useDepartmentFiles, reCategory } from "@hooks/useDepartmentFiles";
 import styled from 'styled-components';
-
-
+import { useDepartmentCounts } from "@hooks/useDepartmentCounts";
 import { type } from "@utils/departmentKeys";
-
+import { useTypeFiles } from '@hooks/useTypeFiles';
 const Hover = styled.div`
   cursor:pointer;
 a{
@@ -31,6 +31,7 @@ const swappedType = Object.fromEntries(
 );
 
 function DataList() {
+  const [proposalCounts, setProposalCounts,] = useState({ 'PROPOSALS': 0 })
   const location = useLocation();
   const navigator = useNavigate();
   const path = location.pathname.slice(1).split('/');
@@ -56,7 +57,7 @@ function DataList() {
             return (
 
               <Breadcrumb.Item
-                className="fs-4"
+                className="fs-4 mt-2 fw-bold"
                 key={idx}
                 linkProps={
                   {
@@ -88,20 +89,43 @@ function DataList() {
 
 
 export function Root() {
+
+  const reviews = useTypeFiles('REVIEWS');
+  const proposals = useTypeFiles('PROPOSALS');
   const { data, refetch, isSuccess } = useDepartmentFiles();
+  const queryClient = useQueryClient();
+  const departmentAll = queryClient.getQueryData(['department_Reports']);
   const [navigator] = useOutletContext();
   let reCategoryDepartment;
   if (isSuccess) {
     reCategoryDepartment = reCategory(data.data);
   }
+  //處理proposals回覆數量
+  const proposalsMemo = useMemo(() => proposals, [proposals]);
+  const countProposals = useCallback(() => {
+    if (proposals.isSuccess) {
+      return proposals.data.map(e => {
+        return e.data.proposalCtx.map(e => e)
+      }).flat(Infinity);
+    }
+  }, [proposalsMemo])
+
+
   useEffect(() => {
     refetch();
   }, [isSuccess])
+  //獲取reviews、proposals數量
+  let allReview;
+  let allProposal;
+  if (reviews.isSuccess && proposals.isSuccess) {
+    allReview = reviews?.data.map(e => (e.data.reviewCtx)).flat(Infinity);
+    allProposal = countProposals();
+  }
+
 
   return (
     <>
       <Font>
-        <button onClick={() => refetch()}>refetch</button>
         <Container fluid>
           <Row className="mb-5">
             {
@@ -161,10 +185,6 @@ export function Root() {
                             <Card.Title>
                               {category}
                             </Card.Title>
-
-                            <Card.Text>
-                              {value}
-                            </Card.Text>
                           </div>
                           <div>
                             <VscFiles
@@ -194,34 +214,55 @@ export function Root() {
 
           <Row>
             {
-              ['院內各科報告', '本周已完成報告'].map((e, idx) => {
-                return (
-                  <Col key={idx}>
-                    <Card >
-                      <Card.Body className="ps-0 pe-0">
-                        <Card.Title className="border-bottom">
-                          {e}
-                        </Card.Title>
-                        <Card.Text>
-                          <Row>
-                            {
-                              [1, 2].map((e, idx) => {
-                                return (
-                                  <Col key={idx}>
-                                    123
-                                  </Col>
-                                )
-                              })
-                            }
-                          </Row>
-                        </Card.Text>
+              reviews.isSuccess && proposals.isSuccess && isSuccess ?
+                <>
+                  {
+                    [{ title: '院內各科報告', data: useDepartmentCounts(departmentAll, true) }, { title: '本周已完成報告', data: useDepartmentCounts({ data: [{ 'REVIEWS': allReview.length},{
+                      'PROPOSALS': allProposal.length
+                    }] }) }].map((e, idx) => {
 
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                )
-              })
+                      return (
+                        <Col
+
+                          key={idx}>
+                          <Card >
+                            <Card.Body className="ps-0 pe-0">
+                              <Card.Title className="border-bottom ps-2">
+                                {e.title}
+                              </Card.Title>
+                              <Card.Text>
+                                <Row
+
+                                >
+                                  <Col key={idx} >
+
+                                    <DepartmentChart data={e.data} />
+
+                                  </Col>
+                                </Row>
+                              </Card.Text>
+                            </Card.Body>
+                          </Card>
+                        </Col>
+                      )
+                    })
+                  }
+                </>
+                : <Col
+                  lg={12} md={12} xxl={12}
+                  className="text-center d-flex justify-content-center gap-2"
+                >
+                  <Spinner
+                    className="align-self-baseline"
+                    style={{ width: "2rem", height: '2rem' }}
+                    animation="border"
+                    variant="dark" />
+                  <span className="fs-4">
+                    Loading...
+                  </span>
+                </Col>
             }
+
           </Row>
         </Container >
       </Font>

@@ -77,9 +77,15 @@ function FileDropZone({ files, setFiles, form, setResponse }) {
   const handleFileInputChange = (event) => {
 
     const selectedFiles = Array.from(event.target.files);
+    console.log(selectedFiles)
 
 
-    if (selectedFiles.length > 10) {
+    if (selectedFiles.length > 15) {
+      createToast(`檔案數量過大，請勿超過15筆...`, {
+        type: 'error',
+        theme: 'colored',
+        position: "bottom-right"
+      });
       return;
     }
     //預格式化處理
@@ -115,6 +121,7 @@ function FileDropZone({ files, setFiles, form, setResponse }) {
               style={{ display: 'none' }}
               onChange={handleFileInputChange}
               multiple
+
             />
           </p>
         }

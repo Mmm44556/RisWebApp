@@ -16,7 +16,7 @@ function EditModal({ setNormalInfo, type, fetcher, userState }) {
     handleModalShow();
     createToast(<span className='fw-bold'>重置成功</span>, {
       theme: "light",
-      type:'info',
+      type: 'info',
       autoClose: 2500
     })
     return setNormalInfo();
@@ -58,23 +58,26 @@ function EditModal({ setNormalInfo, type, fetcher, userState }) {
             取消
           </Button>
           <Button variant="danger" onClick={type === 'reset' ? resetButton : (() => {
-
+            console.log(userState.normalInfo)
             if (formRef.current[0].value == userState.normalInfo['user_password']) {
+
               const newPassword = formRef.current[1].value;
+
               fetcher.submit({ ...userState.normalInfo, user_password: newPassword }, {
                 action: location.pathname,
                 method: 'PATCH'
               })
               const user = queryClient.getQueryData(['userCtx']);
+
               const mutationUser = { ...user, normalInfo: { ...user.normalInfo, user_password: newPassword } };
               queryClient.setQueryData(['userCtx'], mutationUser);
               return;
             }
-            
+
             createToast(<span className='fw-bold'>密碼錯誤</span>, {
               theme: "light",
               autoClose: 2500,
-              type:"error"
+              type: "error",
             })
 
           })}

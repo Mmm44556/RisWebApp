@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect ,Suspense} from 'react';
 import { useState } from 'react';
 import { Button, Container, Col, Row, Form } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query';
@@ -109,7 +109,7 @@ function Uploader() {
   }
 
   return (
-    <>
+    <Suspense fallback={<h1>Loading...</h1>}>
       <Form
         onSubmit={submitForm}
         onChange={({ target }) => {
@@ -177,7 +177,7 @@ function Uploader() {
 
         </Container>
       </Form>
-    </>
+    </Suspense>
   );
 }
 function Additional() {

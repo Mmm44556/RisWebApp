@@ -1,11 +1,15 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Tabs, Tab, Row, Col, ListGroup, Card, Stack, Button, Form, Badge, Modal, Spinner } from 'react-bootstrap';
 import { useQueryClient } from '@tanstack/react-query';
 import DataTable from 'react-data-table-component';
+import styled from 'styled-components'
 import moment from 'moment';
 import ReportModal from '@layouts/ReportModal';
-import { useTypeFiles, useTypePrefetch, useTypeReports } from '@hooks/useTypeFiles';
+import Proposal from '@components/Proposal';
+import DepartmentChart from '@components/DepartmentChart';
+import Review from '@components/Review';
+import { useTypeFiles, useTypeReports } from '@hooks/useTypeFiles';
 import { useUpdatedAllReport } from '@hooks/useDepartmentFiles';
 import { reportFieldKeys, zhKeys, reverseObject } from '@utils/reportFieldKeys';
 import { customFilesStyles, fileColumns, TypeBadges } from './column';
@@ -13,12 +17,31 @@ import { BiSortAlt2 } from "react-icons/bi";
 import { FaEdit, FaFileAlt, FaRegEdit } from "react-icons/fa";
 import { HiArchiveBoxXMark } from "react-icons/hi2";
 
+const BackgroundTabButtons = styled(Tabs)`
+border-top-right-radius:0.375rem !important;
+li{
+button{
+  border-top-right-radius:0.375rem !important;
+  border-top-left-radius:0.375rem !important;
+  margin-top:5px;
+  color:#FFF;
+  font-size:0.975rem;
+  &:hover{
+    color:#FFF;
+  }
+}
+}
+`;
+
 
 export default function Type() {
+
   const param = useParams();
   const nav = useNavigate();
   const location = useLocation();
+  //關閉編輯MODAL時重置路由
   const resetLocation = () => nav(location.pathname);
+  const splitLocation = location.pathname.split('/')
   const queryClient = useQueryClient();
   const { data, isSuccess, isFetching } = useTypeFiles(param['*']);
   const typeReports = useTypeReports(queryClient);
@@ -31,6 +54,8 @@ export default function Type() {
   const [currentSelected, setCurrentSelected] = useState(null);
 
   const currentSelectedMemo = useMemo(() => currentSelected, [currentSelected]);
+  //回覆內容
+  const [proposalContext, setProposalContext] = useState('');
 
   //重置編輯報告內容
   const exit = () => {
@@ -41,10 +66,8 @@ export default function Type() {
   useEffect(() => {
     resetLocation();
   }, [])
-  // if (isSuccess) {
-  //   //當前頁數獲取完後再拿下一頁資料
-  //   useTypePrefetch(param['*'], data[data.length - 1]?.fileId, queryClient);
-  // }
+
+
 
   const rowOnclick = (row) => {
     const { fileId, data: { department } } = row;
@@ -56,57 +79,62 @@ export default function Type() {
     if (isSuccess) {
       //對所有資料進行類別分類
       const groupData = Object.groupBy(data, ({ data }) => data.type);
-      setGroupByData(groupData)
-      //當前頁數獲取完後再拿下一頁資料
-      // useTypePrefetch(param['*'], data[data.length - 1]?.fileId, queryClient);
+
+      setGroupByData({ ALL: data, ...groupData })
+
     }
 
   }, [data, currentSelected]);
+
   return (
     <>
       {
         isSuccess ? <>
-          <Row >
-            <Col lg={9}>
-              <Tabs
+          <Row className='me-0  '>
+            <Col lg={9} className="pe-0">
+              <BackgroundTabButtons
                 defaultActiveKey={Object.keys(groupByData)[0]}
                 id="justify-tab-example"
-                className="mb-3"
+                className="mb-3 bg-primary"
               >
-                {Object.keys(groupByData).length > 0 ? Object.keys(groupByData).map(key => (
-                  <Tab key={key} eventKey={key} title={TypeBadges[key]?.str}>
+                {Object.keys(groupByData).length > 0 ? ['proposals', 'reviews'].includes(splitLocation[splitLocation.length - 1]) ? (
+                  <Tab active >
+                    {
+                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal 
+                      proposals={data} /> :
+                        <Review reviews={data} />
+                    }
+                  </Tab >
+                ) :
+                  Object.keys(groupByData).map(key => (
+                    <Tab
+                      key={key}
+                      eventKey={key}
+                      title={TypeBadges[key]?.str}
+                    >
+                      <DataTable
+                        customStyles={customFilesStyles}
+                        columns={fileColumns}
+                        data={groupByData[key] || []}
+                        direction="auto"
+                        onRowClicked={rowOnclick}
+                        noDataComponent={<>
+                          <h3 className="fw-bold">尚無資料</h3>
+                        </>}
+                        highlightOnHover
+                        responsive
+                        defaultSortFieldId={1}
+                        progressPending={isFetching}
+                        progressComponent={<h3>報告載入中...</h3>}
+                        persistTableHead
+                        pointerOnHover
+                        subHeaderAlign="right"
+                        subHeaderWrap
+                        sortIcon={<BiSortAlt2 />}
+                      />
+                    </Tab>
 
-                    <DataTable
-                      customStyles={customFilesStyles}
-                      // paginationServer
-                      // paginationTotalRows={data?.total ?? iniPerPage}
-                      // onChangePage={handlePage}
-                      // onChangeRowsPerPage={handlePerPage}
-                      columns={fileColumns}
-                      data={groupByData[key] || []}
-                      direction="auto"
-                      onRowClicked={rowOnclick}
-                      noDataComponent={<>
-                        <h3 className="fw-bold">尚無資料</h3>
-                      </>}
-                      highlightOnHover
-                      responsive
-
-                      defaultSortFieldId={1}
-                      progressPending={isFetching}
-                      // progressComponent={<LoadingProgress length={7} />}
-                      persistTableHead
-                      pointerOnHover
-                      // subHeader
-                      subHeaderAlign="right"
-                      subHeaderWrap
-                      // subHeaderComponent={SubHeaderComponentMemo}
-                      // selectableRowsComponent={Form.Check}
-                      sortIcon={<BiSortAlt2 />}
-                    />
-
-                  </Tab>
-                )) : <Tab eventKey={'OPD'} title={'---------'}>
+                  )) : <Tab eventKey={'OPD'} title={'---------'}>
                   <div className=' text-center fs-4 fst-italic fw-lighter '>
                     <HiArchiveBoxXMark
                       className="fs-3 align-text-top text-secondary"
@@ -115,10 +143,11 @@ export default function Type() {
                   </div>
                 </Tab>
                 }
-              </Tabs>
+              </BackgroundTabButtons>
             </Col>
             <Col lg={3} className='border-start'>
-              asd
+              {/* <Analytics/> */}
+              123sss
             </Col>
           </Row>
 
@@ -129,11 +158,14 @@ export default function Type() {
             exit={exit}
             resetLocation={resetLocation}
             ModalHeader={<ModalHeader
+              setProposalContext={setProposalContext}
               user={user}
               currentSelectedMemo={currentSelectedMemo}
               setCurrentSelected={setCurrentSelected}
               currentReportContent={currentReportContent}
-              queryClient={queryClient} />} >
+              queryClient={queryClient}
+              proposalContext={proposalContext}
+            />} >
 
             <>
               <Row className='h-100'>
@@ -142,7 +174,13 @@ export default function Type() {
                   className='bg-white border shadow-sm p-3 mb-5 bg-body rounded'
                   style={{ borderRadius: "1.125rem", overflow: 'overlay' }}>
 
-                  <ModalReportTabs user={user} currentSelectedMemo={currentSelectedMemo} setCurrentReportContent={setCurrentReportContent} setCurrentSelected={setCurrentSelected} />
+                  <ModalReportTabs user={user}
+                    currentSelectedMemo={currentSelectedMemo}
+                    setCurrentReportContent={setCurrentReportContent}
+                    setCurrentSelected={setCurrentSelected}
+                    proposalContext={proposalContext}
+                    setProposalContext={setProposalContext}
+                  />
 
                 </Col>
                 <Col xs={6} md={4} lg={7} xxl={8} className='position-relative overflow-y-hidden'>
@@ -177,6 +215,31 @@ export default function Type() {
 
 
     </>
+  )
+}
+
+
+function Description({ content, owner }) {
+  return (
+    <Card className='mb-4'>
+      <Card.Header
+        style={{ fontSize: '1.1rem' }}
+        className='fw-bold'
+      >備註資訊
+      </Card.Header>
+      <Card.Body>
+        <blockquote className="blockquote mb-0">
+          <p>
+            {content}
+          </p>
+          <footer className="blockquote-footer">
+            <cite title="Source Title">
+              備註人:
+              {owner}</cite>
+          </footer>
+        </blockquote>
+      </Card.Body>
+    </Card>
   )
 }
 
@@ -215,18 +278,18 @@ function SaveModal({ saveModalShow, setSaveModalShow, setConfirmSave }) {
   );
 }
 
-
-function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient }) {
+function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentReportContent, queryClient, proposalContext, setProposalContext }) {
   const { hash } = useLocation();
   const { normalInfo: { role_uid } } = user;
   const { data, reports } = currentSelectedMemo;
   const [saveModalShow, setSaveModalShow] = useState(false);
   const [confirmSave, setConfirmSave] = useState(false);
   //更新資料庫的報告
-  const { mutate, isSuccess, isLoading } = useUpdatedAllReport(queryClient);
+  const { mutate, isLoading } = useUpdatedAllReport(queryClient);
   //尋找當前編輯的報告
   const findUpdatedReport = (e) => `#${e.fileId}` == hash;
   useEffect(() => {
+    //保存提交
     if (confirmSave) {
       setCurrentSelected(prev => {
         const idx = prev.reports.findIndex(findUpdatedReport);
@@ -235,8 +298,7 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
         const idx2 = oldData.findIndex(e => e.fileId == prev.fileId);
         prev.reports[idx] = currentReportContent;
         oldData[idx2] = prev;
-        mutate({ oldData: oldData[idx2], currentData: currentReportContent });
-        console.log(prev)
+        mutate({ oldData: oldData[idx2], currentData: currentReportContent, proposalContext, user });
         return { ...prev }
       });
 
@@ -248,8 +310,10 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
 
   const reportState = () => {
     const currentReportState = reports.find(findUpdatedReport);
+
     return (
       <>
+
         {
           role_uid == 1 && hash.length !== 0 ? <Form
 
@@ -269,13 +333,13 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
               defaultChecked={currentReportState?.state.proposal || false}
               checked={currentReportState?.state.proposal || false}
               id="proposal"
-              label="提出報告問題"
+              label="提出回覆"
             />
             <Form.Check
               type="switch"
               defaultChecked={currentReportState?.state.review || false}
               checked={currentReportState?.state?.review || false}
-              label="報告已覆閱"
+              label="開啟覆閱紀錄"
               id="review"
             />
           </Form> : null
@@ -283,7 +347,6 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
       </>
     )
   }
-
   return (
     <>
       <Row>
@@ -322,7 +385,7 @@ function ModalHeader({ user, currentSelectedMemo, setCurrentSelected, currentRep
           </Stack>
         </Col>
         <Col lg={6} >
-          <Stack direction="horizontal" gap={3}>
+          <Stack direction="horizontal" gap={1}>
             <div className="p-2 border-start">
               <Badge bg="warning" text="dark" style={{ fontSize: "0.8rem" }}>
                 截止日期:
@@ -356,28 +419,64 @@ const tabsFormKeys = {
   parts: ['LIVER', 'CHEST', 'KIDNEY', 'SPLEEN', 'LIVER_TRANSPLANT']
 
 }
-function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurrentSelected, user }) {
+function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurrentSelected, user, proposalContext, setProposalContext }) {
   const reverseObjectZhKeys = reverseObject(zhKeys);
+  const { hash } = useLocation();
+
   const { reports, data } = currentSelectedMemo;
+  //尋找當前編輯的報告
+  const findUpdatedProposalReport = (e) => `#${e.fileId}` == hash;
+  const currentReportProposalState = reports.find(findUpdatedProposalReport);
   //更換當前選的報告內容
   const rowSelectedChange = (e) => {
     const splitStr = e.split('#');
 
     const currentReport = reports.find(e => e.fileId === splitStr[1]);
     setCurrentReportContent((e) => {
-      //當選到同個報告時避免重置內容
-      if (splitStr[1] === e.fileId) return e;
+      //當選到同個報告時避免重置報告、回覆內容
+      if (splitStr[1] === e.fileId) {
+        setProposalContext(v => v);
+        return e
+      };
+      setProposalContext('')
       return currentReport
     });
   }
-
   return (
     <Tab.Container
       id="list-group-tabs-example"
       onSelect={rowSelectedChange}>
       <Row className='overflow-auto p-1 ' style={{ height: '100%' }}>
+        {
+          currentReportProposalState?.state.proposal ? <Col lg={12} sm={12} xl={12} className="mb-4">
+            <Form.Group
+              className="mb-3 h-100 w-100" >
+              <Form.Control
+                onChange={(e) => {
+                  setProposalContext(e.target.value)
+                }}
+                as="textarea"
+                size='lg'
+                plaintext
+                value={proposalContext}
+                className=' h-100 p-1 border bg-white'
+                placeholder='輸入回覆內容...'
+                style={{ resize: 'none', width: '100%' }}
+              />
+            </Form.Group>
+          </Col> : null
+        }
+        {
+          data?.description ? <Col lg={12} sm={12} xl={12} >
+            <Description
+              owner={data.owner}
+              content={data.description} />
+          </Col> : null
+        }
         <Col sm={4} >
-          <ListGroup className="position-relative">
+
+          <ListGroup
+            className="position-relative">
             {
               currentSelectedMemo.reports.length == 0 ? <h2 className="position-absolute start-50 end-50"><Spinner animation="border" /></h2> :
                 currentSelectedMemo.reports.map((e) => {
