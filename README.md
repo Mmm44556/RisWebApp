@@ -11,6 +11,30 @@
 * <a href="#standards">報告規範</a>
 * <a href="#FAQ">疑問回答(FAQ)</a>
 
+## 系統畫面
+![Image](/aseets/RIS_system.png "RIS_system text")
+
+![Image](/aseets/RIS_department.png "RIS_department text")
+## DEMO
+
+<h3>1.報告假如開起覆閱、回覆功能就可查看相關紀錄等等。</h3>
+
+![image](/aseets/review.gif)   
+
+<h3>2.對特定報告進行上傳。</h3>  
+
+![image](/aseets/upload.gif) 
+
+<h3>3.下載報告為json檔案(僅限放射科部門)。</h3>
+
+![image](/aseets/download.gif)   
+
+<h3>4.對用戶進行權限編輯、新增、刪除。</h3>
+
+![image](/aseets/employee.gif)   
+
+
+
 ## 1.開發工具 ( Tools )
 **前端:** HTML、Javascript、CSS、React
 

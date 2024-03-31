@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Form, useActionData, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import style from "../../assets/scss/style.module.scss";
 export default function Login() {
@@ -21,7 +22,8 @@ export default function Login() {
       <Form method="post"
         onSubmit={() => setIsSubmitting(true)}
         action="/sign-in" className={`${style.login} d-flex flex-column gap-2`}>
-        <p className='text-center fs-4 fw-bold' >Radiology File System</p>
+        <p className='text-center fs-1 fw-bold' >
+          Radiology File System</p>
 
         <label htmlFor="name" className="text-center">
           <MdAccountBox />
@@ -44,13 +46,14 @@ export default function Login() {
         </label>
 
         <div >
-          <button
+          <Button
+            className='text-black ms-5 me-5'
             disabled={isSubmitting}
             type="submit">
               {
               isSubmitting ? "登入中..." : '登入'
               }
-            </button>
+            </Button>
         </div>
 
       </Form>
