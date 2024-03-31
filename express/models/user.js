@@ -271,6 +271,7 @@ class UserRepository extends IUserRepository {
   }
 
   update = async (userInfo, newUserInfo) => {
+
     const { user_id, role_uid } = userInfo;
     const role = {
       1: 'editor',

@@ -14,7 +14,7 @@ const employeesRoutes = require('./routes/employees');
 const fileRoutes = require('./routes/filemanager');
 const path = require('path');
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5174',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 

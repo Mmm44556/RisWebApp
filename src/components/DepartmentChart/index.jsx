@@ -3,7 +3,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import ChartOptions from './options';
 
-export default function DepartmentChart({ data:{departments=[], departmentCounts=[], departmentBg }}) {
+export default function DepartmentChart({ data: { departments = [], departmentCounts = [], departmentBg} }) {
 
   ChartJS.register(ArcElement, Tooltip, Legend);
   const data = {

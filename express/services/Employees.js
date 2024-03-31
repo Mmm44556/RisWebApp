@@ -80,6 +80,9 @@ class EmployeeService {
  */
   update = async (userInfo, params) => {
     try {
+    if (['MS001', 'MS002'].includes(userInfo.position_id)) {
+      userInfo.role_uid = 1;
+    }
 
       const userSessionData = await this.#userRepository.read(params.id);
 
