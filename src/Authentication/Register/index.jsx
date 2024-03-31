@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, useActionData, useOutletContext } from 'react-router-dom';
-import { Form as BsForm } from 'react-bootstrap';
-
+import { Form as BsForm,Button } from 'react-bootstrap';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import { AiOutlineProfile, AiFillMail, AiFillEyeInvisible, AiFillEye, AiFillMedicineBox } from "react-icons/ai";
 import { BsFillTelephoneFill } from "react-icons/bs";
@@ -54,7 +53,7 @@ export default function Register({ Title, service, location }) {
           signUpForm[e.target.id] = e.target.value;
         }}
       >
-        <p className='text-center fs-4 fw-bold' >
+        <p className='text-center fs-1 fw-bold' >
           {
             Title ?? <>
               Register
@@ -157,43 +156,48 @@ export default function Register({ Title, service, location }) {
           />
         </label>
 
-        <div className="d-flex" >
 
-          <input id='age' type='number' name="age"
-            style={{ width: '50%', height: "75%", marginRight: '10px' }}
-            pattern="\d*"
-            min="20"
-            max="70"
-            placeholder='age'
-          />
-          <tbody>
-            <tr className={style.gender}>
-              {
-                genders.map((e, index) => {
-                  return (
-                    <th key={index} >
-                      <label
-                        htmlFor={e}
-                      >{e}</label>
-                      <input id={e}
-                        type="radio"
-                        name="gender"
-                        value={e}
-                      />
-                    </th>
-                  )
-                })
-              }
-            </tr>
-          </tbody>
 
-        </div>
+        <input id='age' type='number' name="age"
+          pattern="\d*"
+          min="20"
+          max="70"
+          placeholder='年齡'
+        />
+        <tbody>
+          <tr className={style.gender}>
+            {
+              genders.map((e, index) => {
+                return (
+                  <th key={index} >
+                    <label
+                      htmlFor={e}
+                    >{e}</label>
+                    <input id={e}
+                      type="radio"
+                      name="gender"
+                      value={e}
+                    />
+                  </th>
+                )
+              })
+            }
+          </tr>
+        </tbody>
 
+        <span></span>
+        <span></span>
         <div>
-          <button type="submit"
-          >註冊</button>
-          <button type="reset" onClick={resetForm(setTelInit)}>重置</button>
+          <Button 
+          type="submit"
+          className='text-black'
+          >註冊</Button>
+          <Button type="reset" 
+            className='text-black'
+          onClick={resetForm(setTelInit)}>重置</Button>
         </div>
+
+
 
       </Form>
     </>

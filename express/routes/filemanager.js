@@ -21,22 +21,13 @@ const FileManagerController = require('../controllers/filemanager');
 const fileManagerService = new FileManagerService(new FilesRepository());
 const fileManagerController = new FileManagerController(fileManagerService);
 
-// const UserRepository = require('../models/user');
-// const EmployeeService = require('../services/Employees');
-// const EmployeeController = require('../controllers/employees');
-// const AuthenticationService = require('../services/Authentication.js');
-// const AuthenticationController = require('../controllers/authentication.js');
+
 
 
 /**
  * 用戶資料BREAD
  */
-// router.use((req, res, next) => {
-//   res.header('Content-Type', 'application/json');
-//   res.header('Cache-Control', 'no-store');
 
-//   next();
-// });
 
 //預格式化報告資料
 router.post('/dataList/preProcess?', preLoader.fields([{ name: 'file' }]), fileManagerController.preProcess);

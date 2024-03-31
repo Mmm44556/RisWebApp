@@ -6,38 +6,13 @@
 
 }
 
-// .backgroundImg {
-//   background-image: url('@assets/images/sys.png');
-//   background-repeat: no-repeat;
-//   background-attachment: fixed;
-//   background-position: center;
-//   background-size: cover;
-//   position: relative;
- 
-// }
-
-// .backgroundImg::before {
-//   content: '';
-//   position: absolute;
-//   transform: scaleX(-1);
-//   top: 0;
-//   right: 0;
-//   bottom: 0;
-//   left: 0;
-//   background: inherit;
-//   filter: contrast(50%);
-//   /* 调整此值以更改模糊程度 */
-//   z-index: -1;
-//   /* 将伪元素放置在背景之后 */
-// }
+body{
+    // background-color: rgb(229, 232, 236);
+}
 
 .authContainer {
   height: 100vh;
   position: relative;
-  
-  // background-color: rgb(237 245 255);
-
-
 
 
 
@@ -58,8 +33,44 @@
 }
 
 .login {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+gap:0.875rem;
+  /* 设置元素之间的间距 */
+  p:first-child {
+    grid-column-start: 1;
+    /* 第一个元素从第一列开始 */
+    grid-column-end: 4;
+    /* 第一个元素占据三列 */
+  }
+
+  div:nth-last-child(-n+2) {
+    grid-column: 1 / -1;
+    /* 倒数两个元素从第一列到最后一列 */
+
+  }
+
+  tbody {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    background-color: #fff;
+    @include input;
+
+    tr {
+      th {
+        padding: 0 2px;
+
+        label {
+          margin-bottom: 4px;
+        }
+
+        input {
+          cursor: pointer;
+        }
+      }
+    }
+  }
 
   svg {
     margin: 10px 3px;
@@ -91,8 +102,8 @@
         @include input;
         margin: 10px;
         padding: 10px;
-        height: 50%;
         font-size: 18px;
+        font-weight: 700;
 
       }
 
@@ -116,7 +127,7 @@
 
   input[id='gender'],
   input[id='age'] {
-    text-indent: 0px;
+    text-indent: 10px;
 
   }
 
