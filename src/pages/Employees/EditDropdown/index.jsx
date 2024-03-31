@@ -257,44 +257,28 @@ export default function EditDropdown({ userData, page }) {
                         Figure={null}
                         role={'admin'}
                         save={submitUpdateUserDate}
+                        cardHeight={'100dvh'}
                       />
                     </Col>
-                    <Col>
-                      Notifications
-                    </Col>
+
                   </Col>
 
                   <Col lg={9} className="text-nowrap">
                     <Col>
-
                       <NormalCard
                         subtitle={currentEditUser.normalInfo.uuid}
                         second={0.6}
                         delay={0.1}
                       >
-
                         <TdElements>
-
-
                           {
                             userToKeys.normalInfo(currentEditUser.normalInfo, setCurrentEditUser, 'admin')
                           }
-
-
                         </TdElements>
-
                       </NormalCard>
-
                     </Col>
                     <Row>
-                      <Col>
-                        <NormalCard
-                          second={3}
-                          delay={0.7}
-                        >
-
-                        </NormalCard>
-                      </Col>
+                      
                       <Col>
                         <NormalCard
                           subtitle={<AdditionalInfo ToolText={

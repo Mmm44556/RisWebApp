@@ -9,7 +9,7 @@ import { themeContext } from '@context';
 import { Figure } from '@assets/styled';
 
 const Logout = lazy(() => import('../../Authentication/Logout'));
-const DirectMsg = lazy(() => import('../../components/DashBoard/DirectMsg'));
+
 
 
 
@@ -53,13 +53,6 @@ function Navigator({ normalInfo }) {
                   theme === true ? <MdOutlineLightMode /> : <MdOutlineNightlight />
                 }
               </Button>
-            </Nav.Item>
-
-            <Nav.Item >
-              <Suspense fallback={<h6>loading....</h6>}>
-                <DirectMsg />
-              </Suspense>
-
             </Nav.Item>
             <Nav.Item >
               <NavDropdown

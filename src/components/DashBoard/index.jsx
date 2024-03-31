@@ -29,7 +29,7 @@ function DashBoard() {
           minBreakpoint="xxs">
 
           <Container fluid >
-          
+
 
             <Row>
               <Col className={style.leftBreakpoint} xl={2} as="aside"
@@ -49,7 +49,7 @@ function DashBoard() {
                   }
 
                 </Col>
-                <Col style={{ minHeight: '100vh' }} >
+                <Col style={{ minHeight: '100vh', overflow: 'hidden' }} >
                   {
                     status == 'success' ? <Outlet context={[userState]} />
                       : null

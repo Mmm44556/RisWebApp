@@ -1,10 +1,11 @@
-import React from 'react'
+import {useEffect} from 'react'
 import { Container, Table, Badge } from 'react-bootstrap';
 import { TypeBadges } from '@utils/departmentKeys';
 
 
 
 export default function Review({ reviews }) {
+
   //依照時間排序reviews
   const allReview = reviews.map(e => (e.data.reviewCtx)).flat(Infinity);
   allReview.sort((a, b) => new Date(a.time) - new Date(b.time));
@@ -29,7 +30,6 @@ export default function Review({ reviews }) {
             {allReview.map((e, idx) => {
               const { path, reviewer: { normalInfo }, type, inspection ,time} = e;
               const typeObj = TypeBadges[type];
-              console.log(e)
               return (
                 <>
                   <tr>

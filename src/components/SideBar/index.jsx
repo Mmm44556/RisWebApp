@@ -43,14 +43,6 @@ function SideBar({ userState }) {
       </Nav.Item>
       <Nav.Item as="li">
         <Nav.Link
-          onClick={useNavigator('analysis')}
-          eventKey="analysis"
-          title="analysis">
-          <MdAnalytics />報告分析
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item as="li">
-        <Nav.Link
           onClick={useNavigator(`user/${normalInfo.user_id}`)}
           eventKey="user"
           title="user">

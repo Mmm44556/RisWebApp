@@ -1,3 +1,4 @@
+import { useCallback, useMemo, useEffect, useContext } from 'react';
 import { Container, ListGroup, Tab, Row, Col, Nav, Card, Stack, Badge } from 'react-bootstrap';
 import UserCard from '../../layouts/UserCard';
 import Figure from '@assets/styled/FigureStyle';
@@ -5,7 +6,7 @@ import { sex, role } from '@utils/sexKeys';
 import styled from 'styled-components';
 import { IoIosArrowForward } from "react-icons/io";
 
-
+import { useOutletContext } from 'react-router-dom';
 const ActiveItems = styled(ListGroup)`
 transition:box-shadow .3s  ease-in-out;
 
@@ -29,11 +30,11 @@ background-Color: #f7f7f7 ;
 
 
 export default function Proposal({ proposals }) {
+
   const [firstData] = proposals;
-  //紀錄各用戶回覆報告的數量
 
   return (
-    proposals.length==0?'123':<Container
+    proposals.length == 0 ? 'No DATA!' : <Container
       style={{ height: '100dvh', overflowY: 'scroll' }}
 
     >
@@ -76,9 +77,9 @@ export default function Proposal({ proposals }) {
                   const { data } = e;
                   const { proposalCtx } = data;
 
-                  return proposalCtx.map((user) => {
+                  return proposalCtx.map((user, idx) => {
 
-                    const { proposer: { normalInfo, medicalInfo }, path } = user;
+                    const { proposer: { normalInfo }, path } = user;
                     const UpperStr = normalInfo.user_sex.toUpperCase();
                     return (
                       <Card

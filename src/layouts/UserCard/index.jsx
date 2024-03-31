@@ -1,8 +1,10 @@
 import { Card, ListGroup, Button, ProgressBar, Stack } from 'react-bootstrap';
-export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role, save }) {
+export default function UserCard({ userState: { normalInfo, medicalInfo, reports, notifications }, Figure, role, save ,cardHeight}) {
 
   return (
-    <Card className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
+    <Card 
+      style={{ height: cardHeight ||""}}
+    className='mt-4 text-center shadow p-3 mb-5 bg-body-tertiary rounded'>
       <Card.Body>
         <Card.Title className='pb-2'>
           {Figure ?? null}

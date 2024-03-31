@@ -10,7 +10,7 @@ import Loading from '@error/Loading';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: Infinity,
+      staleTime: 30000,
     },
 
     queryCache: new QueryCache({

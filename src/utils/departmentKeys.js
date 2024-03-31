@@ -65,5 +65,18 @@ const TypeBadges = {
     bg: ''
   }
 }
+//交換type的title跟key值
+function swapKeysAndValues(obj) {
+  let swappedObj = {};
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      let title = obj[key].title.toUpperCase();
+      let newObj = { ...obj[key] };
+      delete newObj.title;
+      swappedObj[title] = { ...newObj, title: key };
+    }
+  }
+  return swappedObj;
+}
 
-export { type, TypeBadges }
+export { type, TypeBadges, swapKeysAndValues }

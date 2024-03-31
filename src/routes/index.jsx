@@ -56,14 +56,6 @@ const router = createBrowserRouter([
 
           },
           {
-            path: 'analysis',
-            lazy: async () => {
-              let Analysis = await import("@pages/Analysis");
-              return { Component: Analysis.default }
-            },
-
-          },
-          {
             path: 'user/:id',
             lazy: async () => {
               let Profile = await import("@pages/Profile");

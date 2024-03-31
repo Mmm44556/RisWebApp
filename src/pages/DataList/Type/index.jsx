@@ -7,7 +7,8 @@ import styled from 'styled-components'
 import moment from 'moment';
 import ReportModal from '@layouts/ReportModal';
 import Proposal from '@components/Proposal';
-import Review from '@components/Review';;
+import DepartmentChart from '@components/DepartmentChart';
+import Review from '@components/Review';
 import { useTypeFiles, useTypeReports } from '@hooks/useTypeFiles';
 import { useUpdatedAllReport } from '@hooks/useDepartmentFiles';
 import { reportFieldKeys, zhKeys, reverseObject } from '@utils/reportFieldKeys';
@@ -34,9 +35,11 @@ button{
 
 
 export default function Type() {
+
   const param = useParams();
   const nav = useNavigate();
   const location = useLocation();
+  //關閉編輯MODAL時重置路由
   const resetLocation = () => nav(location.pathname);
   const splitLocation = location.pathname.split('/')
   const queryClient = useQueryClient();
@@ -53,8 +56,7 @@ export default function Type() {
   const currentSelectedMemo = useMemo(() => currentSelected, [currentSelected]);
   //回覆內容
   const [proposalContext, setProposalContext] = useState('');
-  //分類覆閱、回覆
-  const groupByDataKeys = Object.keys(groupByData).includes('undefined');
+
   //重置編輯報告內容
   const exit = () => {
     resetLocation();
@@ -64,6 +66,8 @@ export default function Type() {
   useEffect(() => {
     resetLocation();
   }, [])
+
+
 
   const rowOnclick = (row) => {
     const { fileId, data: { department } } = row;
@@ -96,10 +100,11 @@ export default function Type() {
                 {Object.keys(groupByData).length > 0 ? ['proposals', 'reviews'].includes(splitLocation[splitLocation.length - 1]) ? (
                   <Tab active >
                     {
-                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal proposals={data} /> :
+                      splitLocation[splitLocation.length - 1] === 'proposals' ? <Proposal 
+                      proposals={data} /> :
                         <Review reviews={data} />
                     }
-                  </Tab > 
+                  </Tab >
                 ) :
                   Object.keys(groupByData).map(key => (
                     <Tab
@@ -141,7 +146,8 @@ export default function Type() {
               </BackgroundTabButtons>
             </Col>
             <Col lg={3} className='border-start'>
-              asd
+              {/* <Analytics/> */}
+              123sss
             </Col>
           </Row>
 
@@ -209,6 +215,31 @@ export default function Type() {
 
 
     </>
+  )
+}
+
+
+function Description({ content, owner }) {
+  return (
+    <Card className='mb-4'>
+      <Card.Header
+        style={{ fontSize: '1.1rem' }}
+        className='fw-bold'
+      >備註資訊
+      </Card.Header>
+      <Card.Body>
+        <blockquote className="blockquote mb-0">
+          <p>
+            {content}
+          </p>
+          <footer className="blockquote-footer">
+            <cite title="Source Title">
+              備註人:
+              {owner}</cite>
+          </footer>
+        </blockquote>
+      </Card.Body>
+    </Card>
   )
 }
 
@@ -411,7 +442,6 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
       return currentReport
     });
   }
-
   return (
     <Tab.Container
       id="list-group-tabs-example"
@@ -429,14 +459,20 @@ function ModalReportTabs({ currentSelectedMemo, setCurrentReportContent, setCurr
                 size='lg'
                 plaintext
                 value={proposalContext}
-                className=' h-100 border-top border-bottom border-start p-1 bg-white'
+                className=' h-100 p-1 border bg-white'
                 placeholder='輸入回覆內容...'
-                style={{ resize: 'none', width: '95%' }}
+                style={{ resize: 'none', width: '100%' }}
               />
             </Form.Group>
           </Col> : null
         }
-
+        {
+          data?.description ? <Col lg={12} sm={12} xl={12} >
+            <Description
+              owner={data.owner}
+              content={data.description} />
+          </Col> : null
+        }
         <Col sm={4} >
 
           <ListGroup

@@ -72,7 +72,7 @@ function useUpdatedAllReport(queryClient) {
     mutationFn: async ({ oldData, currentData, proposalContext, user }) => {
       const { data } = oldData;
       const { proposalCtx, reviewCtx, state } = currentData;
-console.log()
+
       //提出回覆才新增回覆
       if (state.proposal) {
         const { medicalInfo, normalInfo, now } = userClone(user);
