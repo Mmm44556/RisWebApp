@@ -36,7 +36,7 @@
 
 
 ## 1.開發工具 ( Tools )
-**前端:** HTML、Javascript、CSS、React
+**前端:** HTML、Javascript、CSS、React、React-Query、Chart.js
 
 **切版:** CSS、SCSS、Bootstrap、stlyed-components
 
