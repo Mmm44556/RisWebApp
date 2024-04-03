@@ -5,8 +5,8 @@
 
 * <a href="#tools">開發工具</a>
 * <a href="#features">系統特色</a>
-   * <a href="#system-architecture">架構圖</a>
-   * <a href="#category">角色架構、報告分類、部門類型</a>
+* <a href="#system-architecture">架構圖</a>
+* <a href="#category">角色架構、報告分類、部門類型</a>
 * <a href="#func-limitation">功能與限制</a>
 * <a href="#standards">報告規範</a>
 * <a href="#FAQ">疑問回答(FAQ)</a>
@@ -35,8 +35,9 @@
 
 
 
-## 1.開發工具 ( Tools )
-**前端:** HTML、Javascript、CSS、React
+<h2 id="tools">1.開發工具 ( Tools )</h2>
+
+**前端:** HTML、Javascript、CSS、React、React-Query、Chart.js
 
 **切版:** CSS、SCSS、Bootstrap、stlyed-components
 
@@ -87,13 +88,13 @@
 | ![Image](/aseets/RIS_hierarchy.png "plain text") |
 
 
-## 4-1 報告類型
+### 4-1 報告類型
  - 急診 (Emergency Room): **ER**
  - 門診 (Outpatient Department): **OPD**
  - 健檢 (Physical Examination): **PE**
  - 體檢 (Medical Check): **MC**
  - 住院 (Inpatient): **IP** 
-## 4-2 部門類型
+### 4-2 部門類型
  - 內科(INTERNAL)
  - 外科(SURGERY)
  - 骨科(ORTHOPEDICS)
