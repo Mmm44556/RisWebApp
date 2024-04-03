@@ -25,28 +25,20 @@ function SideBar({ userState }) {
         </Nav.Link>
       </Nav.Item>
       <hr />
-      <Nav.Item as="li">
+      {/* <Nav.Item as="li">
         <Nav.Link
           onClick={useNavigator('uploader')}
           eventKey="uploader"
           title="uploader">
           <FaCloudUploadAlt /> 上傳報告
         </Nav.Link>
-      </Nav.Item>
+      </Nav.Item> */}
       <Nav.Item as="li">
         <Nav.Link
           onClick={useNavigator('dataList')}
           eventKey="dataList"
           title="dataList">
           <MdDashboardCustomize />檔案列表
-        </Nav.Link>
-      </Nav.Item>
-      <Nav.Item as="li">
-        <Nav.Link
-          onClick={useNavigator('analysis')}
-          eventKey="analysis"
-          title="analysis">
-          <MdAnalytics />報告分析
         </Nav.Link>
       </Nav.Item>
       <Nav.Item as="li">
@@ -67,14 +59,6 @@ function SideBar({ userState }) {
       </Nav.Item>
         : null}
       <hr />
-      <Nav.Item as="li">
-        <Nav.Link
-          onClick={useNavigator('notifications')}
-          eventKey="notifications"
-          title="notifications">
-          <IoIosMail />郵件通知
-        </Nav.Link>
-      </Nav.Item>
     </Nav>
   )
 }

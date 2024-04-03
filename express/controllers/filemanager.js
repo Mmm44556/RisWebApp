@@ -1,4 +1,4 @@
-const fsPromise = require('fs/promises')
+const fsPromise = require('fs/promises');
 const fs = require('fs')
 const path = require('path');
 const { Readable } = require('stream');
@@ -14,16 +14,22 @@ class FileManagerController {
    */
   preProcess = async (req, res) => {
     res.header('Content-Type', 'application/json');
+    const { name } = req.body;
     const depart = req.query.depart;
     //獲取過濾後的POST資料
     const file = req.files['file'][0];
     const originFile = fs.readFileSync(file.path);
     const data = originFile.toString('utf-8');
     let jsonString;
+
+
+  
+    
     //原始資料進行格式化
     if (depart === 'RADIOLOGY') {
       jsonString = JSON.stringify(process(data, file.originalname), null, 2);
     } else {
+      //非放射報告格式的資料直接緩存
       jsonString = JSON.stringify(data, null, 2);
     }
 
@@ -34,14 +40,15 @@ class FileManagerController {
         this.push(null);
       }
     });
+
     readableStream.pipe(fs.createWriteStream(file.path, 'utf-8'))
       .on('finish', () => {
         //結束後返回檔案參數
-        res.send({ fileName: file.filename });
-        console.log('Write operation complete using Stream.');
+        res.send({ fileName: file.filename, name });
+        console.log('緩存完成!');
       })
       .on('error', (err) => {
-        console.error('Error writing to Stream:', err);
+        console.error('錯誤讀寫!', err);
       });
 
 
@@ -62,9 +69,11 @@ class FileManagerController {
 
     const { file } = req;
     const split = file.buffer.toString('utf-8').split('$');
+
     const reports = JSON.parse(split[0]);
     const privateInfo = JSON.parse(split[1]);
-    const result = this._fileService.upload(reports, privateInfo);
+
+    const result = await this._fileService.upload(reports, privateInfo);
 
     res.status(200).send(result.data);
   }
@@ -73,12 +82,21 @@ class FileManagerController {
    * 獲取單一部門資料
    */
   getDocs = async (req, res) => {
-    const { params: { type },query } = req;
-    const docs = await this._fileService.read(type, query.fileId);
+    const { params: { department }, query } = req;
+    const docs = await this._fileService.read(department, query.fileId);
 
     res.status(docs.status).send(docs.data);
   }
 
+  /**
+   * 更新部門資料
+   */
+  updateDoc = async (req, res) => {
+    const { params: { department }, file } = req;
+    const jsonReport = JSON.parse(file.buffer.toString('utf-8'));
+    const docs = await this._fileService.update(jsonReport, department);
+    res.status(docs.status).send(docs);
+  }
   /**
    * 刪除預格式化後緩存在Server的資料
    */
@@ -98,8 +116,8 @@ class FileManagerController {
           fsPromise.unlink(path.join(folderPath, file)),
         );
         await Promise.allSettled(deleteFilePromises);
-        console.log('Folder deleted successfully.');
-        res.status(200).send('Folder deleted successfully.');
+        console.log('緩存資料已全部刪除.');
+        res.status(200).send('緩存資料已全部刪除.');
         return;
       } catch (error) {
         console.error('Error deleting folder:', err);

@@ -9,11 +9,11 @@ import AdditionalInfo from '@components/AdditionalInfo';
 import NormalCard from '@layouts/NormalCard';
 import UserContainer from '@layouts/UserContainer';
 import UserCard from '@layouts/UserCard';
-import { role } from '../js/column';
+import { role } from '@utils/sexKeys';
 import { userToKeys } from '@hooks/userToKey';
-import useEditGroup from '../js/useEditGroup';
+import useEditGroup from '@hooks/useEditGroup';
 import userInitial from '@store/userInitial';
-import { createToast, updateToast, dismissToast } from '@utils/systemToastify';
+import { createToast, dismissToast } from '@utils/systemToastify';
 import moment from 'moment';
 import styled from 'styled-components';
 
@@ -103,8 +103,8 @@ const CustomMenu = forwardRef(
     return (
       <div
         ref={ref}
-        style={{ ...style, transform: "translateX(-25%)" }}
-        className={`${className}`}
+        style={{ ...style, transform: "translateX(-25%)",zIndex:'200' }}
+        className={`${className} `}
         aria-labelledby={labeledBy}
       >
         <ul className="list-unstyled m-0 text-start ">
@@ -134,7 +134,7 @@ function Header({ currentEditUser }) {
         className='m-1 fw-bold user-select-none'
 
       >
-        {role[role_uid]}</Button>@
+        {role[role_uid]}</Button>
       <div className='d-inline-block text-secondary'>
         上次更新:
         {
@@ -161,7 +161,7 @@ const updateFetchToast = () => {
   createToast(<span>{`更新成功! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'success',
     theme: 'colored',
-    position: "top-right",
+    position: "bottom-left",
     autoClose: 3000,
     delay: 1000
   })
@@ -171,7 +171,7 @@ const deleteFetchToast = () => {
   createToast(<span>{`刪除成功! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'error',
     theme: 'colored',
-    position: "top-right",
+    position: "bottom-left",
   })
 };
 const errorFetchToast = () => {
@@ -179,7 +179,7 @@ const errorFetchToast = () => {
   createToast(<span>{`發生錯誤! ${moment().format('hh:mm:ss a')}`}</span>, {
     type: 'error',
     theme: 'colored',
-    position: "top-right"
+    position: "bottom-left"
   })
 }
 
@@ -197,7 +197,7 @@ export default function EditDropdown({ userData, page }) {
   const { mutate, combinationUserFields } = useEditGroup(queryClient, page, operations, { updateFetchToast, deleteFetchToast, errorFetchToast, initialToast });
 
   const submitUpdateUserDate = (e) => {
-    if (confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE')){
+    if (confirmResult(currentEditUser.normalInfo.user_name, '確定修改該筆資料?', setOperations, 'UPDATE')) {
       mutate({ newData: currentEditUser, operation: 'UPDATE' });
     }
 
@@ -257,44 +257,28 @@ export default function EditDropdown({ userData, page }) {
                         Figure={null}
                         role={'admin'}
                         save={submitUpdateUserDate}
+                        cardHeight={'100dvh'}
                       />
                     </Col>
-                    <Col>
-                      Notifications
-                    </Col>
+
                   </Col>
 
                   <Col lg={9} className="text-nowrap">
                     <Col>
-
                       <NormalCard
                         subtitle={currentEditUser.normalInfo.uuid}
                         second={0.6}
                         delay={0.1}
                       >
-
                         <TdElements>
-
-
                           {
                             userToKeys.normalInfo(currentEditUser.normalInfo, setCurrentEditUser, 'admin')
                           }
-
-
                         </TdElements>
-
                       </NormalCard>
-
                     </Col>
                     <Row>
-                      <Col>
-                        <NormalCard
-                          second={3}
-                          delay={0.7}
-                        >
-
-                        </NormalCard>
-                      </Col>
+                      
                       <Col>
                         <NormalCard
                           subtitle={<AdditionalInfo ToolText={
@@ -325,13 +309,12 @@ export default function EditDropdown({ userData, page }) {
 
         <EnhDropdown eventKey="2"
           onClick={(e) => {
-            if(confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE'))
-            {
-             
+            if (confirmResult(userData.user_name, '確定刪除該筆資料?', setOperations, 'DELETE')) {
+
               mutate({ newData: userData, operation: 'DELETE' })
             }
-            
-           
+
+
           }}>
           <MdAutoDelete className='text-danger' />
           刪除

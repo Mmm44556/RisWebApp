@@ -168,7 +168,7 @@ class UserRepository extends IUserRepository {
             conn.release();
           } else {
             if (row[0] === undefined) {
-             
+
               resolve(row[0]);
               conn.release();
               return
@@ -198,9 +198,12 @@ class UserRepository extends IUserRepository {
     return new Promise((resolve, reject) => {
 
       const { name, department, age, confirmPassword, email, gender, phone, uuid } = userData;
-
       this.conn.getConnection((err, conn) => {
-        if (err) throw err;
+
+        if (err) {
+
+          throw err
+        };
         conn.query(userQuery.createUserData, [name, department, email, confirmPassword, phone, gender, age, uuid], (err) => {
           if (err) {
 
@@ -209,6 +212,7 @@ class UserRepository extends IUserRepository {
 
             resolve(true);
           }
+
           conn.release();
         })
       })
@@ -269,6 +273,7 @@ class UserRepository extends IUserRepository {
   }
 
   update = async (userInfo, newUserInfo) => {
+
     const { user_id, role_uid } = userInfo;
     const role = {
       1: 'editor',

@@ -3,29 +3,18 @@ import moment from 'moment';
 import EditDropdown from '../EditDropdown';
 import { Media } from 'react-data-table-component';
 import { Figure } from '@assets/styled';
-const sex = {
-  'MALE': {
-    text: '男',
-    color: 'rgb(79 140 255)'
-  },
-  'FEMALE': {
-    text: '女',
-    color: 'rgb(255 2 2 / 56%)'
-  },
-  'BISEXUAL': {
-    text: '跨性別',
-    color: 'rgb(177 171 171 / 56%)'
-  },
-}
-const role = {
-  2: '訪客',
-  1: '管理員'
-}
+import {sex,role} from '@utils/sexKeys';
+
 
 const customStyles = {
+  responsiveWrapper: {
+    style: {
+      zIndex:'10'
+    }
+  },
   table: {
     style: {
-      minHeight: '50dvh'
+      minHeight: '50dvh',
     },
   },
 
@@ -39,6 +28,11 @@ const customStyles = {
       paddingLeft: '8px',
       paddingRight: '8px',
     },
+  },
+  contextMenu:{
+    style:{
+      zIndex:'100'
+    }
   },
   cells: {
     style: {
@@ -182,4 +176,4 @@ function getColumns(page) {
   return columns
 }
 
-export { getColumns, customStyles, sex, role }
+export { getColumns, customStyles }

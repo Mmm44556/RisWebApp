@@ -33,7 +33,7 @@ function dataProcess(originData = "", filename = "") {
     return jsonObject;
   } catch (e) {
     // console.log(`${filename}資料處理失敗，請確保格式內容!`);
-    return { text: filename, state: 'error', path: folderName, info: '資料處理失敗，請確保格式內容!' };
+    return { text: filename, state: 'error', info: '資料處理失敗，請確保格式內容!' };
   }
 
 }

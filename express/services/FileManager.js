@@ -26,17 +26,24 @@ class FileManagerService {
       const files = fs.readFileSync(path.resolve(__dirname, '../temp/uploads/', e.fileName))
       return JSON.parse(files.toString('utf-8'));
     })
-    const promisesArray = await this.#filesRepository.addNewDoc(readAllFile, privateInfo);
+    const promisesArray = await this.#filesRepository.addNewDoc(readAllFile, privateInfo, reports);
     return promisesArray;
   }
 
-  read = async (type, fileId)=>{
+  read = async (type, fileId) => {
     const docsArray = await this.#filesRepository.readDoc(type, fileId);
     return docsArray;
 
   }
 
-  save() {
+  update = async (jsonReport, department) => {
+
+    try {
+      await this.#filesRepository.updateDoc(jsonReport, department);
+      return { status: 200, msg: '更新成功!' };
+    } catch (error) {
+      return { status: 500, msg: '資料更新時出錯了!' };
+    }
 
   }
   download() {

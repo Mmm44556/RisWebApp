@@ -6,7 +6,7 @@
 const moment = require('moment');
 function formatDateTime() {
   //對時間格式化，用於儲存資料庫
-  let formattedDate = moment().format('YYYY-MM-DD h:mm:ss');
+  let formattedDate = moment().format('YYYY-MM-DD h:mm');
   let formattedExpiresDate = moment().add(2, 'hours').format('YYYY-MM-DD h:mm:ss');
   return { formattedDate, formattedExpiresDate };
 }

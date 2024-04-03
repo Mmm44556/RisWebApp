@@ -7,7 +7,8 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "server": "node ./express/index.js"
   },
   "resolutions": {
     "styled-components": "^5"
@@ -17,7 +18,7 @@
     "@tanstack/react-query-devtools": "^4.36.1",
     "body-parser": "^1.20.2",
     "bootstrap": "^5.3.2",
-    "chart.js": "^4.4.0",
+    "chart.js": "^4.4.2",
     "cjs": "^0.0.11",
     "crypto-js": "^4.2.0",
     "firebase": "^10.7.0",
@@ -27,6 +28,7 @@
     "multer": "1.4.5-lts.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
+    "react-chartjs-2": "^5.2.0",
     "react-data-table-component": "^7.5.4",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.11",
@@ -51,10 +53,13 @@
     "express-session": "^1.17.3",
     "gh-pages": "^6.1.0",
     "mysql": "^2.18.1",
+    "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "session-file-store": "^1.5.0",
+    "terser": "^5.30.2",
     "vite": "^4.5.0",
+    "vite-plugin-cdn-import": "^0.3.5",
     "vite-plugin-commonjs": "^0.10.1"
   }
 }

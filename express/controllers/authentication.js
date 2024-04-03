@@ -27,7 +27,7 @@ class AuthenticationController {
     */
   login = async (req, res) => {
     res.header('Cache-Control', 'private');
-    
+
     const { session, sessionID } = req;
     const { name, password } = req.body;
     /**
@@ -52,13 +52,15 @@ class AuthenticationController {
    * @returns {Promise.<object>}
    */
   register = async (req, res) => {
-    const result = await this.authenticationService.register(req.body);
 
+    const result = await this.authenticationService.register(req.body);
+ 
     res.status(result.status).send(result.msg);
   }
 
   logout = async (req, res) => {
     const { params, session } = req;
+    
     const result = await this.authenticationService.logout(params.id);
     if (result.status == 204) {
       session.destroy(function (err) {
@@ -93,7 +95,7 @@ class AuthenticationController {
    * @return {Promise.<object>} 
    */
   sessionChecker = async (req, res, next) => {
-
+  
     if (req.session.sessionID == undefined) {
       res.status(401).send('@@');
       return;

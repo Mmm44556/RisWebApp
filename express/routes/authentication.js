@@ -20,8 +20,8 @@ router.use((req, res, next) => {
  */
 
 router.get('/authentication', authenticationController.sessionChecker);
-router.post('/api/login', authenticationController.login);
-router.post('/api/register', authenticationController.register);
+router.post('/api/sign-in', authenticationController.login);
+router.post('/api/sign-up', authenticationController.register);
 router.delete('/api/logout/:id', authenticationController.logout);
 
 

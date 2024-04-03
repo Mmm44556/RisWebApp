@@ -1,21 +1,35 @@
-import React, { useEffect } from 'react';
-import { Form, useActionData } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useActionData, useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 import { MdAccountBox, MdPassword } from "react-icons/md";
 import style from "../../assets/scss/style.module.scss";
 export default function Login() {
-
+  const response = useActionData();
+  const navigator = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (response?.msg == 'ok') {
+      navigator('/DashBoard/dataList',{replace:true});
+      setIsSubmitting(false);
+    }
+    if(response?.msg=="err"){
+      setIsSubmitting(false);
+    }
+  }, [response])
   return (
     <>
 
-      <Form method="post" action="/sign-in" className={style.login}>
-        <p className='text-center fs-4 fw-bold' >Radiology File System</p>
+      <Form method="post"
+        onSubmit={() => setIsSubmitting(true)}
+        action="/sign-in" className={`${style.login} d-flex flex-column gap-2 justify-content-center `}>
+        <p className='text-center fs-1 fw-bold' >
+          Radiology File System</p>
 
         <label htmlFor="name" className="text-center">
           <MdAccountBox />
           <input id='name' type="text" name="name" placeholder='Name'
             className="w-100"
             spellCheck
-
             required
             maxLength="40" />
         </label>
@@ -30,14 +44,16 @@ export default function Login() {
             placeholder='password' />
         </label>
 
-
-        <div className='text-end'>
-          <input type="checkbox" id="keeping" name="keeping" style={{ height: '15px' }} />
-          <label htmlFor="keeping" style={{ fontSize: '18px', marginLeft: '7px' }}>保持登入</label>
-        </div>
-
-        <div>
-          <button type="submit">登入</button>
+        <div >
+          <Button
+            variant="light"
+            className='text-black  w-100'
+            disabled={isSubmitting}
+            type="submit">
+              {
+              isSubmitting ? "登入中..." : '登入'
+              }
+            </Button>
         </div>
 
       </Form>

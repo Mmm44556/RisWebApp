@@ -80,6 +80,9 @@ class EmployeeService {
  */
   update = async (userInfo, params) => {
     try {
+    if (['MS001', 'MS002'].includes(userInfo.position_id)) {
+      userInfo.role_uid = 1;
+    }
 
       const userSessionData = await this.#userRepository.read(params.id);
 
@@ -88,6 +91,7 @@ class EmployeeService {
 
       delete userInfo.position_name;
       delete userInfo.department_name;
+    
       const result = await this.#userRepository.update(userInfo, JSON.stringify(newUserInfo));
 
       return { status: 200, msg: result };
