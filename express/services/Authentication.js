@@ -55,6 +55,7 @@ class AuthenticationService {
   register = async (userData) => {
 
     try {
+     
       const result = await this.#userRepository.createUser(userData);
 
       if (result) {
@@ -137,7 +138,7 @@ class ErrorBoundary {
 
     const checkResult = {
       hasProp: () => {
-        if (user === undefined){
+        if (user === undefined) {
           return false
         }
         return true
@@ -160,21 +161,21 @@ class ErrorBoundary {
     }
   }
 
-/**
-* 驗證註冊結果
-* @returns {object} 返回結果物件
-*/
-registerResult() {
-  const err = this.result;
-  if (/name/i.test(err.sqlMessage)) {
-    return { status: 403, msg: '名稱已被註冊過' };
-  } else if (/mail/i.test(err.sqlMessage)) {
-    return { status: 403, msg: '信箱已被註冊過' };
-  } else if (/phone/i.test(err.sqlMessage)) {
-    return { status: 403, msg: '電話已被註冊過' };
-  }
+  /**
+  * 驗證註冊結果
+  * @returns {object} 返回結果物件
+  */
+  registerResult() {
+    const err = this.result;
+    if (/name/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '名稱已被註冊過' };
+    } else if (/mail/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '信箱已被註冊過' };
+    } else if (/phone/i.test(err.sqlMessage)) {
+      return { status: 403, msg: '電話已被註冊過' };
+    }
 
-}
+  }
 
 
 }

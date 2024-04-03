@@ -54,6 +54,9 @@ class AuthenticationController {
   register = async (req, res) => {
 
     const result = await this.authenticationService.register(req.body);
+ 
+    res.status(200).send('o')
+    return
     res.status(result.status).send(result.msg);
   }
 
