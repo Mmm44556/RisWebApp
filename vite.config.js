@@ -2,12 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import commonjs from 'vite-plugin-commonjs'
 import { visualizer } from "rollup-plugin-visualizer";
-import { resolve } from "path";
+import { resolve } from "path";;
+import viteCompression from 'vite-plugin-compression';
 import importToCDN from 'vite-plugin-cdn-import'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "./",
   plugins: [react(), commonjs(),
+    viteCompression(),
   visualizer({
     gzipSize: true,
     brotliSize: true,
@@ -57,6 +59,12 @@ export default defineConfig({
           name: 'styled-components',
           var: 'Styled-components',
           path: 'https://cdn.jsdelivr.net/npm/styled-components@6.1.8/dist/styled-components.browser.cjs.min.js'
+        },
+        {
+          name: "react-toastify",
+          var: "react-toastify",
+          path: "https://cdn.jsdelivr.net/npm/react-toastify@10.0.5/dist/react-toastify.min.js",
+          css: "https://cdn.jsdelivr.net/npm/react-toastify@10.0.5/dist/ReactToastify.min.css"
         }
 
       ]
@@ -79,9 +87,14 @@ export default defineConfig({
     },
 
   },
+  esbuild: {
+    drop: ["console", "debugger"]
+  },
   build: {
     outDir: 'dist',
+
     rollupOptions: {
+
       output: {
         chunkFileNames: 'js/[name]-[hash].js', // 引入文件名的名称
         entryFileNames: 'js/[name]-[hash].js', // 包的入口文件名称
@@ -91,9 +104,11 @@ export default defineConfig({
             // 让每个插件都打包成独立的文件
             return id.toString().split("node_modules/")[1].split("/")[0].toString();
           }
-        }
+        },
+
       },
       input: resolve(__dirname, "index.html"),
+
       // external: ['react-dom', 'moment', 'react-router-dom', 'chart', 'react-query', 'styled-components', 'react-data-table-component'],
       // output: {
       //   paths: {

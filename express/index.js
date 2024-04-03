@@ -2,7 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-
+const compression = require('compression');
 const port = process.env.PORT || 3301;
 const session = require('express-session');
 const cookie = require('cookie-parser');
@@ -19,6 +19,7 @@ app.use(cors({
   credentials: true,
 
 }));
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
