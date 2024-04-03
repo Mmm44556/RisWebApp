@@ -2,20 +2,20 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import Authentication from "@authentication";
-import Login from "@authentication/Login";
+import Authentication from "@authentication/index.jsx";
+import Login from "@authentication/Login/index.jsx";
 import Register from "@authentication/Register";
-import DashBoard from '@components/DashBoard';
-import Employees from '@pages/Employees';
+import DashBoard from '@components/DashBoard/index.jsx';
+import Employees from '@pages/Employees/index.jsx';
 import NotFound from '@error/404.jsx';
-import { sessionCheck } from "./js/sessionPrefetch";
+import { sessionCheck } from "./js/sessionPrefetch/index.js";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
 
-const DataList = lazy(() => import("@pages/dataList"));
-const Uploader = lazy(() => import("@pages/Uploader"));
-const Profile = lazy(() => import("@pages/Profile"));
-const Type = lazy(() => import("@pages/dataList/Type"));
-const Departments = lazy(() => import("@pages/Departments"));
+const DataList = lazy(() => import("@pages/dataList/index.jsx"));
+const Uploader = lazy(() => import("@pages/Uploader/index.jsx"));
+const Profile = lazy(() => import("@pages/Profile/index.jsx"));
+const Type = lazy(() => import("@pages/dataList/Type/index.jsx"));
+const Departments = lazy(() => import("@pages/Departments/index.jsx"));
 const router = createBrowserRouter([
   {
     path: '/',
