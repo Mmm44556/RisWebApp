@@ -6,8 +6,8 @@ const conn = mysql.createPool(
     connectionLimit: 10,
     user: 'root',
     password: '',
-    host: '104.199.189.119',
-    database: 'ris',
+    host: '104.199.224.10',
+    database: 'risWEB',
     port: 3306
   }
 )

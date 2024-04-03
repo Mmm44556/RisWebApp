@@ -198,9 +198,10 @@ class UserRepository extends IUserRepository {
     return new Promise((resolve, reject) => {
 
       const { name, department, age, confirmPassword, email, gender, phone, uuid } = userData;
-
       this.conn.getConnection((err, conn) => {
+
         if (err) {
+
           throw err
         };
         conn.query(userQuery.createUserData, [name, department, email, confirmPassword, phone, gender, age, uuid], (err) => {
@@ -211,6 +212,7 @@ class UserRepository extends IUserRepository {
 
             resolve(true);
           }
+
           conn.release();
         })
       })
