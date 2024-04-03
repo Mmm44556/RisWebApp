@@ -4,11 +4,11 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Authentication from "@authentication/index.jsx";
 import Login from "@authentication/Login/index.jsx";
-import Register from "@authentication/Register";
+// import Register from "@authentication/Register";
 import DashBoard from '@components/DashBoard/index.jsx';
 import Employees from '@pages/Employees/index.jsx';
 import NotFound from '@error/404.jsx';
-import { sessionCheck } from "./js/sessionPrefetch/index.js";
+import { sessionCheck } from "./js/sessionPrefetch";
 import { loginAction, registerAction, saveUserInfoAction } from "./js/actions";
 
 const DataList = lazy(() => import("@pages/dataList/index.jsx"));
