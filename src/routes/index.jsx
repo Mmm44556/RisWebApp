@@ -26,7 +26,7 @@ const router = createBrowserRouter([
           {
             path: 'dataList',
             lazy: async () => {
-              let DataList = await import("@pages/dataList");
+              let DataList = await import("@pages/dataList/index.jsx");
               return { Component: DataList.default }
             },
 
@@ -34,14 +34,14 @@ const router = createBrowserRouter([
               {
                 path: '',
                 lazy: async () => {
-                  let { Root } = await import("@pages/dataList");
+                  let { Root } = await import("@pages/dataList/index.jsx");
                   return { Component: Root }
                 },
               },
               {
                 path: 'type/*',
                 lazy: async () => {
-                  let Type = await import("@pages/dataList/Type");
+                  let Type = await import("@pages/dataList/Type/index.jsx");
                   return { Component: Type.default }
                 },
               }
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
           {
             path: 'uploader/*',
             lazy: async () => {
-              let Uploader = await import("@pages/Uploader");
+              let Uploader = await import("@pages/Uploader/index.jsx");
               return { Component: Uploader.default }
             },
 
@@ -58,7 +58,7 @@ const router = createBrowserRouter([
           {
             path: 'user/:id',
             lazy: async () => {
-              let Profile = await import("@pages/Profile");
+              let Profile = await import("@pages/Profile/index.jsx");
               return { Component: Profile.default }
             },
             action: saveUserInfoAction,
