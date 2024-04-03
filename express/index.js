@@ -14,7 +14,7 @@ const employeesRoutes = require('./routes/employees');
 const fileRoutes = require('./routes/filemanager');
 const path = require('path');
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:4173',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
 
@@ -30,6 +30,8 @@ app.use((req, res, next) => {
   })
   next();
 })
+
+
 // app.use((req,res,next)=>{
 //   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
 //   res.header('Access-Control-Allow-Credentials', 'true');

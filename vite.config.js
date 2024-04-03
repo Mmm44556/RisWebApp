@@ -8,7 +8,16 @@ import viteCompression from 'vite-plugin-compression';
 import importToCDN from 'vite-plugin-cdn-import'
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "./",
+  base: "/",
+  
+  server:{
+proxy:{
+  '/authentication':{
+    target:'https://ser-ihgj.onrender.com',
+    changeOrigin:true
+  }
+}
+  },
   plugins: [react(), commonjs(),
   viteCompression(),
   visualizer({
@@ -72,28 +81,30 @@ export default defineConfig({
     }))],
   resolve: {
     alias: {
-      '@style': resolve(__dirname, 'assets/scss/style.module.scss'),
-      '@assets': resolve(__dirname, 'assets'),
-      '@components': resolve(__dirname, 'components'),
-      '@authentication': resolve('__dirname, Authentication'),
-      '@context': resolve(__dirname, 'context'),
-      '@hooks': resolve(__dirname, 'hooks'),
-      '@layouts': resolve(__dirname, 'layouts'),
-      '@pages': resolve(__dirname, 'pages'),
-      '@routes': resolve(__dirname, 'routes'),
-      '@store': resolve(__dirname, 'store'),
-      '@utils': resolve(__dirname, 'utils'),
-      '@error': resolve(__dirname, 'Errors')
+      '@style': resolve(__dirname, 'src/assets/scss/style.module.scss'),
+      '@assets': resolve(__dirname, 'src/assets'),
+      '@components': resolve(__dirname, 'src/components'),
+      '@authentication': resolve(__dirname, 'src/Authentication'),
+      '@context': resolve(__dirname, 'src/context'),
+      '@hooks': resolve(__dirname, 'src/hooks'),
+      '@layouts': resolve(__dirname, 'src/layouts'),
+      '@pages': resolve(__dirname, 'src/pages'),
+      '@routes': resolve(__dirname, 'src/routes'),
+      '@store': resolve(__dirname, 'src/store'),
+      '@utils': resolve(__dirname, 'src/utils'),
+      '@error': resolve(__dirname, 'src/Errors')
 
     },
+    
 
   },
   esbuild: {
     drop: ["console", "debugger"]
   },
+  
   build: {
     outDir: 'dist',
-
+    
     rollupOptions: {
 
       output: {

@@ -7,8 +7,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "deploy": "gh-pages -d build",
-    "server": "node ./express/index.js"
+    "deploy": "gh-pages -d build"
   },
   "resolutions": {
     "styled-components": "^5"
