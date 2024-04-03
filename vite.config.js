@@ -4,12 +4,13 @@ import commonjs from 'vite-plugin-commonjs'
 import { visualizer } from "rollup-plugin-visualizer";
 import { resolve } from "path";;
 import viteCompression from 'vite-plugin-compression';
+
 import importToCDN from 'vite-plugin-cdn-import'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "./",
   plugins: [react(), commonjs(),
-    viteCompression(),
+  viteCompression(),
   visualizer({
     gzipSize: true,
     brotliSize: true,
@@ -78,7 +79,7 @@ export default defineConfig({
       '@context': resolve(__dirname, 'src/context'),
       '@hooks': resolve(__dirname, 'src/hooks'),
       '@layouts': resolve(__dirname, 'src/layouts'),
-      '@pages': resolve(__dirname, 'src/pages'),
+      '@pages': resolve(__dirname, 'pages'),
       '@routes': resolve(__dirname, 'src/routes'),
       '@store': resolve(__dirname, 'src/store'),
       '@utils': resolve(__dirname, 'src/utils'),
