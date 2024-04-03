@@ -190,9 +190,11 @@ export default function Register({ Title, service, location }) {
         <div>
           <Button 
           type="submit"
+          variant="light"
           className='text-black'
           >註冊</Button>
           <Button type="reset" 
+            variant="light"
             className='text-black'
           onClick={resetForm(setTelInit)}>重置</Button>
         </div>

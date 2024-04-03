@@ -1,9 +1,6 @@
 import { memo, useState, lazy, Suspense, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Container, Nav, Navbar, Form, NavDropdown, Button } from 'react-bootstrap';
-import { IoNotificationsOutline } from "react-icons/io5";
-import { BsFilterLeft, BsSearch } from "react-icons/bs";
-import { MdOutlineLightMode, MdOutlineNightlight } from "react-icons/md";
+import { Container, Nav, Navbar, NavDropdown  } from 'react-bootstrap';
 import style from '@style';
 import { themeContext } from '@context';
 import { Figure } from '@assets/styled';
@@ -42,18 +39,6 @@ function Navigator({ normalInfo }) {
 
           <Nav className="me-auto" />
           <Nav className={style.navigator_tabs}>
-            <Nav.Item>
-              <Button
-                variant="light"
-                className="d-inline-flex "
-                style={{ borderRadius: "50px" }}
-                onClick={switchTheme(setTheme)}
-              >
-                {
-                  theme === true ? <MdOutlineLightMode /> : <MdOutlineNightlight />
-                }
-              </Button>
-            </Nav.Item>
             <Nav.Item >
               <NavDropdown
                 title={<>

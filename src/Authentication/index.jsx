@@ -81,10 +81,9 @@ export default function Authentication() {
             </Row>
           </Col>
           <Col
-            style={{ backgroundColor: '#e5e8ec' }}
             className='m-0 p-0 d-flex justify-content-center align-items-center'>
             <TabsStyle
-              style={{ height: '100dvh' ,padding:'0 50px'}}
+              style={{ height: '100dvh'}}
               className='flex-fill position-relative'>
               <Tabs
                 className='border '
@@ -99,16 +98,14 @@ export default function Authentication() {
                 }}
 
               >
-                <Tab eventKey={ 'sign-in'} title={ '登入'} />
-                <Tab eventKey={ "sign-up"} title={'註冊'} />
+                {/* <Tab eventKey={ 'sign-in'} title={ '登入'} /> */}
+                {/* <Tab eventKey={ "sign-up"} title={'註冊'} /> */}
               </Tabs>
 
               <Outlet context={[Navigate, setRegisterConfirm]} />
             </TabsStyle>
           </Col>
-          {/* <Col xl={2} md={6} sm={6} xs={6}>
 
-          </Col> */}
         </Row>
       </Container>
     </div>

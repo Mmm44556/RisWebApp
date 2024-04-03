@@ -7,6 +7,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Button } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
 import Loading from '@error/Loading';
+import StaledData from '@error/401.jsx';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -41,23 +42,10 @@ function App() {
           {({ reset }) => (
             <ErrorBoundary
               onReset={reset}
-              fallbackRender={({ resetErrorBoundary }) => {
-
-                return (
-                  < div >
-                    There was an error!
-                    <Button Button onClick={() => resetErrorBoundary()}>Try again</Button>
-                  </div>
-
-                )
-
-              }
-              }
+              fallbackRender={<StaledData/>}
             >
               <Suspense fallback={<Loading />}>
-
                 <Outlet></Outlet>
-
               </Suspense>
 
 

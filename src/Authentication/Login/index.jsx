@@ -21,7 +21,7 @@ export default function Login() {
 
       <Form method="post"
         onSubmit={() => setIsSubmitting(true)}
-        action="/sign-in" className={`${style.login} d-flex flex-column gap-2`}>
+        action="/sign-in" className={`${style.login} d-flex flex-column gap-2 justify-content-center `}>
         <p className='text-center fs-1 fw-bold' >
           Radiology File System</p>
 
@@ -30,7 +30,6 @@ export default function Login() {
           <input id='name' type="text" name="name" placeholder='Name'
             className="w-100"
             spellCheck
-
             required
             maxLength="40" />
         </label>
@@ -47,7 +46,8 @@ export default function Login() {
 
         <div >
           <Button
-            className='text-black ms-5 me-5'
+            variant="light"
+            className='text-black  w-100'
             disabled={isSubmitting}
             type="submit">
               {

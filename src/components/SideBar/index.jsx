@@ -25,14 +25,14 @@ function SideBar({ userState }) {
         </Nav.Link>
       </Nav.Item>
       <hr />
-      <Nav.Item as="li">
+      {/* <Nav.Item as="li">
         <Nav.Link
           onClick={useNavigator('uploader')}
           eventKey="uploader"
           title="uploader">
           <FaCloudUploadAlt /> 上傳報告
         </Nav.Link>
-      </Nav.Item>
+      </Nav.Item> */}
       <Nav.Item as="li">
         <Nav.Link
           onClick={useNavigator('dataList')}

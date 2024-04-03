@@ -6,9 +6,7 @@
 
 }
 
-body{
-    // background-color: rgb(229, 232, 236);
-}
+
 
 .authContainer {
   height: 100vh;
@@ -35,7 +33,8 @@ body{
 .login {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-gap:0.875rem;
+  gap: 0.875rem;
+
   /* 设置元素之间的间距 */
   p:first-child {
     grid-column-start: 1;

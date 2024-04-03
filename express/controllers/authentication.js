@@ -55,13 +55,12 @@ class AuthenticationController {
 
     const result = await this.authenticationService.register(req.body);
  
-    res.status(200).send('o')
-    return
     res.status(result.status).send(result.msg);
   }
 
   logout = async (req, res) => {
     const { params, session } = req;
+    
     const result = await this.authenticationService.logout(params.id);
     if (result.status == 204) {
       session.destroy(function (err) {
@@ -96,6 +95,7 @@ class AuthenticationController {
    * @return {Promise.<object>} 
    */
   sessionChecker = async (req, res, next) => {
+  
     if (req.session.sessionID == undefined) {
       res.status(401).send('@@');
       return;
