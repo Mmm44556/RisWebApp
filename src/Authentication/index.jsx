@@ -98,8 +98,8 @@ export default function Authentication() {
                 }}
 
               >
-                {/* <Tab eventKey={ 'sign-in'} title={ '登入'} /> */}
-                {/* <Tab eventKey={ "sign-up"} title={'註冊'} /> */}
+                <Tab eventKey={ 'sign-in'} title={ '登入'} />
+                <Tab eventKey={ "sign-up"} title={'註冊'} />
               </Tabs>
 
               <Outlet context={[Navigate, setRegisterConfirm]} />

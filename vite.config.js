@@ -8,16 +8,15 @@ import viteCompression from 'vite-plugin-compression';
 import importToCDN from 'vite-plugin-cdn-import'
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/",
-  
-  server:{
-proxy:{
-  '/authentication':{
-    target:'https://ser-ihgj.onrender.com',
-    changeOrigin:true
-  }
-}
-  },
+
+  //   server:{
+  // proxy:{
+  //   '/authentication':{
+  //     target:'https://ser-ihgj.onrender.com',
+  //     changeOrigin:true
+  //   }
+  // }
+  //   },
   plugins: [react(), commonjs(),
   viteCompression(),
   visualizer({
@@ -95,16 +94,16 @@ proxy:{
       '@error': resolve(__dirname, 'src/Errors')
 
     },
-    
+
 
   },
   esbuild: {
     drop: ["console", "debugger"]
   },
-  
+
   build: {
     outDir: 'dist',
-    
+
     rollupOptions: {
 
       output: {

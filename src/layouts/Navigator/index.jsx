@@ -23,7 +23,7 @@ function Navigator({ normalInfo }) {
   const { theme, setTheme } = useContext(themeContext);
   const { show, LogoutModalHandle } = useLogoutModal();
   let searchParams = useLocation();
-
+  console.log(normalInfo['user_name'])
   return <>
 
     <Navbar expand={"sm"}
@@ -42,7 +42,7 @@ function Navigator({ normalInfo }) {
             <Nav.Item >
               <NavDropdown
                 title={<>
-                  <Figure bg={(localStorage.getItem('figure') ?? '#fff')}>{normalInfo['user_name'].charAt(0)}</Figure>
+                  <Figure bg={(localStorage.getItem('figure') ?? '#fff')}>{normalInfo['user_name']?.charAt(0)}</Figure>
                   {normalInfo['user_name']}</>}
                 id="navbarScrollingDropdown">
                 <NavDropdown.Item >

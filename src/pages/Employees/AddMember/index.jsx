@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import Register from '@authentication/Register';
+import styled from 'styled-components';
 
-import Register from '@authentication/Register'
+const OffcanvasContainer = styled(Offcanvas)`
+width: fit-content !important;
+`
+
 function AddMember({ isFetching, children }) {
 
   const [show, setShow] = useState(false);
@@ -18,15 +23,18 @@ function AddMember({ isFetching, children }) {
       >
         {children}
       </Button>
-      <Offcanvas show={show} onHide={handleClose} placement="end">
-        <Offcanvas.Body>
+      <OffcanvasContainer
+        show={show} onHide={handleClose} placement="end">
+        <Offcanvas.Body
+          className='sssss'
+        >
           <Register
             Title={<>註冊新用戶</>}
             service={'admin'}
             location={`sign-up/${btoa('admin')}`}
           />
         </Offcanvas.Body>
-      </Offcanvas>
+      </OffcanvasContainer>
 
     </>
   );

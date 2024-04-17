@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Authentication from "@authentication/index.jsx";
 import Login from "@authentication/Login/index.jsx";
-// import Register from "@authentication/Register";
+import Register from "@authentication/Register";
 import DashBoard from '@components/DashBoard/index.jsx';
 import Employees from '@pages/Employees/index.jsx';
 import NotFound from '@error/404.jsx';
@@ -42,11 +42,11 @@ const router = createBrowserRouter([
               }
             ]
           },
-          // {
-          //   path: 'uploader/*',
-          //   Component: Uploader,
+          {
+            path: 'uploader/*',
+            Component: Uploader,
 
-          // },
+          },
           {
             path: 'user/:id',
             Component: Profile,
@@ -71,13 +71,13 @@ const router = createBrowserRouter([
         },
         errorElement: <h1>請確保網路連線正常!</h1>,
         children: [
-          // {
-          //   path: 'sign-up/*',
-          //   element: <Register />,
-          //   action: registerAction,
-          //   errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,
+          {
+            path: 'sign-up/*',
+            element: <Register />,
+            action: registerAction,
+            errorElement: <h1>網路連接失敗，請確保網路是否正常!</h1>,
 
-          // },
+          },
           {
             path: 'sign-in/*',
             element: <Login />,

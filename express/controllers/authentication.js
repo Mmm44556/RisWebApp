@@ -79,6 +79,7 @@ class AuthenticationController {
  */
   authentication = async (req, res) => {
     const user = req.user;
+    console.log(user)
     const sessionData = req.sessionData;
 
 
@@ -95,13 +96,13 @@ class AuthenticationController {
    * @return {Promise.<object>} 
    */
   sessionChecker = async (req, res, next) => {
-  
+ 
     if (req.session.sessionID == undefined) {
       res.status(401).send('@@');
       return;
     }
     if (req._parsedUrl == 'logout') {
-      res.status(204);
+      res.status(204).send("logout");
       return;
     }
 
