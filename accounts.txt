@@ -1,0 +1,7 @@
+Editor accounts:
+
+acc: admin
+pass: 12345
+
+acc: user
+pass: 12345
